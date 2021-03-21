@@ -68,8 +68,8 @@ module.exports = [
   //     }
   //   ]
   // },
-  {
-    text: 'GitHub',
-    link: 'https://github.com/wswplay/wswplay.github.io'
-  }
+  // {
+  //   text: 'GitHub',
+  //   link: 'https://github.com/wswplay/wswplay.github.io'
+  // }
 ]

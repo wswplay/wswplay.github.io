@@ -15,16 +15,17 @@ module.exports = {
     ['link', { rel: 'icon', href: 'https://avatars.githubusercontent.com/u/13958395?s=460&u=b30a9731e3748ced50e5b17402ab59f15f59ae05&v=4' }]
   ],
   themeConfig: {
-    logo: 'https://avatars.githubusercontent.com/u/13958395?s=460&u=b30a9731e3748ced50e5b17402ab59f15f59ae05&v=4',
-    navbar: true,
+    repo: 'wswplay/wswplay.github.io',
     editLinks: true,
+    docsDir: 'docs',
+    logo: 'https://avatars.githubusercontent.com/u/13958395?s=460&u=b30a9731e3748ced50e5b17402ab59f15f59ae05&v=4',
     locales: {
       '/': {
         label: 'English',
         selectText: 'Languages',
         ariaLabel: 'Select language',
         editLinkText: 'Edit this page on GitHub',
-        lastUpdated: 'Last Updated',
+        // lastUpdated: 'Last Updated',
         nav: require('./nav/en'),
       },
       '/zh/': {
@@ -32,7 +33,7 @@ module.exports = {
         selectText: '选择语言',
         ariaLabel: '选择语言',
         editLinkText: '在 GitHub 上编辑此页',
-        lastUpdated: '上次更新',
+        // lastUpdated: '上次更新',
         nav: require('./nav/zh'),
         sidebar: {
           '/zh/guide/': getGuideSidebar('目录', '基础知识', 'Vue2.x')
