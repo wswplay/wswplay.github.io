@@ -2,12 +2,12 @@ module.exports = {
   locales: {
     '/': {
       lang: 'en-US',
-      title: '偏见js',
-      description: '偏见js'
+      title: 'js边城',
+      description: 'js边城'
     },
     '/zh/': {
       lang: 'zh-CN',
-      title: '偏见js',
+      title: 'js边城',
       description: '',
     }
   },
