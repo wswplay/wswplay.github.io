@@ -36,7 +36,7 @@ module.exports = {
         // lastUpdated: '上次更新',
         nav: require('./nav/zh'),
         sidebar: {
-          '/zh/guide/': getGuideSidebar('目录', '基础知识', 'Vue2.x')
+          '/zh/guide/': getGuideSidebar('扉页', '基础知识', 'Vue2.x')
         }
       }
     }
