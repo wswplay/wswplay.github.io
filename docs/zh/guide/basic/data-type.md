@@ -54,3 +54,5 @@ Xiao instanceof Object //true
 Xiao(person)
 console.log(person) // {name: "沈从文", id: 520}
 ```
+## Vue怎么判断类型
+待续。。。
