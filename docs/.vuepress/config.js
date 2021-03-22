@@ -1,4 +1,7 @@
 module.exports = {
+  markdown: {
+    lineNumbers: true
+  },
   locales: {
     '/': {
       lang: 'en-US',
@@ -70,6 +73,7 @@ function getGuideSidebar (groupA, groupB, groupC) {
         'vue2/define-react',
         'vue2/componentization',
         'vue2/compile',
+        'vue2/diff',
       ]
     }
   ]
