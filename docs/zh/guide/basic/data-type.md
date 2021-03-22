@@ -15,6 +15,7 @@ story.length //2
 其实（包装对象）在实现上并不一定创建或销毁这个临时对象，只是整个过程看起来像而已。
 :::
 ## 基础类型(值传递) typeof
+[MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/typeof)：```typeof```操作符返回一个字符串，表示未经计算的操作数的类型。
 >字符串(String)、数字(Number)、布尔(Boolean)、对空(Null)、未定义(Undefined)、Symbol
 ```js
 // 类型判断方法：typeof
@@ -25,13 +26,15 @@ typeof null //"object"
 typeof undefined //"undefined"
 ```
 ## 引用类型(地址传递) instanceof
+[MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/instanceof)：```instanceof```运算符用于检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上。
 >对象(Object)、数组(Array)、函数(Function)
 ```js
 // 数组对象typeof判断不准确
 const person = {name: '沈从文'}
 const works = ['湘行散记', '中国服饰研究']
-function Xiao() { 
-  console.log(this)
+function Xiao(params) {
+  params.id = 520
+  if(!(this instanceof Xiao)) console.log('请使用new关键字')
 }
 typeof person //"object"
 typeof works //"object"
@@ -46,4 +49,8 @@ works instanceof Object //true
 Xiao instanceof Function //true
 Xiao instanceof Array //false
 Xiao instanceof Object //true
+
+// 地址传递
+Xiao(person)
+console.log(person) // {name: "沈从文", id: 520}
 ```
