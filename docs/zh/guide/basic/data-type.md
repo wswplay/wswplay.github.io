@@ -2,8 +2,17 @@
 title: 数据类型
 ---
 ## 一切皆对象
-::: tip 
-js中，所有类型，都是对象。
+```js
+const story = '边城'
+typeof story //"string"
+// 擦，instanceof是不能用来判断基础类型滴
+story instanceof Object //false
+story.length //2
+```
+比如：字符串，和对象一样有属性和方法。怎么解释和理解呢？   
+>当读取它属性时，js把```string```通过```new String()```方式创建一个字符串临时对象(学术名叫包装对象)。对象就有了属性。但这个对象只是临时的，一旦引用结束，对象就被销毁了。
+::: tip 《JavaScript权威指南》：
+其实（包装对象）在实现上并不一定创建或销毁这个临时对象，只是整个过程看起来像而已。
 :::
 ## 基础类型(值传递) typeof
 >字符串(String)、数字(Number)、布尔(Boolean)、对空(Null)、未定义(Undefined)、Symbol
@@ -31,10 +40,10 @@ typeof Xiao //"function"
 person instanceof Object //true
 person instanceof Array //false
 
-works instanceof Object //true
 works instanceof Array //true
+works instanceof Object //true
 
-Xiao instanceof Object //true
 Xiao instanceof Function //true
 Xiao instanceof Array //false
+Xiao instanceof Object //true
 ```
