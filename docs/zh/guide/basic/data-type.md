@@ -16,7 +16,7 @@ story.length //2
 :::
 ## 基础类型(值传递) typeof
 [MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/typeof)：```typeof```操作符返回一个字符串，表示未经计算的操作数的类型。
->字符串(String)、数字(Number)、布尔(Boolean)、对空(Null)、未定义(Undefined)、Symbol
+>字符串(String)、数字(Number)、布尔(Boolean)、对空(Null)、未定义(Undefined)、符号(Symbol)
 ```js
 // 类型判断方法：typeof
 typeof '边城' //"string"

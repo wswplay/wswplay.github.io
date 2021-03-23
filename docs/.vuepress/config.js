@@ -19,7 +19,7 @@ module.exports = {
   ],
   themeConfig: {
     repo: 'wswplay/wswplay.github.io',
-    editLinks: true,
+    // editLinks: true,
     docsDir: 'docs',
     logo: 'https://avatars.githubusercontent.com/u/13958395?s=460&u=b30a9731e3748ced50e5b17402ab59f15f59ae05&v=4',
     locales: {
@@ -61,9 +61,11 @@ function getGuideSidebar (groupA, groupB, groupC) {
       collapsable: false,
       children: [
         'basic/memory-stack',
+        'basic/data-type',
+        'basic/data-structures',
+        'basic/algorithm',
         'basic/process-thread',
         'basic/tcp-http',
-        'basic/data-type',
       ]
     },
     {
