@@ -34,12 +34,14 @@ title: 目录
 4. Mutation
 5. Action
 ## Webpack
+## 性能优化
 1. tree-shake
 ## Vite
 ## ECharts
 ## Axios
 ## Element-Ui
 ## Nodejs
+## TypeScript
 ## 微信小程序
 1. mina
 2. wepy

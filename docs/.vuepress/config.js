@@ -72,7 +72,7 @@ function getGuideSidebar (groupA, groupB, groupC) {
       title: groupC,
       collapsable: false,
       children: [
-        'vue2/define-react',
+        'vue2/data-driven',
         'vue2/componentization',
         'vue2/compile',
         'vue2/diff',
