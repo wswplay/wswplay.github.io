@@ -11,7 +11,7 @@ module.exports = {
     '/zh/': {
       lang: 'zh-CN',
       title: 'js边城',
-      description: '',
+      description: 'JavaScript基础知识,Vue源码解读等。',
     }
   },
   head: [
