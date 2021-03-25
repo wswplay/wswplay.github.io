@@ -39,7 +39,7 @@ module.exports = {
         // lastUpdated: '上次更新',
         nav: require('./nav/zh'),
         sidebar: {
-          '/zh/guide/': getGuideSidebar('扉页', '基础知识', 'Vue2.x', '性能优化')
+          '/zh/guide/': getGuideSidebar('扉页', '基础知识', 'Vue2.x', '性能优化', 'Vue CLI')
         }
       }
     }
@@ -47,18 +47,20 @@ module.exports = {
   plugins: []
 }
 // tools
-function getGuideSidebar (groupA, groupB, groupC, groupD) {
+function getGuideSidebar (...cateName) {
+  const collapsable = true
+  const [pageindex, basic, vue2, performance, vuecli] = cateName
   return [
     {
-      title: groupA,
-      collapsable: true,
+      title: pageindex,
+      collapsable,
       children: [
         '',
       ]
     },
     {
-      title: groupB,
-      collapsable: true,
+      title: basic,
+      collapsable,
       children: [
         'basic/memory-stack',
         'basic/data-type',
@@ -69,8 +71,8 @@ function getGuideSidebar (groupA, groupB, groupC, groupD) {
       ]
     },
     {
-      title: groupC,
-      collapsable: true,
+      title: vue2,
+      collapsable,
       children: [
         'vue2/data-driven',
         'vue2/componentization',
@@ -79,10 +81,17 @@ function getGuideSidebar (groupA, groupB, groupC, groupD) {
       ]
     },
     {
-      title: groupD,
-      collapsable: true,
+      title: performance,
+      collapsable,
       children: [
         'performance/secondly-open-first-screen',
+      ]
+    },
+    {
+      title: vuecli,
+      collapsable,
+      children: [
+        'vuecli/cli-service',
       ]
     },
   ]
