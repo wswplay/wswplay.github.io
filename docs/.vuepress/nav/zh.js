@@ -5,7 +5,7 @@ module.exports = [
   },
   {
     text: 'Demo',
-    link: '/vdemo/'
+    link: '/vdemo/#/'
   },
   // {
   //   text: '配置',
