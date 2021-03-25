@@ -3,6 +3,10 @@ module.exports = [
     text: '首页',
     link: '/zh/'
   },
+  {
+    text: 'Demo',
+    link: '/vdemo/'
+  },
   // {
   //   text: '配置',
   //   link: '/zh/config/'

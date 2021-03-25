@@ -93,6 +93,11 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'vuecli/cli-service',
+        'vuecli/browser-compatibility',
+        'vuecli/html-static-assets',
+        'vuecli/webpack',
+        'vuecli/mode-and-env',
+        'vuecli/deployment',
       ]
     },
     {
