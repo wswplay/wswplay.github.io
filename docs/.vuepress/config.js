@@ -1,3 +1,4 @@
+
 module.exports = {
   markdown: {
     lineNumbers: true
@@ -39,7 +40,7 @@ module.exports = {
         // lastUpdated: '上次更新',
         nav: require('./nav/zh'),
         sidebar: {
-          '/zh/guide/': getGuideSidebar('扉页', '基础知识', 'Vue2.x', '性能优化', 'Vue CLI')
+          '/zh/guide/': getGuideSidebar(...require('./cate'))
         }
       }
     }
@@ -49,7 +50,7 @@ module.exports = {
 // tools
 function getGuideSidebar (...cateName) {
   const collapsable = true
-  const [pageindex, basic, vue2, performance, vuecli] = cateName
+  const [pageindex, basic, vue2, performance, vuecli, vuepress] = cateName
   return [
     {
       title: pageindex,
@@ -92,6 +93,13 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'vuecli/cli-service',
+      ]
+    },
+    {
+      title: vuepress,
+      collapsable,
+      children: [
+        'vuepress/setting',
       ]
     },
   ]
