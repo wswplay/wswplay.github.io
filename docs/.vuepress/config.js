@@ -95,6 +95,7 @@ function getGuideSidebar (...cateName) {
         'vuecli/cli-service',
         'vuecli/browser-compatibility',
         'vuecli/html-static-assets',
+        'vuecli/css',
         'vuecli/webpack',
         'vuecli/mode-and-env',
         'vuecli/deployment',
