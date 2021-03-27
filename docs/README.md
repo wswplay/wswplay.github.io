@@ -3,14 +3,16 @@ home: true
 # heroImage: https://avatars.githubusercontent.com/u/13958395?s=460&u=b30a9731e3748ced50e5b17402ab59f15f59ae05&v=4
 heroText: null
 # tagline: 一念偏见，一念偏爱，三重门外
-tagline: What，Where，How
-actionText: 按门铃 :)
+# tagline: What，Where，How
+tagline: 解决代码的 3 大问题
+# actionText: 按门铃 :)
+actionText: 解门铃 :)
 actionLink: /zh/guide/
 features: 
   - title: What
-    details: 这是什么？
+    details: 是什么？
   - title: Where
-    details: 能用在哪里？
+    details: 哪里用？
   - title: How
     details: 怎么用？
 # features: 
@@ -20,5 +22,5 @@ features:
 #     details: 吃饭的碗，兴趣所在，不得不爱。
 #   - title: 三重门
 #     details: 基础原理，业务组件，模式设计。
-footer: MIT Licensed | Copyright © 2018-present Xiao
+footer: MIT Licensed | Copyright © 2021-present Xiao
 ---
