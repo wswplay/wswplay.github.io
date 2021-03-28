@@ -34,6 +34,7 @@ title: 目录
 4. Mutation
 5. Action
 ## Vue CLI
+## Vscode
 ## VuePress
 ## Webpack
 ## 性能优化
