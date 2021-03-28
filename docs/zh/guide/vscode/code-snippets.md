@@ -8,7 +8,12 @@ title: 代码片段(Code Snippets)
 4. 输入文件名称，回车enter，即可自动打开新建的文件，文件名一般为 ```xxx.code-snippets```;
 5. 按要求输入你需要自定义的代码即可。
 
-比如，我用来生成Vue模板文件是这样的：
+### 代码片段的存放位置
+```
+/Users/你的名字/Library/Application Support/code/User/snippets
+```
+
+### 假如用来生成Vue模板文件是这样的：
 ```json
 "init vue template": {
   "scope": "javascript,typescript,vue",
@@ -33,13 +38,13 @@ title: 代码片段(Code Snippets)
 }
 ```
 ```scope```，是命令的作用域，即什么类型的文件需要vscode提示本命令。    
-```prefix```，这个就是命令。当你光标落地时，就会自动提示。    
+```prefix```的值```iv``` 就是命令。当你光标落地，键入字符与命令相匹配时，就会自动提示。    
 ```body```，就是需要生成的内容。    
 ``\t``，就是一个缩进。    
 ```\n```，就是换行。    
 ```${1:xxx}```，占位符。这里会高亮，光标会选中```$符号```们变量的位置。
 
-### 我用 ```iv```命令生成的模板如下：
+### 那么用 ```iv```命令生成的模板如下：
 光标会选中第 2，10 行```className```的位置
 ```vue {2,10}
 <template>
