@@ -62,4 +62,5 @@ export default {
 
 </style>
 ```
-
+## 代码片段命令可以传参吗
+你猜。。。暂时没找到。:stuck_out_tongue:
