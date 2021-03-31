@@ -50,8 +50,15 @@ module.exports = {
 // tools
 function getGuideSidebar (...cateName) {
   const collapsable = true
-  const [vscode, pageindex, basic, vue2, performance, vuecli, vuepress] = cateName
+  const [design, vscode, pageindex, basic, vue2, performance, vuecli, vuepress] = cateName
   return [
+    {
+      title: design,
+      collapsable,
+      children: [
+        'design/essence-of-components',
+      ]
+    },
     {
       title: vscode,
       collapsable,

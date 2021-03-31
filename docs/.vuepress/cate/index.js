@@ -1,4 +1,5 @@
 module.exports = [
+  'Design Art',
   'Vscode',
   '扉页',
   '基础知识',
