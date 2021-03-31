@@ -57,6 +57,7 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'design/essence-of-components',
+        'design/render',
       ]
     },
     {
@@ -83,6 +84,7 @@ function getGuideSidebar (...cateName) {
         'basic/algorithm',
         'basic/process-thread',
         'basic/tcp-http',
+        'basic/module-specification',
       ]
     },
     {
