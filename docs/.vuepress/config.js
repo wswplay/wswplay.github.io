@@ -50,7 +50,7 @@ module.exports = {
 // tools
 function getGuideSidebar (...cateName) {
   const collapsable = true
-  const [design, vscode, pageindex, basic, vue2, performance, vuecli, vuepress] = cateName
+  const [design, vscode, pageindex, basic, vue2, performance, vuecli, vuepress, vuerouter] = cateName
   return [
     {
       title: design,
@@ -93,8 +93,10 @@ function getGuideSidebar (...cateName) {
       children: [
         'vue2/data-driven',
         'vue2/componentization',
+        'vue2/component-recursion',
         'vue2/compile',
         'vue2/diff',
+        'vue2/mixin',
       ]
     },
     {
@@ -122,6 +124,13 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'vuepress/setting',
+      ]
+    },
+    {
+      title: vuerouter,
+      collapsable,
+      children: [
+        'vuerouter/init',
       ]
     },
   ]

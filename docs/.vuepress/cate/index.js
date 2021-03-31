@@ -7,4 +7,5 @@ module.exports = [
   '性能优化',
   'Vue CLI',
   'VuePress',
+  'VueRouter'
 ]
