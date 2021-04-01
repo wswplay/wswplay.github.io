@@ -50,3 +50,14 @@ function render(vnode, container) {
 渲染器除了将全新的 VNode 挂载```mount```成真实DOM之外，它的另外一个职责是负责对新旧 VNode 进行比对，并以合适的方式更新DOM，也就是我们常说的 patch。
 
 更新的本质就是，对比新旧节点，即```diff```。对比首先就是类型对比，如果类型不同，直接替换。
+
+## 核心 ```Diff``` 算法
+1. 减小DOM操作的性能开销
+2. 尽可能的复用 DOM 元素
+#### 同层比较
+当新旧 VNode 标签类型相同时，只需要更新 VNodeData 和 children 即可，不会“移除”和“新建”任何 DOM 元素的，而是复用已有 DOM 元素。
+#### 有用的key
+遍历比较(React)和双端比较(Vue2)
+
+#### Vue3的 Diff 算法
+在 Vue3 中将采用另外一种核心 Diff 算法，它借鉴于 ivi 和 inferno。

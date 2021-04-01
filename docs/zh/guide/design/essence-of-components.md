@@ -2,17 +2,19 @@
 title: 组件的本质
 ---
 ## 一个组件就是一个函数
+Vue 来说，一个组件最核心的东西是 render 函数，剩余的其他内容，如 data、compouted、props 等都是为 render 函数提供数据来源服务的。
 
 ## 组件的输出就是：```Virtual DOM```
+:::tip
+在后续行文时，将统一使用 VNode 来简称 Virtual DOM 。    
+在Vue.js 中虚拟 DOM 的 JavaScript 对象就是 VNode。
+:::
 **为什么不直接输出```html```，而是```Virtual DOM```呢？**    
 其原因是 Virtual DOM 带来了 分层设计，它对渲染过程的抽象，使得框架可以渲染到 **web(浏览器) 以外的平台，以及能够实现 SSR 等**。    
 >至于 Virtual DOM 相比原生 DOM 操作的性能，这并非 Virtual DOM 的目标，确切地说，如果要比较二者的性能是要“控制变量”的，例如：页面的大小、数据变化量等。
 
 ## 组件的 ```VNode``` 如何表示
-:::tip
-在后续行文时，将统一使用 VNode 来简称 Virtual DOM 。    
-在Vue.js 中虚拟 DOM 的 JavaScript 对象就是 VNode。
-:::
+可以让 VNode 的 tag 属性指向组件本身，从而使用 VNode 来描述组件。
 
 ## VNode的属性称为VNodeData
 1. 假如一个 VNode 的类型是 html 标签，则 VNodeData 中可以包含 class、style 以及一些事件。    

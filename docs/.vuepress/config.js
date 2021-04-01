@@ -85,6 +85,9 @@ function getGuideSidebar (...cateName) {
         'basic/process-thread',
         'basic/tcp-http',
         'basic/module-specification',
+        'basic/closure',
+        'basic/recursion',
+        'basic/prototype',
       ]
     },
     {
