@@ -15,6 +15,20 @@ Vue 来说，一个组件最核心的东西是 render 函数，剩余的其他�
 
 ## 组件的 ```VNode``` 如何表示
 可以让 VNode 的 tag 属性指向组件本身，从而使用 VNode 来描述组件。
+```js
+export interface VNode {
+  // _isVNode 属性在上文中没有提到，它是一个始终为 true 的值
+  // 有了它，我们就可以判断一个对象是否是 VNode 对象
+  _isVNode: true
+  // el：当一个 VNode 被渲染为真实 DOM 后，el 属性的值会引用该真实DOM
+  el: Element | null
+  flags: VNodeFlags
+  tag: string | FunctionalComponent | ComponentClass | null
+  data: VNodeData | null
+  children: VNodeChildren
+  childFlags: ChildrenFlags
+}
+```
 
 ## VNode的属性称为VNodeData
 1. 假如一个 VNode 的类型是 html 标签，则 VNodeData 中可以包含 class、style 以及一些事件。    

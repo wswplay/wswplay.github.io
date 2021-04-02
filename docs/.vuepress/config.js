@@ -57,6 +57,7 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'design/essence-of-components',
+        'design/create-element-fun',
         'design/render',
       ]
     },

@@ -49,20 +49,30 @@ title: 位运算
 用法：a >>> b    
 描述：将 a 的二进制表示向右移 b (< 32) 位，丢弃被移出的位，并使用 0 在左侧填充。
 
-## 进制转换：toString(x)
-**数字怎么转换进制呢？**
+## 进制转换与查看：
+**数字怎么转换进制呢？**(示例只取6位)
+1. 10进制转其他 ```toString(x)```
 ```js {5}
 const borderTown = 8
 // 转成2进制
-borderTown.toString(2) // "1000"
+borderTown.toString(2) // "001000"
 // 解析"1000"：1*2^3 + 0*2^2 + 0*2^1 + 0*2^0
 //            8     + 0     + 0     + 0      =  8
 // 转成8进制
-borderTown.toString(8) // "10"
+borderTown.toString(8) // "000010"
 // 转成16
-borderTown.toString(16) // "8"
+borderTown.toString(16) // "000008"
+```
+2. 其他转10进制 ```parseInt(value, x)```
+```js
+parseInt('001000', 2) // 8
+parseInt('000010', 8) // 8
+// 16和10一样，是不是。
+parseInt('000008', 16) // 8
+parseInt('000008', 10) // 8
 ```
 
-
+#### 参考：
+[MDN：按位操作符](https://developer.mozilla.org/zh-CN/docs/conflicting/Web/JavaScript/Reference/Operators_7c8eb9475d97a4a734c5991857698560#left_shift)
 
 
