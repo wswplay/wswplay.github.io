@@ -88,6 +88,7 @@ function getGuideSidebar (...cateName) {
         'basic/closure',
         'basic/recursion',
         'basic/prototype',
+        'basic/operators',
       ]
     },
     {

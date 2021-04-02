@@ -61,6 +61,10 @@ class MyComponent {}
 3. 产出 VNode 的方式：需要实例化，然后调用其 render 函数
 
 ## VNode 的种类
+1. 比如一个 VNode 对象是 html 标签的描述，那么其 tag 属性值就是一个字符串，即标签的名字；
+2. 如果是组件的描述，那么其 tag 属性值则引用组件类(或函数)本身；
+3. 如果是文本节点的描述，那么其 tag 属性值为 null。
+
 总的来说，我们可以把 VNode 分成五类，分别是：    
 **html/svg 元素**、**组件**、**纯文本**、**Fragment** 以及 **Portal**：
 ![](http://hcysun.me/vue-design/assets/img/vnode-types.7d99313d.png)
