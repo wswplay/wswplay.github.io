@@ -158,7 +158,103 @@ function mountFragment(vnode, container, isSVG) {
 ```
 
 ### 挂载 Portal
+...待续
+### 挂载有状态组件和原理
+挂载一个有状态组件只需要四步：
+```js {19,27,40,47,54-63}
+class MyComponent {
+  render() {
+    return h(
+      'div',
+      {
+        style: {
+          background: 'green'
+        }
+      },
+      [
+        h('span', null, '我是组件的标题1......'),
+        h('span', null, '我是组件的标题2......')
+      ]
+    )
+  }
+}
+//----------------------------------------------------------
+const compVnode = h(MyComponent) // h 函数的第一个参数是组件类
+render(compVnode, document.getElementById('app'))
+//----------------------------------------------------------
+function render(vnode, container) {
+  const prevVNode = container.vnode
+  if (prevVNode == null) {
+    if (vnode) {
+      // 没有旧的 VNode，只有新的 VNode。
+      // 使用 `mount` 函数挂载全新的 VNode
+      mount(vnode, container)
+      // 将新的 VNode 添加到 container.vnode 属性下，
+      // 这样下一次渲染时旧的 VNode 就存在了
+      container.vnode = vnode
+    }
+  } else {
+  // ...
+}
+//----------------------------------------------------------
+function mount(vnode, container, isSVG) {
+  // ...
+  } else if (flags & VNodeFlags.COMPONENT) {
+    // 挂载组件
+    mountComponent(vnode, container, isSVG)
+  } else if (flags & VNodeFlags.TEXT) {
+  // ...
+}
+//----------------------------------------------------------
+function mountComponent(vnode, container, isSVG) {
+  if (vnode.flags & VNodeFlags.COMPONENT_STATEFUL) {
+    mountStatefulComponent(vnode, container, isSVG)
+  } else {
+    mountFunctionalComponent(vnode, container, isSVG)
+  }
+}
+//----------------------------------------------------------
+// 挂载的4步
+function mountStatefulComponent(vnode, container, isSVG) {
+  // 创建组件实例
+  const instance = new vnode.tag()
+  // 渲染VNode
+  instance.$vnode = instance.render()
+  // 挂载
+  mount(instance.$vnode, container, isSVG)
+  // el 属性值 和 组件实例的 $el 属性都引用组件的根DOM元素
+  instance.$el = vnode.el = instance.$vnode.el
+}
+```
+如果组件的 render 返回的是一个片段(Fragment)，那么 instance.$el 和 vnode.el 引用的就是该片段的第一个DOM元素。
 
+### 挂载函数式组件和原理
+```js
+function MyFunctionalComponent() {
+  // 返回要渲染的内容描述，即 VNode
+  return h(
+    'div',
+    {
+      style: {
+        background: 'green'
+      }
+    },
+    [
+      h('span', null, '我是组件的标题1......'),
+      h('span', null, '我是组件的标题2......')
+    ]
+  )
+}
+// ...
+function mountFunctionalComponent(vnode, container, isSVG) {
+  // 获取 VNode
+  const $vnode = vnode.tag()
+  // 挂载
+  mount($vnode, container, isSVG)
+  // el 元素引用该组件的根元素
+  vnode.el = $vnode.el
+}
+```
 
 ## 更新patch
 渲染器除了将全新的 VNode 挂载```mount```成真实DOM之外，它的另外一个职责是负责对新旧 VNode 进行比对，并以合适的方式更新DOM，也就是我们常说的 patch。
