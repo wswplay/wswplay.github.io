@@ -50,7 +50,7 @@ module.exports = {
 // tools
 function getGuideSidebar (...cateName) {
   const collapsable = true
-  const [design, vscode, pageindex, basic, vue2, performance, vuecli, vuepress, vuerouter] = cateName
+  const [design, vscode, pageindex, basic, vue2, vue3, performance, vuecli, vuepress, vuerouter] = cateName
   return [
     {
       title: design,
@@ -66,6 +66,7 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'vscode/code-snippets',
+        'vscode/short-cut-key',
       ]
     },
     {
@@ -102,6 +103,15 @@ function getGuideSidebar (...cateName) {
         'vue2/compile',
         'vue2/diff',
         'vue2/mixin',
+      ]
+    },
+    {
+      title: vue3,
+      collapsable,
+      children: [
+        'vue3/renderer',
+        'vue3/composition-api',
+        'vue3/proxy',
       ]
     },
     {
