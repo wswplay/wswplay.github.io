@@ -12,6 +12,10 @@ title: 渲染器(render)
 Diff 算法是渲染器的核心特性之一，可以说正是 Diff 算法的存在才使得 Virtual DOM 如此成功。
 
 ### 渲染器的工作流程分为两个阶段：```mount``` 和 ```patch```。
+:::tip
+1. 组件通过h函数生成vnode，调用render函数，将vnode初次挂载(mount)真实的DOM。    
+2. 借助响应式更新，当数据发生改变时，更新(patch)渲染DOM。
+:::
 1. 如果旧的 VNode 存在，则会使用新的 VNode 与旧的 VNode 进行对比，试图以最小的资源开销完成 DOM 的更新，这个过程就叫 patch，或“打补丁”。
 2. 如果旧的 VNode 不存在，则直接将新的 VNode 挂载成全新的 DOM，这个过程叫做 mount。
 
@@ -261,7 +265,94 @@ function mountFunctionalComponent(vnode, container, isSVG) {
 
 更新的本质就是，对比新旧节点，即```diff```。对比首先就是类型对比，如果类型不同，直接替换。
 
-## 核心 ```Diff``` 算法
+### 基本原则和原理
+组件的更新本质上还是对真实DOM的更新，或者说是对标签元素的更新，所以我们就优先来看一下如何更新一个标签元素。
+```js
+function patch(prevVNode, nextVNode, container) {
+  // 分别拿到新旧 VNode 的类型，即 flags
+  const nextFlags = nextVNode.flags
+  const prevFlags = prevVNode.flags
+  // 检查新旧 VNode 的类型是否相同，如果类型不同，则直接调用 replaceVNode 函数替换 VNode
+  // 如果新旧 VNode 的类型相同，则根据不同的类型调用不同的比对函数
+  if (prevFlags !== nextFlags) {
+    replaceVNode(prevVNode, nextVNode, container)
+  } else if (nextFlags & VNodeFlags.ELEMENT) {
+    patchElement(prevVNode, nextVNode, container)
+  } else if (nextFlags & VNodeFlags.COMPONENT) {
+    patchComponent(prevVNode, nextVNode, container)
+  } else if (nextFlags & VNodeFlags.TEXT) {
+    patchText(prevVNode, nextVNode)
+  } else if (nextFlags & VNodeFlags.FRAGMENT) {
+    patchFragment(prevVNode, nextVNode, container)
+  } else if (nextFlags & VNodeFlags.PORTAL) {
+    patchPortal(prevVNode, nextVNode)
+  }
+```
+如果类型不同，则直接调用 replaceVNode 函数使用新的 VNode 替换旧的 VNode，否则根据不同的类型调用与之相符的比对函数。
+### 替换 VNode
+```js
+function replaceVNode(prevVNode, nextVNode, container) {
+  // 将旧的 VNode 所渲染的 DOM 从容器中移除
+  container.removeChild(prevVNode.el)
+  // 再把新的 VNode 挂载到容器中
+  mount(nextVNode, container)
+}
+```
+### 更新标签元素
+如果标签不同，那么直接替换。replaceVNode。    
+如果标签相同，那两个 VNode 之间的差异就只会出现在 VNodeData 和 children 上了。所以，对比去掉旧的data和children，添加新的data和children就可以了。
+
+#### 更新 VNodeData
+。。。
+#### 更新子节点
+。。。
+### 更新文本节点
+```js
+function patchText(prevVNode, nextVNode) {
+  // 拿到文本元素 el，同时让 nextVNode.el 指向该文本元素
+  const el = (nextVNode.el = prevVNode.el)
+  // 只有当新旧文本内容不一致时才有必要更新
+  if (nextVNode.children !== prevVNode.children) {
+    el.nodeValue = nextVNode.children
+  }
+}
+```
+### 更新 Fragment
+```js
+function patchFragment(prevVNode, nextVNode, container) {
+  // 直接调用 patchChildren 函数更新 新旧片段的子节点即可
+  patchChildren(
+    prevVNode.childFlags, // 旧片段的子节点类型
+    nextVNode.childFlags, // 新片段的子节点类型
+    prevVNode.children,   // 旧片段的子节点
+    nextVNode.children,   // 新片段的子节点
+    container
+  )
+  switch (nextVNode.childFlags) {
+    case ChildrenFlags.SINGLE_VNODE:
+      nextVNode.el = nextVNode.children.el
+      break
+    case ChildrenFlags.NO_CHILDREN:
+      nextVNode.el = prevVNode.el
+      break
+    default:
+      nextVNode.el = nextVNode.children[0].el
+  }
+}
+```
+### 更新 Portal
+挂载目标不同，就需要搬运el。
+
+### 更新有状态组件
+#### 主动更新
+所谓主动更新指的是组件自身的状态发生变化所导致的更新，例如组件的 data 数据发生了变化就必然需要重渲染。
+#### 被动更新
+除了自身状态之外，很可能还包含从父组件传递进来的外部状态(props)，像这种就叫做被动更新。
+
+### 更新函数式组件
+。。。概念有点绕啊
+
+## 核心 Diff 算法
 1. 减小DOM操作的性能开销
 2. 尽可能的复用 DOM 元素
 #### 同层比较
