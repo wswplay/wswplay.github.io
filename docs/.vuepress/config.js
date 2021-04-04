@@ -91,6 +91,7 @@ function getGuideSidebar (...cateName) {
         'basic/recursion',
         'basic/prototype',
         'basic/operators',
+        'basic/break-continue',
       ]
     },
     {

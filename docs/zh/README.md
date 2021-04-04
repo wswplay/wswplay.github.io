@@ -10,8 +10,8 @@ features:
   - title: What
     details: 是什么？
   - title: Where
-    details: 哪里用？
+    details: 哪里用？Vue用吗？
   - title: How
-    details: 怎么用？
+    details: 怎么用？Vue是怎么用的？
 footer: MIT Licensed | Copyright © 2021-present Xiao
 ---

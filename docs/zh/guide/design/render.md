@@ -353,12 +353,152 @@ function patchFragment(prevVNode, nextVNode, container) {
 。。。概念有点绕啊
 
 ## 核心 Diff 算法
-1. 减小DOM操作的性能开销
-2. 尽可能的复用 DOM 元素
+那什么才是核心的 Diff 算法呢？如图：
+![](http://hcysun.me/vue-design/assets/img/patch-children-3.06453ea2.png)
+### 1. 减小DOM操作的性能开销
+我们不应该总是遍历旧的 children，而是应该遍历新旧 children 中长度较短的那一个，这样我们能够做到尽可能多的应用 patch 函数进行更新。
+
+### 2. 尽可能的复用 DOM 元素
+在上一小节中，我们通过减少 DOM 操作的次数使得更新的性能得到了提升，但它仍然存在可优化的空间。
+#### key 的作用
+如果移动可以达成目的，那么应该怎么移动呢？那就需要有唯一值的映射关系。    
+没有 key 的情况下，我们是没办法知道新 children 中的节点是否可以在旧 children 中找到可复用的节点的。
+#### 找到需要移动的节点
+如果在寻找的过程中遇到的索引呈现递增趋势，则说明新旧 children 中节点顺序相同，不需要移动操作。相反的，如果在寻找的过程中遇到的索引值不呈现递增趋势，则说明需要移动操作。
+
+寻找过程中在旧 children 中所遇到的最大索引值。如果在后续寻找的过程中发现存在索引值比最大索引值小的节点，意味着该节点需要被移动。实际上，这就是 React 所使用的算法。
+#### 移动节点
+:::danger
+移动的是真实 DOM ，而非 VNode。
+:::
+![](http://hcysun.me/vue-design/assets/img/diff-react-2.e6cef98d.png)
+新 children 中的第一个节点是 li-c，它在旧 children 中的索引为 2，由于 li-c 是新 children 中的**第一个节点，所以它始终都是不需要移动的**，只需要调用 patch 函数更新即可。
+#### 添加新元素
+```js {22-25}
+let lastIndex = 0
+for (let i = 0; i < nextChildren.length; i++) {
+  const nextVNode = nextChildren[i]
+  let j = 0,
+    find = false
+  for (j; j < prevChildren.length; j++) {
+    const prevVNode = prevChildren[j]
+    if (nextVNode.key === prevVNode.key) {
+      find = true
+      patch(prevVNode, nextVNode, container)
+      if (j < lastIndex) {
+        // 需要移动
+        const refNode = nextChildren[i - 1].el.nextSibling
+        container.insertBefore(prevVNode.el, refNode)
+        break
+      } else {
+        // 更新 lastIndex
+        lastIndex = j
+      }
+    }
+  }
+  if (!find) {
+    // 挂载新节点
+    mount(nextVNode, container, false)
+  }
+}
+```
+#### 移除不存在的元素
+```js {14-26}
+let lastIndex = 0
+for (let i = 0; i < nextChildren.length; i++) {
+  const nextVNode = nextChildren[i]
+  let j = 0,
+    find = false
+  for (j; j < prevChildren.length; j++) {
+    // 省略...
+  }
+  if (!find) {
+    // 挂载新节点
+    // 省略...
+  }
+}
+// 移除已经不存在的节点
+// 遍历旧的节点
+for (let i = 0; i < prevChildren.length; i++) {
+  const prevVNode = prevChildren[i]
+  // 拿着旧 VNode 去新 children 中寻找相同的节点
+  const has = nextChildren.find(
+    nextVNode => nextVNode.key === prevVNode.key
+  )
+  if (!has) {
+    // 如果没有找到相同的节点，则移除
+    container.removeChild(prevVNode.el)
+  }
+}
+```
+:::tip
+以上就是 React 所采用的 Diff 算法。但该算法仍然存在可优化的空间。
+:::
+
+### 另一个思路 - 双端比较
+#### 双端比较的原理
+![](http://hcysun.me/vue-design/assets/img/diff-vue2-1.216b174f.png)
+React 的 diff 需要移动2次。而我们肉眼观察，实际上只需要移动1次，就能达到目的。
+
+**所谓双端比较，就是同时从新旧 children 的两端开始进行比较的一种方式**。所以我们需要四个索引值，分别指向新旧 children 的两端，如下图所示：
+![](http://hcysun.me/vue-design/assets/img/diff-vue2-3.933b8708.png)
+#### 双端比较的优势
+双端比较在移动 DOM 方面更具有普适性，不会因为 DOM 结构的差异而产生影响。
+#### 非理想情况的处理方式
+```js {10-15}
+while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
+  if (oldStartVNode.key === newStartVNode.key) {
+    // 省略...
+  } else if (oldEndVNode.key === newEndVNode.key) {
+    // 省略...
+  } else if (oldStartVNode.key === newEndVNode.key) {
+    // 省略...
+  } else if (oldEndVNode.key === newStartVNode.key) {
+    // 省略...
+  } else {
+    // 遍历旧 children，试图寻找与 newStartVNode 拥有相同 key 值的元素
+    const idxInOld = prevChildren.findIndex(
+      node => node.key === newStartVNode.key
+    )
+  }
+}
+```
+#### 添加新元素
+#### 移除不存在的元素
+:::tip Vue2的diff算法
+以上就是相对完整的双端比较算法的实现，这是 Vue2 所采用的算法，借鉴于开源项目：snabbdom，但最早采用双端比较算法的库是 citojs。
+:::
+
 #### 同层比较
 当新旧 VNode 标签类型相同时，只需要更新 VNodeData 和 children 即可，不会“移除”和“新建”任何 DOM 元素的，而是复用已有 DOM 元素。
 #### 有用的key
 遍历比较(React)和双端比较(Vue2)
 
-#### Vue3的 Diff 算法
-在 Vue3 中将采用另外一种核心 Diff 算法，它借鉴于 ivi 和 inferno。
+### Vue3的 Diff 算法 —— inferno
+在 Vue3 中将采用另外一种核心 Diff 算法，它借鉴于 [ivi](https://github.com/localvoid/ivi) 和 [inferno](https://github.com/infernojs/inferno)。
+
+但总体上的性能表现并不是单纯的由核心 Diff 算法来决定的，我们在前面章节的讲解中已经了解到的了一些优化手段，例如在**创建 VNode 时就确定其类型，以及在 mount/patch 的过程中采用位运算来判断一个 VNode 的类型，在这个基础之上再配合核心的 Diff 算法**，才使得性能上产生一定的优势，这也是 Vue3 接纳这种算法的原因之一。
+
+#### 相同的前置和后置元素
+在diff之前，会有一些预处理的过程，以避免diff算法低效频繁的执行。
+预处理的类型：
+1. 相等比较
+2. 相同的前缀和后缀
+那么是否可以把前缀和后缀的方法，也借鉴到diff算法中呢？可以。
+![](http://hcysun.me/vue-design/assets/img/diff7.df9450ee.png)
+```js
+if (j > prevEnd && j <= nextEnd) {
+  // j -> nextEnd 之间的节点应该被添加
+  const nextPos = nextEnd + 1
+  const refNode =
+    nextPos < nextChildren.length ? nextChildren[nextPos].el : null
+  while (j <= nextEnd) {
+    mount(nextChildren[j++], container, false, refNode)
+  }
+} else if (j > nextEnd) {
+  // j -> prevEnd 之间的节点应该被移除
+  while (j <= prevEnd) {
+    container.removeChild(prevChildren[j++].el)
+  }
+}
+```
