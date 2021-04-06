@@ -92,6 +92,7 @@ function getGuideSidebar (...cateName) {
         'basic/prototype',
         'basic/operators',
         'basic/break-continue',
+        'basic/promise',
       ]
     },
     {
@@ -113,6 +114,8 @@ function getGuideSidebar (...cateName) {
         'vue3/renderer',
         'vue3/composition-api',
         'vue3/proxy',
+        'vue3/computed',
+        'vue3/watch',
       ]
     },
     {
