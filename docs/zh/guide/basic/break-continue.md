@@ -9,7 +9,7 @@ continue，跳出本次循环。越过一个item，去往下一个item。还是�
 
 ## Label
 标记，用于跳出双重循环。放弃铁人三项，也不回家，直接蹦迪去了。:rocket:
-```js {4,13,21,30}
+```js {4,13,20,22,29,31}
 let num = 0, flag = 10;
 for(i = 0; i < flag; i++) {
   for(j= 0; j < flag; j++) {
@@ -28,6 +28,7 @@ for(i = 0; i < flag; i++) {
 }
 console.log(num) // 99
 
+// 下面我们启用 outer 标签
 outer: for(i = 0; i < flag; i++) {
   for(j= 0; j < flag; j++) {
     if(i === 5 && j === 5) break outer
