@@ -93,6 +93,7 @@ function getGuideSidebar (...cateName) {
         'basic/operators',
         'basic/break-continue',
         'basic/promise',
+        'basic/currying',
       ]
     },
     {
@@ -116,6 +117,8 @@ function getGuideSidebar (...cateName) {
         'vue3/proxy',
         'vue3/computed',
         'vue3/watch',
+        'vue3/life-cycle',
+        'vue3/component',
       ]
     },
     {
