@@ -506,4 +506,76 @@ if (j > prevEnd && j <= nextEnd) {
 实际上无论是 React 的 Diff 算法，还是 Vue2(snabbdom) 的 Diff 算法，其重点无非就是：判断是否有节点需要移动，以及应该如何移动和寻找出那些需要被添加或移除的节点，而本节我们所讲解的算法也不例外。
 
 #### DOM 移动的方式
+。。。。
+
+## 跨平台渲染器和自定义
+一个跨平台的渲染器应该至少包含两个可自定义的部分：
+1. 可自定义元素的增加、删除、查找等操作；
+2. 可自定义元素自身属性/特性的修改操作；
+
+渲染器render.js的核心代码结构如下：
+```js
+// 导出渲染器
+export default function render(vnode, container) { /* ... */ }
+
+// ========== 挂载 ==========
+
+function mount(vnode, container, isSVG, refNode) { /* ... */ }
+
+function mountElement(vnode, container, isSVG, refNode) { /* ... */ }
+
+function mountText(vnode, container) { /* ... */ }
+
+function mountFragment(vnode, container, isSVG) { /* ... */ }
+
+function mountPortal(vnode, container) { /* ... */ }
+
+function mountComponent(vnode, container, isSVG) { /* ... */ }
+
+function mountStatefulComponent(vnode, container, isSVG) { /* ... */ }
+
+function mountFunctionalComponent(vnode, container, isSVG) { /* ... */ }
+
+// ========== patch ==========
+
+function patch(prevVNode, nextVNode, container) { /* ... */ }
+
+function replaceVNode(prevVNode, nextVNode, container) { /* ... */ }
+
+function patchElement(prevVNode, nextVNode, container) { /* ... */ }
+
+function patchChildren(
+  prevChildFlags,
+  nextChildFlags,
+  prevChildren,
+  nextChildren,
+  container
+) { /* ... */ }
+
+function patchText(prevVNode, nextVNode) { /* ... */ }
+
+function patchFragment(prevVNode, nextVNode, container) { /* ... */ }
+
+function patchPortal(prevVNode, nextVNode) { /* ... */ }
+
+function patchComponent(prevVNode, nextVNode, container) { /* ... */ }
+
+// https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+function lis(arr) { /* ... */ }
+```
+一个最小且完整的元素定义应该包含以下属性：
+```js
+const customElement = {
+  type, // 元素的类型：ELEMENT ---> 标签元素；TEXT ---> 文本
+  tag, // 当 type === 'ELEMENT' 时，tag 属性为标签名字
+  parentNode, // 对父节点的引用
+  children, // 子节点
+  props,  // 当 type === 'ELEMENT' 时，props 中存储着元素的属性/特性
+  eventListeners,  // 当 type === 'ELEMENT' 时，eventListeners 中存储着元素的事件信息
+  text  // 当 type === 'TEXT' 时，text 存储着文本内容
+}
+```
+### 怎么建立元素间的父子关系
+让子元素的 parentNode 指向父元素，同时将子元素添加到父元素的 children 数组中即可。
+
 
