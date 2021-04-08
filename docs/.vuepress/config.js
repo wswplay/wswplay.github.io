@@ -94,6 +94,7 @@ function getGuideSidebar (...cateName) {
         'basic/break-continue',
         'basic/promise',
         'basic/currying',
+        'basic/with',
       ]
     },
     {
@@ -119,6 +120,12 @@ function getGuideSidebar (...cateName) {
         'vue3/watch',
         'vue3/life-cycle',
         'vue3/component',
+        'vue3/compile',
+        'vue3/directives',
+        'vue3/teleport',
+        'vue3/keep-alive',
+        'vue3/transition',
+        'vue3/router',
       ]
     },
     {
