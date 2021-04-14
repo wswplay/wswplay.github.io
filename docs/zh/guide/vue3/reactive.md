@@ -2,8 +2,6 @@
 title: 响应式系统
 ---
 ## Proxy
-## 数据代理
-
 ## Reactive API
 ```js
 function reactive (target) {

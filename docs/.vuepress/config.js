@@ -95,6 +95,8 @@ function getGuideSidebar (...cateName) {
         'basic/promise',
         'basic/currying',
         'basic/with',
+        'basic/proxy',
+        'basic/reflect'
       ]
     },
     {
@@ -116,7 +118,7 @@ function getGuideSidebar (...cateName) {
         'vue3/flow-chart',
         'vue3/renderer',
         'vue3/composition-api',
-        'vue3/proxy',
+        'vue3/reactive',
         'vue3/computed',
         'vue3/watch',
         'vue3/life-cycle',
