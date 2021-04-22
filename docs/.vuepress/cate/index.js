@@ -1,4 +1,5 @@
 module.exports = [
+  'AR/VR',
   'Design Art',
   'Vscode',
   '扉页',
@@ -8,5 +9,6 @@ module.exports = [
   '性能优化',
   'Vue CLI',
   'VuePress',
-  'VueRouter'
+  'VueRouter',
+  'Git'
 ]

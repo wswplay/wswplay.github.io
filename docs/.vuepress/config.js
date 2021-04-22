@@ -50,8 +50,15 @@ module.exports = {
 // tools
 function getGuideSidebar (...cateName) {
   const collapsable = true
-  const [design, vscode, pageindex, basic, vue2, vue3, performance, vuecli, vuepress, vuerouter] = cateName
+  const [avr, design, vscode, pageindex, basic, vue2, vue3, performance, vuecli, vuepress, vuerouter, git] = cateName
   return [
+    {
+      title: avr,
+      collapsable,
+      children: [
+        'avr/concept',
+      ]
+    },
     {
       title: design,
       collapsable,
@@ -163,6 +170,13 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'vuerouter/init',
+      ]
+    },
+    {
+      title: git,
+      collapsable,
+      children: [
+        'git/command',
       ]
     },
   ]
