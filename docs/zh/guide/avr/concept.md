@@ -22,6 +22,18 @@ WebGL 2.0基于OpenGL ES 3.0，确保了提供许多选择性的WebGL 1.0扩展�
 拿[three.js](https://github.com/mrdoob/three.js)来类比，three.js是基于WebGL的3D框架，集成webgl所有应用特点，还把3D概念都打包成类库，只要用javascript直接调用three.js的类库，一样支持webgl的3D绘图标准。    
 three.js是webgl的子集，却能够自己完成一个3D项目的开发，只要不是做技术研究，更为顶层的引擎无疑开发效率更高。
 
+## WebVR API 
+WebVR API 能为虚拟现实设备的渲染提供支持 — 例如像Oculus Rift或者HTC Vive 这样的头戴式设备与 Web apps 的连接。它能让开发者将位置和动作信息转换成3D场景中的运动。基于这项技术能产生很多有趣的应用, 比如虚拟的产品展示，可交互的培训课程，以及超强沉浸感的第一人称游戏。
+
+## 着色器语言GLSL ES
+着色器语言用于计算机图形编程，运行在GPU中，平时所说的大多数语言编写的程序都是运行在CPU中。 与OpenGL API相配合的是着色器语言GLSL，与OpenGL ES API、WebGL API相互配合的是着色器语言GLSL ES。**OpenGL标准应用的是客户端，OpenGL ES应用的是移动端，WebGL标准应用的是浏览器平台。**
+
+
+
+
+
+
+
 ### 问答
 1. VR看房技术，哪家做得最好？众趣科技？还是美象、未来场景？    
 以全球的角度来看，mp、众趣、如视这三家应该是第一序列的。但要说谁做的最好，应该是各有千秋吧。

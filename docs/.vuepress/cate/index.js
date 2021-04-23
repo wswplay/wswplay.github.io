@@ -10,5 +10,6 @@ module.exports = [
   'Vue CLI',
   'VuePress',
   'VueRouter',
-  'Git'
+  'Git',
+  'Linux',
 ]
