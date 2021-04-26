@@ -57,6 +57,7 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'avr/concept',
+        'avr/three',
       ]
     },
     {
