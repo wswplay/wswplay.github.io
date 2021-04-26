@@ -1,5 +1,6 @@
 module.exports = [
   'AR/VR',
+  'Three',
   'Design Art',
   'Vscode',
   '扉页',
