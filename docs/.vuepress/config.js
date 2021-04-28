@@ -50,7 +50,7 @@ module.exports = {
 // tools
 function getGuideSidebar (...cateName) {
   const collapsable = true
-  const [avr, three, design, vscode, pageindex, basic, vue2, vue3, performance, vuecli, vuepress, vuerouter, git, linux] = cateName
+  const [avr, three, design, vscode, pageindex, basic, vue2, vue3, performance, vuecli, vuepress, vuerouter, git, linux, mac] = cateName
   return [
     {
       title: avr,
@@ -195,6 +195,13 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'linux/command',
+      ]
+    },
+    {
+      title: mac,
+      collapsable,
+      children: [
+        'mac/short-cut-key',
       ]
     },
   ]

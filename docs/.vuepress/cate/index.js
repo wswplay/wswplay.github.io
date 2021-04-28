@@ -13,4 +13,5 @@ module.exports = [
   'VueRouter',
   'Git',
   'Linux',
+  'Mac'
 ]
