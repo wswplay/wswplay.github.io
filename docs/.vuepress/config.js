@@ -114,7 +114,8 @@ function getGuideSidebar (...cateName) {
         'basic/currying',
         'basic/with',
         'basic/proxy',
-        'basic/reflect'
+        'basic/reflect',
+        'basic/utils',
       ]
     },
     {
