@@ -122,6 +122,7 @@ function getGuideSidebar (...cateName) {
       title: vue2,
       collapsable,
       children: [
+        'vue2/vision',
         'vue2/data-driven',
         'vue2/componentization',
         'vue2/component-recursion',
