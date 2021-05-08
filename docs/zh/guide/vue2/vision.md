@@ -1,7 +1,14 @@
 ---
 title: 视野与格局
 ---
+## 开发范式和套路
 Vue总共12000+行代码，难道还看不完吗？
+
+框架，就是通过循环、递归，来构建、解构树形结构的过程。
+
+```Dep``` 和 ```Wather``` 就是相互添加吧。
+
+```Vnode``` 的树形结构，父子关系也是相互添加啊。
 
 ```js
 var emptyObject = Object.freeze({});
@@ -37,8 +44,13 @@ Vue.compile = compileToFunctions;
 
 哪些不可名具的变量和属性
 ```js
-// 占位符vnode？？
-vm._vnode = vnode; 
+// vm_render() 组件占位符vnode？？
+// this allows render functions to have access to the data on the placeholder node.
+vm.$vnode = _parentVnode;
+// vm_render() set parent
+vnode.parent = _parentVnode;
+// vm本身元素vnode？？最后的实体元素vnode
+vm._vnode = vnode;
 // 这是什么操作
 var componentVNodeHooks = {
   init: function init (vnode, hydrating) {},
@@ -46,4 +58,7 @@ var componentVNodeHooks = {
   insert: function insert (vnode) {},
   destroy: function destroy (vnode) {}
 };
+// 执行到这里，格局和视野
+var child = vnode.componentInstance = createComponentInstanceForVnode(vnode,activeInstance);
+child.$mount(hydrating ? vnode.elm : undefined, hydrating);
 ```
