@@ -183,6 +183,7 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'vuerouter/init',
+        'vuerouter/history',
       ]
     },
     {
