@@ -1,6 +1,9 @@
 ---
 title: 路由初始化
 ---
+
+路由始终会维护当前的线路，路由切换的时候会把当前线路切换到目标线路，切换过程中会执行一系列的导航守卫钩子函数，会更改 url，同样也会渲染对应的组件，切换完毕后会把目标线路更新替换当前线路，这样就会作为下一次的路径切换的依据。
+
 ## 简约流程
 ```js
 import VueRouter from 'vue-router'
@@ -8,8 +11,71 @@ Vue.use(VueRouter) -> install(Vue) {
   // 混入相关设置
   Vue.mixin({
     beforeCreate() {
-      this._router.init(this) -> VueRouter.prototype.init = function() {
-        
+      this._router.init(this) -> VueRouter.prototype.init
+      -> history.transitionTo() {
+        // 计算匹配route
+        var route = this.router.match(location, this.current)
+        -> VueRouter.prototype.match -> this.matcher.match
+        -> this.matcher = createMatcher() {
+          // 根据传入参数创建映射
+          var ref = createRouteMap(routes) {
+            routes.forEach(function (route) {
+              addRouteRecord(pathList, pathMap, nameMap, route) {
+                var record = {
+                  path: normalizedPath,
+                  regex: compileRouteRegex(normalizedPath, pathToRegexpOptions),
+                  components: route.components || { default: route.component },
+                  instances: {},
+                  name: name,
+                  parent: parent,
+                  matchAs: matchAs,
+                  redirect: route.redirect,
+                  beforeEnter: route.beforeEnter,
+                  meta: route.meta || {},
+                  props:
+                    route.props == null
+                      ? {}
+                      : route.components
+                        ? route.props
+                        : { default: route.props }
+                };
+                if (!pathMap[record.path]) {
+                  pathList.push(record.path);
+                  pathMap[record.path] = record;
+                }
+              }
+            });
+            return { pathList,pathMap,nameMap }
+          }
+          // 创建动态添加路由 的功能方法
+          function addRoutes (routes) {
+            createRouteMap(routes, pathList, pathMap, nameMap);
+          }
+          // 这里这里this.router.match
+          function match() {} -> _createRoute -> createRoute -> return Object.freeze(route);
+          // 确认切换
+          this.confirmTransition -> History.prototype.confirmTransition() {
+            // 导航守卫
+            var queue = [].concat(
+              // in-component leave guards
+              extractLeaveGuards(deactivated),
+              // global before hooks
+              this.router.beforeHooks,
+              // in-component update hooks
+              extractUpdateHooks(updated),
+              // in-config enter guards
+              activated.map(function (m) { return m.beforeEnter; }),
+              // async components
+              resolveAsyncComponents(activated)
+            );
+            var iterator = function (hook, next) {}
+            runQueue(queue, iterator, fn) {
+              // 那些被省略的代码...
+              // 递归
+              runQueue(queue, iterator, fn) {}
+            }
+          }
+        }
       }
     },
     destroyed() {}
@@ -36,7 +102,29 @@ const router = new VueRouter({
   this.matcher = createMatcher(options.routes || [], this)
 }
 ```
-## Vue.use
+
+## url
+当我们点击 router-link 的时候，实际上最终会执行 router.push
+```js
+VueRouter.prototype.push -> this.history.push()
+-> HashHistory.prototype.push() {
+  this.transitionTo(location, function (route) {
+      pushHash(route.fullPath) -> pushState() {
+        replace ? history.replaceState : history.pushState
+      }
+      handleScroll(this$1.router, route, fromRoute, false);
+      onComplete && onComplete(route);
+    },
+    onAbort
+  );
+}
+```
+
+## 组件
+路由最终的渲染离不开组件，Vue-Router 内置了 ```<router-view>``` 组件
+
+## 参考
+#### Vue.use
 VueRouter做为一个Vue的插件调用，通常备有install方法。
 ```js
 // vue.js
@@ -60,6 +148,3 @@ function initUse (Vue) {
   };
 }
 ```
-## new VueRouter
-
-## Vue.mixin
