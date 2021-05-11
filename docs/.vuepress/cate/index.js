@@ -7,10 +7,11 @@ module.exports = [
   '基础知识',
   'Vue2.x',
   'Vue3.x',
+  'VueRouter',
+  'Vuex',
   '性能优化',
   'Vue CLI',
   'VuePress',
-  'VueRouter',
   'Git',
   'Linux',
   'Mac'

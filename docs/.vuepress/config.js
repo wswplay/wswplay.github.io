@@ -6,12 +6,12 @@ module.exports = {
   locales: {
     '/': {
       lang: 'en-US',
-      title: 'js边城',
-      description: 'js边城'
+      title: 'JavaScript边城',
+      description: 'JavaScript边城'
     },
     '/zh/': {
       lang: 'zh-CN',
-      title: 'js边城',
+      title: 'JavaScript边城',
       description: 'JavaScript基础知识,Vue源码解读等。',
     }
   },
@@ -50,7 +50,7 @@ module.exports = {
 // tools
 function getGuideSidebar (...cateName) {
   const collapsable = true
-  const [avr, three, design, vscode, pageindex, basic, vue2, vue3, performance, vuecli, vuepress, vuerouter, git, linux, mac] = cateName
+  const [avr, three, design, vscode, pageindex, basic, vue2, vue3, vuerouter, vuex, performance, vuecli, vuepress, git, linux, mac] = cateName
   return [
     {
       title: avr,
@@ -152,6 +152,21 @@ function getGuideSidebar (...cateName) {
       ]
     },
     {
+      title: vuerouter,
+      collapsable,
+      children: [
+        'vuerouter/init',
+        'vuerouter/history',
+      ]
+    },
+    {
+      title: vuex,
+      collapsable,
+      children: [
+        'vuex/init',
+      ]
+    },
+    {
       title: performance,
       collapsable,
       children: [
@@ -162,6 +177,7 @@ function getGuideSidebar (...cateName) {
       title: vuecli,
       collapsable,
       children: [
+        'vuecli/init',
         'vuecli/cli-service',
         'vuecli/browser-compatibility',
         'vuecli/html-static-assets',
@@ -176,14 +192,6 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'vuepress/setting',
-      ]
-    },
-    {
-      title: vuerouter,
-      collapsable,
-      children: [
-        'vuerouter/init',
-        'vuerouter/history',
       ]
     },
     {
