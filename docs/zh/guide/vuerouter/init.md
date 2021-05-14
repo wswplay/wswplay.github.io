@@ -19,15 +19,32 @@ VueRouter {
 ### transitionTo
 history.transitionTo 改变、更新路由的方法。
 ```js
+// 触发transitionTo的任一源头
 VueRouter.prototype.init
-history.push
-history.replace
+Hashhistory.push
+Hashhistory.replace
 VueRouter.prototype.addRoute
 VueRouter.prototype.addRoutes
 history.setupListeners() {
   let handleRoutingEvent = function() {}
   window.addEventListener('popstate', handleRoutingEvent)
 }
+// 改变url
+window.history.replaceState()
+window.history.pushState
+
+// 更新视图原理和流程
+// 建立响应式
+Vue.util.defineReactive(this, '_route', this._router.history.current);
+Object.defineProperty(Vue.prototype, '$route', {
+  get: function get () { return this._routerRoot._route }
+});
+// getter添加<router-view>的渲染Wather
+var route = parent.$route;
+// setter，触发更新
+this$1.apps.forEach(function (app) {
+  app._route = route;
+});
 ```
 ```js
 // 启动路由
