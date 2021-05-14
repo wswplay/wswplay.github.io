@@ -5,7 +5,7 @@ title: 路由初始化
 路由始终会维护当前的线路，路由切换的时候会把当前线路切换到目标线路，切换过程中会执行一系列的导航守卫钩子函数，会更改 url，同样也会渲染对应的组件，切换完毕后会把目标线路更新替换当前线路，这样就会作为下一次的路径切换的依据。
 
 ## 思路
-new VueRouter 本质上就是往实例对象 this 上挂载属性。如matcher、history属性。
+new VueRouter 本质上就是往实例对象 this 上挂载属性。如最重要的matcher、history属性。
 ```js
 VueRouter {
   matcher: {
@@ -14,6 +14,19 @@ VueRouter {
   history: {
     current: {}
   }
+}
+```
+### transitionTo
+history.transitionTo 改变、更新路由的方法。
+```js
+VueRouter.prototype.init
+history.push
+history.replace
+VueRouter.prototype.addRoute
+VueRouter.prototype.addRoutes
+history.setupListeners() {
+  let handleRoutingEvent = function() {}
+  window.addEventListener('popstate', handleRoutingEvent)
 }
 ```
 ```js
