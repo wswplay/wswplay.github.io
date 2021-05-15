@@ -5,7 +5,7 @@ title: 工具类
 ```js
 const hasChanged = (value, oldValue) => value !== oldValue && (value === value || oldValue === oldValue);
 ```
-## 判断是否undefined
+## void 0判断是否undefined
 如下，void 0 和 undefined是相等的。 为什么要这么用？
 1. 为了防止undefined被改写，造成判断失效。
 2. void 0代替undefined省3个字节。

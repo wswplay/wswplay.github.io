@@ -31,7 +31,7 @@ history.setupListeners() {
 }
 // 改变url
 window.history.replaceState()
-window.history.pushState
+window.history.pushState()
 
 // 更新视图原理和流程
 // 建立响应式
