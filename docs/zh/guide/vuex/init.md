@@ -1,6 +1,7 @@
 ---
 title: 初始化
 ---
+这里面有各种回调，有种JQuery的既视感。
 ```js
 import Vuex from 'vuex'
 Vue.use(Vuex) -> function install (_Vue) {
@@ -55,9 +56,26 @@ export default new Vuex.Store({
   installModule(this, state, [], this._modules.root)
   -> var namespace = store._modules.getNamespace(path)
      var local = module.context = makeLocalContext(store, namespace, path)
+    module.forEachMutation((mutation, key) => {
+      const namespacedType = namespace + key
+      registerMutation(store, namespacedType, mutation, local)
+    })
+    module.forEachAction((action, key) => {
+      const type = action.root ? key : namespace + key
+      const handler = action.handler || action
+      registerAction(store, type, handler, local)
+    })
+    module.forEachGetter((getter, key) => {
+      const namespacedType = namespace + key
+      registerGetter(store, namespacedType, getter, local)
+    })
+    module.forEachChild((child, key) => {
+      installModule(store, rootState, path.concat(key), child, hot)
+    })
   // 初始化 store._vm
   resetStoreVM(this, state) {
     const computed = {}
+    const wrappedGetters = store._wrappedGetters
     forEachValue(wrappedGetters, (fn, key) => {
       computed[key] = partial(fn, store)
       Object.defineProperty(store.getters, key, {
@@ -71,6 +89,10 @@ export default new Vuex.Store({
       },
       computed
     })
+  }
+  // 观察state
+  get state () {
+    return this._vm._data.$$state
   }
 }
 ```
