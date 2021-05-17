@@ -1,12 +1,31 @@
-function sum() {
-  let res = 0
-  for (let i = 0; i < arguments.length; i++) {
-    res += parseFloat(arguments[i]) || 0
+const state = {
+  world: {
+    name: '世界',
+    china: {
+      name: '中国',
+      vue: {
+        name: 'Vue'
+      }
+    }
   }
-  return Number(res.toFixed(1))
 }
+const path = ['world', 'china']
+let cname = path.reduce((res, item) => res[item], state)
+// console.log('name=== ', cname)
 
-console.log(sum(1, 2, 3, 4, 5))
-console.log(sum(5, null, 5))
-console.log(sum('1.0', false, 1, true, 1, 'A', 1, 'B', 1))
-console.log(sum(0.1, 0.2))
+
+function logger({name = 'xiao', address = 'shenzhen'} = {}) {
+  return state => {
+    if(state.world.china) {
+      console.log(`我看看${name} ${address}`)
+    } else {
+      console.log('暂无数据')
+    }
+  }
+}
+logger()(state)
+
+function miao(...arg) {
+  console.log('arg', arg)
+}
+miao(6, 66, 699)

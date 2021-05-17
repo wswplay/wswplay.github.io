@@ -50,12 +50,27 @@ export default new Vuex.Store({
       var parent = this.get(path.slice(0, -1));
       parent.addChild(path[path.length - 1], newModule);
     }
+  }
   // 安装模块
   installModule(this, state, [], this._modules.root)
   -> var namespace = store._modules.getNamespace(path)
      var local = module.context = makeLocalContext(store, namespace, path)
   // 初始化 store._vm
-  resetStoreVM(this, state);
+  resetStoreVM(this, state) {
+    const computed = {}
+    forEachValue(wrappedGetters, (fn, key) => {
+      computed[key] = partial(fn, store)
+      Object.defineProperty(store.getters, key, {
+        get: () => store._vm[key],
+        enumerable: true // for local getters
+      })
+    })
+    store._vm = new Vue({
+      data: {
+        $$state: state
+      },
+      computed
+    })
   }
 }
 ```

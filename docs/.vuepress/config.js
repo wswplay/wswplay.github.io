@@ -116,6 +116,7 @@ function getGuideSidebar (...cateName) {
         'basic/proxy',
         'basic/reflect',
         'basic/utils',
+        'basic/rest',
       ]
     },
     {
