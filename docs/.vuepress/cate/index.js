@@ -12,6 +12,7 @@ module.exports = [
   '性能优化',
   'Vue CLI',
   'VuePress',
+  'Webpack',
   'Vite',
   'Git',
   'Linux',
