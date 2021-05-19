@@ -33,6 +33,12 @@ const webpack = (options, callback) => {
             constructor() {
 
             }
+            compile(callback) {
+              this.hooks.beforeCompile.callAsync(params, err => {
+                const compilation = this.newCompilation(params)
+                this.hooks.make.callAsync(compilation, err => {}
+              })
+            },
             run(callback) {
               const run = () => {
                 this.hooks.beforeRun.callAsync(this, err => {

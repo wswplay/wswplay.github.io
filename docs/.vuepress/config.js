@@ -50,7 +50,7 @@ module.exports = {
 // tools
 function getGuideSidebar (...cateName) {
   const collapsable = true
-  const [avr, three, design, vscode, pageindex, basic, vue2, vue3, vuerouter, vuex, performance, vuecli, vuepress, webpack, vite, git, linux, mac, tools] = cateName
+  const [avr, three, design, vscode, pageindex, basic, vue2, vue3, vuerouter, vuex, performance, node, vuecli, vuepress, webpack, vite, git, linux, mac, tools] = cateName
   return [
     {
       title: avr,
@@ -186,6 +186,13 @@ function getGuideSidebar (...cateName) {
         'vuecli/webpack',
         'vuecli/mode-and-env',
         'vuecli/deployment',
+      ]
+    },
+    {
+      title: node,
+      collapsable,
+      children: [
+        'node/init',
       ]
     },
     {

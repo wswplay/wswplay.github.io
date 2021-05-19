@@ -10,6 +10,7 @@ module.exports = [
   'VueRouter',
   'Vuex',
   '性能优化',
+  'Node',
   'Vue CLI',
   'VuePress',
   'Webpack',
