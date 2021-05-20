@@ -206,6 +206,7 @@ function getGuideSidebar (...cateName) {
       title: webpack,
       collapsable,
       children: [
+        'webpack/debugger',
         'webpack/init',
       ]
     },
