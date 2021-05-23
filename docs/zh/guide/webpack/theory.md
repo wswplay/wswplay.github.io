@@ -22,3 +22,9 @@ class SyncHook{
 ```js
 compiler.hooks.someHook.tap(/* ... */);
 ```
+
+:::tip
+Compiler：该类是webpack的神经中枢，一方面所有的配置数据都存储在该实例上，另一方面它是在构建过程中控制整个大体的流程。
+
+Compilation：该类是webpack的cto，所有的构建过程中产生的构建数据都存储在该对象上，它掌控着构建过程中每一个细节流程。
+:::

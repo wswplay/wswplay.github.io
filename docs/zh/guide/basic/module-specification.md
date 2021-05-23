@@ -1,5 +1,5 @@
 ---
-title: 模块规范
+title: 模块化规范
 ---
 ## CommonJS
 CommonJS 采用同步加载模块，主要运行于服务器端，Node.js 为主要实践者。
