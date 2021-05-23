@@ -85,6 +85,7 @@ function getGuideSidebar (...cateName) {
       children: [
         'vscode/code-snippets',
         'vscode/short-cut-key',
+        'vscode/search',
       ]
     },
     {
@@ -117,6 +118,7 @@ function getGuideSidebar (...cateName) {
         'basic/reflect',
         'basic/utils',
         'basic/rest',
+        'basic/iife',
       ]
     },
     {
@@ -206,6 +208,7 @@ function getGuideSidebar (...cateName) {
       title: webpack,
       collapsable,
       children: [
+        'webpack/theory',
         'webpack/debugger',
         'webpack/init',
       ]
