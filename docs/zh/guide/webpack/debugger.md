@@ -20,7 +20,7 @@ module.exports = {
   "build": "webpack --config webpack.config.js",
   "debugger": "node --inspect-brk ./node_modules/webpack/bin/webpack.js --config webpack.config.js",
 }
-// 5.执行debuuger命令，开始调试
+// 5.执行debugger命令，开始调试
 npm run debugger
 ```
 ### 参考

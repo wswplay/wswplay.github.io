@@ -211,6 +211,7 @@ function getGuideSidebar (...cateName) {
         'webpack/theory',
         'webpack/debugger',
         'webpack/init',
+        'webpack/tapable',
       ]
     },
     {
