@@ -8,3 +8,17 @@ title: 快捷键
 
 ## 刷新网页
 Command+R
+
+## 删除/usr/bin中的文件
+其实是自从OS X 10.11的El Captain开始引入的一个系统安全功能，叫做系统完整性保护，英文是System Integrity Protection，简称SIP。    
+有个这个保护之后，你就无法更改系统文件，即使你sudo获取root权限，也没有权限。    
+```bash
+# 查看SIP是否启用，默认为启用状态。
+csrutil status # System Integrity Protection status: enabled.
+```
+怎么办？那就禁止SIP先。
+:::tip
+1. 开机时，按住Command + R键，会进入到Mac系统恢复界面。
+2. 点击顶部 实用工具 -> 终端 输入命令``csrutil disable`` -> enter执行命令，会返回Successfully disabled System Integrity Protection. Please restart the machine for the changes to take effect，重启电脑。即设置成功，此时你可以随心所欲的删除/usr/bin中的文件了。
+3. 如何恢复保护？执行第1步，第2步输入```csrutil enable``` -> enter命令，重启后恢复保护。
+:::
