@@ -195,6 +195,7 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'node/init',
+        'node/exports',
       ]
     },
     {
