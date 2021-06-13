@@ -1,6 +1,10 @@
 ---
 title: 命令
 ---
+## 查看配置信息
+```bash
+git config --list
+```
 ## 只clone某个文件夹
 ```bash
 git init test && cd test     #新建仓库并进入文件夹
