@@ -248,6 +248,7 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'tools/yarn',
+        'tools/python',
       ]
     }
   ]
