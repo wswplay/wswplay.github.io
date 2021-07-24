@@ -249,6 +249,7 @@ function getGuideSidebar (...cateName) {
       children: [
         'tools/yarn',
         'tools/python',
+        'tools/npm',
       ]
     }
   ]

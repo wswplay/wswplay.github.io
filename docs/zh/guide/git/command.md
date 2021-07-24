@@ -20,3 +20,12 @@ git remote -v
 # git remote set-url --add <name> <url> 即可
 git remote set-url --add origin https://github.com/xxx/xxx
 ```
+## 项目内设置 git对文件名 大小写敏感
+默认为不敏感，当文件名只是更改大小写时，git无法识别更新，导致报错。
+```bash
+# 查看忽略的设置
+git config --get core.ignorecase
+# 设置大小写敏感
+git config core.ignorecase false
+```
+
