@@ -250,6 +250,7 @@ function getGuideSidebar (...cateName) {
         'tools/yarn',
         'tools/python',
         'tools/npm',
+        'tools/axios',
       ]
     }
   ]
