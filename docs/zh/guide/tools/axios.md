@@ -1,9 +1,10 @@
 ---
 title: Axios
 ---
+[Axios官网](https://axios-http.com/zh/docs/intro)
 ### 创建一个请求实例
 ```js
-const instance = axios.create({
+const RequestService = axios.create({
   baseURL: 'https://some-domain.com/api/',
   timeout: 1000,
   headers: {'X-Custom-Header': 'foobar'}
@@ -47,3 +48,50 @@ const instance = axios.create({
   },
 }
 ```
+### 拦截器
+在请求或响应被 then 或 catch 处理前拦截它们。
+```js
+// 添加请求拦截器
+RequestService.interceptors.request.use(function (config) {
+  // 在发送请求之前做些什么
+  return config;
+}, function (error) {
+  // 对请求错误做些什么
+  return Promise.reject(error);
+});
+
+// 添加响应拦截器
+RequestService.interceptors.response.use(function (response) {
+  // 2xx 范围内的状态码都会触发该函数。
+  // 对响应数据做点什么
+  return response;
+}, function (error) {
+  // 超出 2xx 范围的状态码都会触发该函数。
+  // 对响应错误做点什么
+  return Promise.reject(error);
+});
+```
+移除拦截器
+```js
+const myInterceptor = instance.interceptors.request.use(function () {/*...*/});
+axios.interceptors.request.eject(myInterceptor);
+```
+### 取消请求(场景：快速点击Tab标签)
+也可以通过传递一个 executor 函数到 CancelToken 的构造函数来创建一个 cancel token：
+```js
+const CancelToken = axios.CancelToken;
+let cancel;
+axios.get('/user/12345', {
+  cancelToken: new CancelToken(function executor(c) {
+    // executor 函数接收一个 cancel 函数作为参数
+    cancel = c;
+  })
+});
+// 取消请求
+cancel();
+```
+
+
+
+
+
