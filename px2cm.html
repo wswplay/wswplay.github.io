@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+</body>
+<script>
+  // 72像素/英寸=28.346像素/厘米
+  // 300像素/英寸=118.11像素/厘米
+  // 1 厘米＝0.3937 英寸
+  // 1 英寸＝2.54 厘米
+  
+  function getOneMmsPx() {
+    // 创建一个1mm宽的元素插入到页面，然后坐等出结果
+    let div = document.createElement("div");
+    div.id = "mm";
+    // div.style.width = "1cm";
+    div.style.width = "calc(1cm * 2.54)";
+    div.style.height = "1cm";
+    div.style.backgroundColor = "red";
+    document.querySelector("body").appendChild(div);
+    // 原生方法获取浏览器对元素的计算值
+    let mm1 = document.getElementById("mm").getBoundingClientRect();
+    console.log(mm1);
+    return mm1.width;
+  }
+  getOneMmsPx();
+  function js_getDPI() {
+    var arrDPI = new Array();
+    if ( window.screen.deviceXDPI != undefined ) {
+      arrDPI[0] = window.screen.deviceXDPI;
+      arrDPI[1] = window.screen.deviceYDPI;
+    }
+    else {
+      var tmpNode = document.createElement( "DIV" );
+      tmpNode.style.cssText = "width:1in;height:1in;z-index:99;visibility:'';background-color:blue";
+      document.body.appendChild( tmpNode );
+      arrDPI[0] = parseInt( tmpNode.offsetWidth );
+      arrDPI[1] = parseInt( tmpNode.offsetHeight );
+      // tmpNode.parentNode.removeChild( tmpNode );
+    }
+    return arrDPI;
+  }
+  console.log('js_getDPI', js_getDPI());
+</script>
+</html>
