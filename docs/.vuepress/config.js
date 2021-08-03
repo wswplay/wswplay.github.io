@@ -251,6 +251,8 @@ function getGuideSidebar (...cateName) {
         'tools/python',
         'tools/npm',
         'tools/axios',
+        'tools/style',
+        'tools/html',
       ]
     }
   ]
