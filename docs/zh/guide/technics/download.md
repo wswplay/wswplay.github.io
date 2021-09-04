@@ -12,7 +12,7 @@ function downALinkElement(url) {
   document.body.appendChild(a).click();
   document.body.removeChild(a);
 }
-// 文件流下载 Blob
+// 文件流下载：例如Blob
 function downBlobFile (content, filename) {
   // 创建隐藏的可下载链接
   var eleLink = document.createElement('a');
