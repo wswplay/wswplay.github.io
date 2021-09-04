@@ -5,6 +5,7 @@ module.exports = [
   'Vscode',
   '扉页',
   '基础知识',
+  '业务技巧',
   'Vue2.x',
   'Vue3.x',
   'VueRouter',
