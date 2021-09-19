@@ -201,6 +201,7 @@ function getGuideSidebar (...cateName) {
       title: node,
       collapsable,
       children: [
+        'node/nvm',
         'node/init',
         'node/exports',
       ]
