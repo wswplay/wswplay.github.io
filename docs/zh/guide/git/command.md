@@ -28,4 +28,8 @@ git config --get core.ignorecase
 # 设置大小写敏感
 git config core.ignorecase false
 ```
+## 只提交修改的内容
+```bash
+git add -u
+```
 

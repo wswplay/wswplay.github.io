@@ -119,6 +119,7 @@ function getGuideSidebar (...cateName) {
         'basic/utils',
         'basic/rest',
         'basic/iife',
+        'basic/es6',
       ]
     },
     {
