@@ -53,24 +53,6 @@ function getGuideSidebar (...cateName) {
   const [avr, three, design, vscode, pageindex, basic, technics, vue2, vue3, vuerouter, vuex, performance, node, vuecli, vuepress, webpack, vite, git, linux, mac, tools] = cateName
   return [
     {
-      title: avr,
-      collapsable,
-      children: [
-        'avr/concept',
-        'avr/three',
-      ]
-    },
-    {
-      title: three,
-      collapsable,
-      children: [
-        'three/vertex',
-        'three/material',
-        'three/light',
-        'three/group',
-      ]
-    },
-    {
       title: design,
       collapsable,
       children: [
@@ -80,53 +62,11 @@ function getGuideSidebar (...cateName) {
       ]
     },
     {
-      title: vscode,
+      title: performance,
       collapsable,
       children: [
-        'vscode/code-snippets',
-        'vscode/short-cut-key',
-        'vscode/search',
-      ]
-    },
-    {
-      title: pageindex,
-      collapsable,
-      children: [
-        '',
-      ]
-    },
-    {
-      title: basic,
-      collapsable,
-      children: [
-        'basic/memory-stack',
-        'basic/data-type',
-        'basic/data-structures',
-        'basic/algorithm',
-        'basic/process-thread',
-        'basic/tcp-http',
-        'basic/module-specification',
-        'basic/closure',
-        'basic/recursion',
-        'basic/prototype',
-        'basic/operators',
-        'basic/break-continue',
-        'basic/promise',
-        'basic/currying',
-        'basic/with',
-        'basic/proxy',
-        'basic/reflect',
-        'basic/utils',
-        'basic/rest',
-        'basic/iife',
-        'basic/es6',
-      ]
-    },
-    {
-      title: technics,
-      collapsable,
-      children: [
-        'technics/download',
+        'performance/secondly-open-first-screen',
+        'performance/compile',
       ]
     },
     {
@@ -163,6 +103,74 @@ function getGuideSidebar (...cateName) {
       ]
     },
     {
+      title: basic,
+      collapsable,
+      children: [
+        'basic/memory-stack',
+        'basic/data-type',
+        'basic/data-structures',
+        'basic/algorithm',
+        'basic/process-thread',
+        'basic/tcp-http',
+        'basic/module-specification',
+        'basic/closure',
+        'basic/recursion',
+        'basic/prototype',
+        'basic/operators',
+        'basic/break-continue',
+        'basic/promise',
+        'basic/currying',
+        'basic/with',
+        'basic/proxy',
+        'basic/reflect',
+        'basic/utils',
+        'basic/rest',
+        'basic/iife',
+        'basic/es6',
+      ]
+    },
+    {
+      title: avr,
+      collapsable,
+      children: [
+        'avr/concept',
+        'avr/three',
+      ]
+    },
+    {
+      title: three,
+      collapsable,
+      children: [
+        'three/vertex',
+        'three/material',
+        'three/light',
+        'three/group',
+      ]
+    },
+    {
+      title: vscode,
+      collapsable,
+      children: [
+        'vscode/code-snippets',
+        'vscode/short-cut-key',
+        'vscode/search',
+      ]
+    },
+    {
+      title: pageindex,
+      collapsable,
+      children: [
+        '',
+      ]
+    },
+    {
+      title: technics,
+      collapsable,
+      children: [
+        'technics/download',
+      ]
+    },
+    {
       title: vuerouter,
       collapsable,
       children: [
@@ -175,13 +183,6 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'vuex/init',
-      ]
-    },
-    {
-      title: performance,
-      collapsable,
-      children: [
-        'performance/secondly-open-first-screen',
       ]
     },
     {
