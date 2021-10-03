@@ -30,5 +30,5 @@ ref如果放在for循环里面，且取值不是变量，那```$refs.xxx```是�
 父beforeDestroy->子beforeDestroy->子destroyed->父destroyed
 
 ## 兄弟组件怎么通信
-### 1、依赖注入(provide/inject)，尤其是非SPA，更加适合；
+### 1、依赖注入(provide/inject)，尤其是非SPA，更加适用；
 ### 2、Vuex；

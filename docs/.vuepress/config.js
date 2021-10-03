@@ -206,6 +206,7 @@ function getGuideSidebar (...cateName) {
         'node/nvm',
         'node/init',
         'node/exports',
+        'node/path',
       ]
     },
     {

@@ -32,4 +32,9 @@ git config core.ignorecase false
 ```bash
 git add -u
 ```
+## 创建没有父节点的分支
+```bash
+# 把文件全部删除，就变成空白分支了啊
+git checkout --orphan branchName
+```
 
