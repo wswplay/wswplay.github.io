@@ -37,4 +37,11 @@ git add -u
 # 把文件全部删除，就变成空白分支了啊
 git checkout --orphan branchName
 ```
-
+## .gitignore文件改动，无效果
+```bash
+# 清空缓存
+git rm -r --cached .
+# 重新添加
+git add .
+#就能看到效果了
+```
