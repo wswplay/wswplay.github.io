@@ -264,6 +264,7 @@ function getGuideSidebar (...cateName) {
         'tools/axios',
         'tools/style',
         'tools/html',
+        'tools/browser',
       ]
     }
   ]
