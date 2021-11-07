@@ -183,6 +183,7 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'vuex/init',
+        'vuex/question',
       ]
     },
     {
