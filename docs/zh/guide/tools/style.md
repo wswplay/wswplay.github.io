@@ -50,7 +50,7 @@ pluginOptions: {
 .MarginCollapse {
   &::before {
     content: "";
-    display: inline-block;
+    display: inline-block; // 这里至关重要
   }
 }
 ```
