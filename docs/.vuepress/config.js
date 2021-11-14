@@ -50,8 +50,15 @@ module.exports = {
 // tools
 function getGuideSidebar (...cateName) {
   const collapsable = true
-  const [avr, three, design, vscode, pageindex, basic, technics, vue2, vue3, vuerouter, vuex, performance, node, vuecli, vuepress, webpack, vite, git, linux, mac, tools] = cateName
+  const [question, avr, three, design, vscode, pageindex, basic, technics, vue2, vue3, vuerouter, vuex, performance, node, vuecli, vuepress, webpack, vite, git, linux, mac, tools] = cateName
   return [
+    {
+      title: question,
+      collapsable,
+      children: [
+        'question/bank',
+      ]
+    },
     {
       title: design,
       collapsable,
