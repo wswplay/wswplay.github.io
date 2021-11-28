@@ -60,6 +60,13 @@ function getGuideSidebar (...cateName) {
       ]
     },
     {
+      title: technics,
+      collapsable,
+      children: [
+        'technics/download',
+      ]
+    },
+    {
       title: design,
       collapsable,
       children: [
@@ -168,13 +175,6 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         '',
-      ]
-    },
-    {
-      title: technics,
-      collapsable,
-      children: [
-        'technics/download',
       ]
     },
     {

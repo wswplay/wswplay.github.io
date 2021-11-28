@@ -13,12 +13,12 @@ title: ECMAScript 6.0
 将多维数组 转为 一维数组
 ```js
 const arr = [[0, 1], [2, 3], [4,[5,6,7]]]
-const newArr = (arr) => {
+const multDimenToOne = (arr) => {
    return arr.reduce((pre, cur) => {
-     return pre.concat(Array.isArray(cur) ? newArr(cur) : cur);
+     return pre.concat(Array.isArray(cur) ? multDimenToOne(cur) : cur);
    }, []);
 }
-console.log(newArr(arr)); //[0, 1, 2, 3, 4, 5, 6, 7]
+console.log(multDimenToOne(arr)); //[0, 1, 2, 3, 4, 5, 6, 7]
 ```
 将一维数组 转为 二维数组
 ```js
