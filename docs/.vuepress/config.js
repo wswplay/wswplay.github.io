@@ -64,6 +64,7 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'technics/download',
+        'technics/transdata',
       ]
     },
     {
