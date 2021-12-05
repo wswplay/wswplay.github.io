@@ -5,6 +5,22 @@ title: 命令
 ```bash
 git config --list
 ```
+## 设置用户名和邮箱
+```bash
+git config --global user.name xiao
+git config --global user.email biancheng@xiao.com
+```
+## 查看用户名和邮箱
+```bash
+git config user.name
+git config user.email
+```
+
+## 删除远程提交地址
+```bash
+git remote remove origin
+```
+
 ## 只clone某个文件夹
 ```bash
 git init test && cd test     #新建仓库并进入文件夹
