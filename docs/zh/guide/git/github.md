@@ -7,3 +7,6 @@ title: Github
 头像 -> Settings -> Developer settings
 -> Personal access tokens -> Generate new token -> repo
 ```
+
+## 集成自动化部署——Travis CI
+先测试下。
