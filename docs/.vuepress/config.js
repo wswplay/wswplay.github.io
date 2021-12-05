@@ -65,6 +65,7 @@ function getGuideSidebar (...cateName) {
       children: [
         'technics/download',
         'technics/transdata',
+        'technics/component',
       ]
     },
     {

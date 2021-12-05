@@ -1,5 +1,5 @@
 ---
-title: 值得被解决
+title: Vue
 ---
 ## mutation怎么调用另一个mutation
 待解。
