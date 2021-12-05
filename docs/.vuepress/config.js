@@ -248,6 +248,7 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'git/command',
+        'git/github',
       ]
     },
     {
