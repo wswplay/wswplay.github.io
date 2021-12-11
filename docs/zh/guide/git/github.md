@@ -35,4 +35,5 @@ deploy:
   on:
     branch: main
 ```
+附存档：[我的Travis.ci地址](https://app.travis-ci.com/github/wswplay/wswplay.github.io)
 :::
