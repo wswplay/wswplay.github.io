@@ -36,6 +36,18 @@ git remote -v
 # git remote set-url --add <name> <url> 即可
 git remote set-url --add origin https://github.com/xxx/xxx
 ```
+
+## 本地项目与远程项目关联
+```bash
+# 本地项目内运行如下命令
+# 查看远端信息
+git remote -v
+# 添加关联远程仓库
+git remote add origin https://gitee.com/xxx/xx-xxx-xxx.git
+# 再次查看，就能看到相关信息了
+git remote -v
+```
+
 ## 项目内设置 git对文件名 大小写敏感
 默认为不敏感，当文件名只是更改大小写时，git无法识别更新，导致报错。
 ```bash
