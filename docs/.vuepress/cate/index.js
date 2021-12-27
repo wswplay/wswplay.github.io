@@ -1,4 +1,5 @@
 module.exports = [
+  'TypeScript',
   '问题库',
   'AR/VR',
   'Three',
