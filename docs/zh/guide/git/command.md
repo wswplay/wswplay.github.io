@@ -49,6 +49,12 @@ git remote -v
 git remote add origin https://gitee.com/xxx/xx-xxx-xxx.git
 # 再次查看，就能看到相关信息了
 git remote -v
+# 拉取代码
+git pull origin master
+# 如果出现如下错误(拒绝合并没有关联的历史记录)
+fatal: refusing to merge unrelated histories
+# 运行下面命令即可(即：允许合并没有关联的历史记录)
+git pull origin master --allow-unrelated-histories
 ```
 
 ## 项目内设置 git对文件名 大小写敏感
