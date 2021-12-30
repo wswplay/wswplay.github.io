@@ -15,9 +15,16 @@ sass --watch style.scss style.css
 
 ## Vue中使用less全局变量
 1、定义变量、安装相关loader
-```js
+```less
   // variable.less
   @fontSize18: 18px;
+  // mixin.less
+  .bg-image(@picName) {
+    background-image: url("@{picName}@2x.png");
+    @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3) {
+      background-image: url("@{picName}@3x.png");
+    }
+  }
 ```
 ```bash
 npm i style-resources-loader vue-cli-plugin-style-resources-loader -D
@@ -39,9 +46,10 @@ module.exports = {
 };
 ```
 3、.vue文件中适用
-```js
+```less
   // style
   font-size: @fontSize18;
+  .bg-image("logo");
 ```
 
 ## 解决margin-top塌陷
