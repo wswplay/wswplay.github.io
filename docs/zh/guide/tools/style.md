@@ -24,14 +24,19 @@ npm i style-resources-loader vue-cli-plugin-style-resources-loader -D
 ```
 2、添加vue.config.js文件相关配置
 ```js
-const path = require('path');
-
-pluginOptions: {
-  'style-resources-loader': {
-    preProcessor: 'less',
-    patterns: [path.resolve(__dirname, "src/style/variable.less")] // 引入全局样式变量
-  }
-},
+const path = require("path");
+module.exports = {
+  pluginOptions: {
+    "style-resources-loader": {
+      preProcessor: "less",
+      patterns: [
+        // 引入全局样式变量
+        path.resolve(__dirname, "src/assets/style/variable.less"),
+        path.resolve(__dirname, "src/assets/style/mixin.less"),
+      ],
+    },
+  },
+};
 ```
 3、.vue文件中适用
 ```js
