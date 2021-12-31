@@ -15,4 +15,6 @@ npm config set registry https://registry.npmjs.org
 ```bash
 # 安装Vue3.0及以上版本
 npm i vue@^3.0.0 -S
+# 安装最新版本
+npm i xxx@latest -D
 ```
