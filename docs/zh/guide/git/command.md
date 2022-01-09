@@ -57,6 +57,22 @@ fatal: refusing to merge unrelated histories
 git pull origin master --allow-unrelated-histories
 ```
 
+## 撤销commit提交
+```bash
+# 撤销最近一次commit
+git reset --soft HEAD^
+```
+:::tip
+HEAD^ 表示上一个版本，即上一次的commit，也可以写成HEAD~1    
+如果进行两次的commit，想要都撤回，可以使用HEAD~2
+:::
+
+## 修改commit注释
+```bash
+# 输入以下命令，会进入vim编辑器，修改完成保存即可
+git commit --amend
+```
+
 ## 项目内设置 git对文件名 大小写敏感
 默认为不敏感，当文件名只是更改大小写时，git无法识别更新，导致报错。
 ```bash
