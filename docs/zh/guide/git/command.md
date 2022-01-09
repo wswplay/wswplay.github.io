@@ -61,6 +61,8 @@ git pull origin master --allow-unrelated-histories
 ```bash
 # 撤销最近一次commit
 git reset --soft HEAD^
+# 慎用！慎用！慎用！撤销commit，且会删除所有改动的代码。一夜回到解放前！
+git reset --hard HEAD~1
 ```
 :::tip
 HEAD^ 表示上一个版本，即上一次的commit，也可以写成HEAD~1    
