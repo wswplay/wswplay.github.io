@@ -109,6 +109,7 @@ function getGuideSidebar (...cateName) {
       title: vue3,
       collapsable,
       children: [
+        'vue3/basic-concept',
         'vue3/flow-chart',
         'vue3/renderer',
         'vue3/composition-api',
