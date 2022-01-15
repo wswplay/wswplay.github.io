@@ -278,6 +278,7 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'tools/yarn',
+        'tools/monorepo-pnpm',
         'tools/python',
         'tools/npm',
         'tools/axios',
