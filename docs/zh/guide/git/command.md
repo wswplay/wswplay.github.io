@@ -1,6 +1,22 @@
 ---
 title: 命令
 ---
+## 初始化
+```bash
+git init
+```
+## 将master分支修改成main分支
+通常初始化会是master分支，但现在主流已经是main了。
+```bash
+git branch -m main
+```
+## 删除master分支
+```bash
+# 删除本地
+git branch -d master
+# 删除远程master分支。先取消master为默认分支，才会生效，否则报错
+git push origin -d master
+```
 ## 查看配置信息
 ```bash
 git config --list
