@@ -251,16 +251,101 @@ function createComponentInstance(vnode, parent, suspense) {
 ## 组件渲染 mountComponent
 
 ```js
-const mountComponent = ( initialVNode, container, anchor, parentComponent,
-  parentSuspense, isSVG, optimized
+const mountComponent = (
+  initialVNode,
+  container,
+  anchor,
+  parentComponent,
+  parentSuspense,
+  isSVG,
+  optimized
 ) => {
   const instance = (initialVNode.component = createComponentInstance(
-    initialVNode, parentComponent, parentSuspense ));
+    initialVNode,
+    parentComponent,
+    parentSuspense
+  ));
   // ...
   setupComponent(instance);
   // ...
-  setupRenderEffect( instance, initialVNode, container, anchor,
-  parentSuspense, isSVG, optimized );
+  setupRenderEffect(
+    instance,
+    initialVNode,
+    container,
+    anchor,
+    parentSuspense,
+    isSVG,
+    optimized
+  );
   // ...
+};
+```
+
+## 处理 set up
+
+```js
+function setupComponent(instance, isSSR = false) {
+  isInSSRComponentSetup = isSSR;
+  const { props, children } = instance.vnode;
+  const isStateful = isStatefulComponent(instance);
+  initProps(instance, props, isStateful, isSSR);
+  initSlots(instance, children);
+  const setupResult = isStateful
+    ? setupStatefulComponent(instance, isSSR)
+    : undefined;
+  isInSSRComponentSetup = false;
+  return setupResult;
+}
+function setupStatefulComponent(instance, isSSR) {
+  const Component = instance.type;
+  // 0. create render proxy property access cache
+  instance.accessCache = Object.create(null);
+  // 1. create public instance / render proxy
+  // also mark it raw so it's never observed
+  instance.proxy = markRaw(
+    new Proxy(instance.ctx, PublicInstanceProxyHandlers)
+  );
+  // 2. call setup()
+  const { setup } = Component;
+  if (setup) {
+    // sth
+    } else {
+      handleSetupResult(instance, setupResult, isSSR);
+    }
+  } else {
+    finishComponentSetup(instance, isSSR);
+  }
+}
+```
+
+## 设置数据代理 markRaw
+
+```js
+function markRaw(value) {
+  def(value, "__v_skip" /* SKIP */, true);
+  return value;
+}
+const def = (obj, key, value) => {
+  Object.defineProperty(obj, key, {
+    configurable: true,
+    enumerable: false,
+    value,
+  });
+};
+const PublicInstanceProxyHandlers = {
+  get({ _: instance }, key) {
+    const { ctx, setupState, data, props, accessCache, type, appContext,
+    } = instance;
+    // sth
+  },
+  set({ _: instance }, key, value) {
+    // sth
+  },
+  has(
+    { _: { data, setupState, accessCache, ctx, appContext, propsOptions } },
+    key
+  ) {
+    // sth
+  },
 };
 ```
