@@ -1,22 +1,19 @@
-const nanZhi = {
-  id: "边城",
-  address: "深圳",
-};
+let youSet = new Set();
+youSet.add(2022)
+youSet.add('虎')
+youSet.add('喵')
+console.log(youSet, youSet.size)
 
-const handler = {
-  get(target, property) {
-    return Reflect.get(...arguments);
-  },
-  set(target, property, value) {
-    return Reflect.set(...arguments);
-  }
-};
+console.log([...youSet])
 
-const bianCheng = new Proxy(nanZhi, handler);
+for(let item of youSet) {
+  console.log(item)
+}
+for(let [key, val] of youSet.entries()) {
+  console.log(`${key}===${val}`)
+}
 
-console.log(bianCheng.id);
-console.log(bianCheng.nid);
-bianCheng.id = "沈从文";
-bianCheng.nid = "看过许多地方的云";
-console.log(bianCheng.id);
-console.log(bianCheng.nid);
+for(let [key, val] of [...youSet].entries()) {
+  console.log(`${key}===${val}`)
+}
+
