@@ -127,7 +127,7 @@ function createGetter(isReadonly = false, shallow = false) {
 }
 ```
 
-## track
+## track 收集依赖
 
 ```js
 function track(target, type, key) {
@@ -166,6 +166,63 @@ function trackEffects(dep, debuggerEventExtraInfo) {
       activeEffect.onTrack(
         Object.assign({ effect: activeEffect }, debuggerEventExtraInfo)
       );
+    }
+  }
+}
+```
+
+## createSetter
+
+```js
+const set = /*#__PURE__*/ createSetter();
+function createSetter(shallow = false) {
+  return function set(target, key, value, receiver) {
+    let oldValue = target[key];
+    if (!shallow && !isReadonly(value)) {
+      value = toRaw(value);
+      oldValue = toRaw(oldValue);
+      if (!isArray(target) && isRef(oldValue) && !isRef(value)) {
+        oldValue.value = value;
+        return true;
+      }
+    }
+    const hadKey =
+      isArray(target) && isIntegerKey(key)
+        ? Number(key) < target.length
+        : hasOwn(target, key);
+    const result = Reflect.set(target, key, value, receiver);
+    // don't trigger if target is something up in the prototype chain of original
+    if (target === toRaw(receiver)) {
+      if (!hadKey) {
+        trigger(target, "add" /* ADD */, key, value);
+      } else if (hasChanged(value, oldValue)) {
+        trigger(target, "set" /* SET */, key, value, oldValue);
+      }
+    }
+    return result;
+  };
+}
+```
+
+## trigger 派发更新
+
+```js
+function trigger(target, type, key, newValue, oldValue, oldTarget) {
+  // sth
+  triggerEffects(createDep(effects), eventInfo);
+}
+function triggerEffects(dep, debuggerEventExtraInfo) {
+  // spread into array for stabilization
+  for (const effect of isArray(dep) ? dep : [...dep]) {
+    if (effect !== activeEffect || effect.allowRecurse) {
+      if (process.env.NODE_ENV !== "production" && effect.onTrigger) {
+        effect.onTrigger(extend({ effect }, debuggerEventExtraInfo));
+      }
+      if (effect.scheduler) {
+        effect.scheduler();
+      } else {
+        effect.run();
+      }
     }
   }
 }
