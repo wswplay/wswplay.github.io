@@ -114,6 +114,7 @@ function getGuideSidebar (...cateName) {
         'vue3/renderer',
         'vue3/composition-api',
         'vue3/reactive',
+        'vue3/ref',
         'vue3/computed',
         'vue3/watch',
         'vue3/life-cycle',
