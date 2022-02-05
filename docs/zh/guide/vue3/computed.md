@@ -2,7 +2,7 @@
 title: 计算属性
 ---
 
-## 源码
+## 源码摘要
 
 ```js
 function computed(getterOrOptions, debugOptions) {
@@ -59,7 +59,7 @@ class ComputedRefImpl {
 }
 ```
 
-## 示例
+## 示例解析
 
 ```vue
 <template>
