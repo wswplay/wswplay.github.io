@@ -1,5 +1,11 @@
-const createHello = (nation, province) => `我来自${nation}-${province}`;
-const geneNation = (nation) => (province) => createHello(nation, province);
+// const createHello = (nation, province) => `我来自${nation}-${province}`;
+// const geneNation = (nation) => (province) => createHello(nation, province);
+
+function geneNation(nation) {
+  return function(province) {
+    return `我来自${nation}-${province}`;
+  }
+}
 
 const fromChina = geneNation("中国");
 const fromUSA = geneNation("美国")
