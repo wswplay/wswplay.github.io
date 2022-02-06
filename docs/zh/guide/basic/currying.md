@@ -27,6 +27,7 @@ onMounted(() => {
 const createHello = (nation, province) => `我来自${nation}-${province}`;
 const geneNation = (nation) => (province) => createHello(nation, province);
 // function geneNation(nation) {
+//   // 下面这个匿名函数，就是一个闭包
 //   return function(province) {
 //     return `我来自${nation}-${province}`;
 //   }
