@@ -1,16 +1,13 @@
-console.log('111111')
+const createHello = (nation, province) => `我来自${nation}-${province}`;
+const geneNation = (nation) => (province) => createHello(nation, province);
 
-setTimeout(() => {
-  console.log('2222222')
-})
+const fromChina = geneNation("中国");
+const fromUSA = geneNation("美国")
 
-const myNextTick = Promise.resolve();
-myNextTick.then(logger)
+console.log(fromChina("湖南"))
+console.log(fromChina("广东"))
 
-console.log('444444')
+console.log(fromUSA("洛杉矶"))
 
-// 辅助内容
-const msg = '333333333';
-function logger() {
-  console.log(msg)
-}
+console.log(geneNation("银河系")("地球"))
+console.log(geneNation("三体")("黑暗森林"))
