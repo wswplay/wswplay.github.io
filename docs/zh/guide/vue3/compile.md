@@ -1,6 +1,17 @@
 ---
 title: 编译
 ---
+## 本地怎么调试编译
+:::tip
+1、上Github荡下Vue3.0源码；[Vuejs/core](https://github.com/vuejs/core)   
+2、在根目录下，```pnpm i```安装依赖(注意是 ```pnpm```)；      
+3、进入```packages/template-explorer```，```npm i```安装依赖；   
+4、根目录运行 ```npm run dev-compiler```，会自动进入编译，并完成编译；   
+5、新开一个命令行窗口，执行```npm run open```，就会自动打开编译的html界面了；   
+6、此时```packages/template-explorer```里面，应该有dist目录了，   
+  在```template-explorer.global.js```里面打上debugger，即可调试。
+:::
+
 ```js
 function compile(template, options = {}) { 
   return baseCompile(template, extend({}, parserOptions, options, { 
