@@ -9,7 +9,8 @@ title: 编译
 4、根目录运行 ```npm run dev-compiler```，会自动进入编译，并完成编译；   
 5、新开一个命令行窗口，执行```npm run open```，就会自动打开编译的html界面了；   
 6、此时```packages/template-explorer```里面，应该有dist目录了，   
-  在```template-explorer.global.js```里面打上debugger，即可调试。
+  在```template-explorer.global.js```里面打上debugger，即可调试。    
+7、dist里有个map文件，若只调试js，需删除此map文件。否则debugger会跳到**ts源码**。
 :::
 
 ```js
