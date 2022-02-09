@@ -36,7 +36,34 @@ for(let [key, val] of newMap) {
 4. Map有size属性，但Object没有。
 5. Map自身支持迭代，但Object只能for...in。
 :::
+[Map和WeakMap的区别](https://zhuanlan.zhihu.com/p/366505417)，Weak可以被GC回收。
 
+## WeakMap
+[WeakMap](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/WeakMap) 对象是一组键/值对的集合，其中的键是弱引用的。其键必须是对象，而值可以是任意的。
+```js
+// Vue3.0
+function createAppContext() {
+  return {
+    app: null,
+    config: {
+      isNativeTag: NO,
+      performance: false,
+      globalProperties: {},
+      optionMergeStrategies: {},
+      errorHandler: undefined,
+      warnHandler: undefined,
+      compilerOptions: {}
+    },
+    mixins: [],
+    components: {},
+    directives: {},
+    provides: Object.create(null),
+    optionsCache: new WeakMap(),
+    propsCache: new WeakMap(),
+    emitsCache: new WeakMap()
+  };
+}
+```
 ## Set(key的集合)
 [Set MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Set)    
 Set 对象允许你存储任何类型的**唯一值**，无论是原始值或者是对象引用。Set中的元素只会出现一次。    

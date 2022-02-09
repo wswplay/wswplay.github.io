@@ -2,6 +2,7 @@
 title: 编译
 ---
 ## 本地怎么调试编译
+[断点调试Vue3.0的TS源码](https://zhuanlan.zhihu.com/p/161534979)
 :::tip
 1、上Github荡下Vue3.0源码；[Vuejs/core](https://github.com/vuejs/core)   
 2、在根目录下，```pnpm i```安装依赖(注意是 ```pnpm```)；      
