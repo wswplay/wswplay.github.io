@@ -121,6 +121,7 @@ function getGuideSidebar (...cateName) {
         'vue3/component',
         'vue3/compile',
         'vue3/directives',
+        'vue3/props',
         'vue3/teleport',
         'vue3/keep-alive',
         'vue3/transition',
