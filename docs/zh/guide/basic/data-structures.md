@@ -36,6 +36,13 @@ for(let [key, val] of newMap) {
 4. Map有size属性，但Object没有。
 5. Map自身支持迭代，但Object只能for...in。
 :::
+#### Vue3.0的isMap方法
+```js
+const objectToString = Object.prototype.toString;
+const toTypeString = (value) => objectToString.call(value);
+const isMap = (val) => toTypeString(val) === '[object Map]';
+```
+
 [Map和WeakMap的区别](https://zhuanlan.zhihu.com/p/366505417)，Weak可以被GC回收。
 
 ## WeakMap
