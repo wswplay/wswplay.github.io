@@ -22,3 +22,18 @@ csrutil status # System Integrity Protection status: enabled.
 2. 点击顶部 实用工具 -> 终端 输入命令``csrutil disable`` -> enter执行命令，会返回Successfully disabled System Integrity Protection. Please restart the machine for the changes to take effect，重启电脑。即设置成功，此时你可以随心所欲的删除/usr/bin中的文件了。
 3. 如何恢复保护？执行第1步，第2步输入```csrutil enable``` -> enter命令，重启后恢复保护。
 :::
+
+## 显示隐藏文件夹
+```Command + Shift + .``` 可以显示隐藏文件、文件夹，再按一次，恢复隐藏。
+
+## mac系统占80G，怎么办？
+通常安装Xcode之后，会占用很多空间。
+```bash
+# 打开终端，输入如下命令，查看根目录所有文件的大小
+du -sh *
+# 例如果Library很大，那就看看为啥那么大
+cd ~/Library
+# 查看当前目录各个文件大小
+du -d 1 -h
+# 该删就删，Over！
+```

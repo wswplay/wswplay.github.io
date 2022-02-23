@@ -1,6 +1,17 @@
 ---
 title: 命令
 ---
+## Mac安装Git
+[官网](https://git-scm.com/downloads)。又是brew，又是Xcode，巴拉巴拉。。。   
+[直接文件安装](https://sourceforge.net/projects/git-osx-installer/)，不香吗？   
+安装完成，git一下，你就知道：会报错。
+```bash
+xcrun: error: invalid active developer path (/Library/Developer/CommandLineTools),
+missing xcrun at: /Library/Developer/CommandLineTools/usr/bin/xcrun
+```  
+Mac个傻逼，git还要安装CommandLineTools，那下载安装命令行工具吧[CommandLineTools](https://developer.apple.com/download/all/)。   
+安装完成，就大功告成！:dart:
+
 ## 初始化
 ```bash
 git init
