@@ -2,9 +2,15 @@
 title: 快捷键
 ---
 ### 代码折叠(可按深度等级)
-mac下，command + k + 0，折叠所有代码块。command + k + j，展开所有代码块。    
-windows下，ctrl + k + 0，折叠所有代码块。ctrl + k + j，展开所有代码块。    
 0是代码折叠级别，同理可以换用1，2，3等。
+#### Mac下
+command + k + 0，折叠所有代码块。   
+command + k + j，展开所有代码块。   
+command + k + [，折叠光标区域代码。   
+command + k + ]，展开光标区域代码。   
+#### Windows下
+ctrl + k + 0，折叠所有代码块。   
+ctrl + k + j，展开所有代码块。
 
 ### 命令行中打开vscode
 **路径**：设置(小齿轮) -> 命令面板 -> 输入install code。。 -> 搜索到命令，点击即安装    
