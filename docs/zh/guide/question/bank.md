@@ -19,4 +19,5 @@ ref应用在循环中，```this.$refs.xxx[0]```才能取到值。注意，是```
 
 ## textContent和innerText、innerHTML的区别
 1、textContent VS innerText：不会触发回流(reflow)，且能获取不可见元素。   
-2、textContent VS innerHTML：性能更好，还可以防止XSS攻击。
+2、textContent VS innerHTML：性能更好，还可以防止XSS攻击。   
+[参考MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/Node/textContent#%E4%B8%8E_innertext_%E7%9A%84%E5%8C%BA%E5%88%AB)
