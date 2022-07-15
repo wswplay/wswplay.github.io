@@ -143,3 +143,29 @@ export function proxy (target: Object, sourceKey: string, key: string) {
   Object.defineProperty(target, key, sharedPropertyDefinition)
 }
 ```
+
+## nextTick的实现
+```Promise``` -> ```MutationObserver``` -> ```setImmediate``` -> ```setTimeout```
+```js
+if (typeof Promise !== 'undefined' && isNative(Promise)) {
+  var p = Promise.resolve();
+  timerFunc = function () {
+    p.then(flushCallbacks);
+  };
+  isUsingMicroTask = true;
+} else if (!isIE && typeof MutationObserver !== 'undefined' ...) {
+  timerFunc = function () {
+    counter = (counter + 1) % 2;
+    textNode.data = String(counter);
+  };
+  isUsingMicroTask = true;
+} else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
+  timerFunc = function () {
+    setImmediate(flushCallbacks);
+  };
+} else {
+  timerFunc = function () {
+    setTimeout(flushCallbacks, 0);
+  };
+}
+```
