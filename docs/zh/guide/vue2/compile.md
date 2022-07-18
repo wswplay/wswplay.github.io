@@ -10,7 +10,58 @@ module.exports = {
   runtimeCompiler: true,
 }
 ```
-
+## 流程
+百转千回的绕，就是为了把```template```转化成```render```函数
+```js
+// 入口
+var mount = Vue.prototype.$mount;
+Vue.prototype.$mount = function() {
+  var options = this.$options;
+  if (!options.render){
+    if (template){
+      var ref = compileToFunctions(template, ...)
+      var render = ref.render;
+      var staticRenderFns = ref.staticRenderFns;
+      options.render = render;
+      options.staticRenderFns = staticRenderFns;
+    }
+  }
+  return mount.call(this, el, hydrating)
+}
+// 中继
+var compiled = baseCompile(template.trim(), finalOptions);
+// 庐山真面目
+var createCompiler = createCompilerCreator(function baseCompile (
+  template,
+  options
+) {
+  // 解析ast
+  var ast = parse(template.trim(), options);
+  if (options.optimize !== false) {
+    // 静态标记(优化)
+    optimize(ast, options);
+  }
+  // 生成代码
+  var code = generate(ast, options);
+  return {
+    ast: ast,
+    render: code.render,
+    staticRenderFns: code.staticRenderFns
+  }
+});
+// 上面生成代码的函数。这里有render函数
+function generate (
+  ast,
+  options
+) {
+  var state = new CodegenState(options);
+  var code = ast ? (ast.tag === 'script' ? 'null' : genElement(ast, state)) : '_c("div")';
+  return {
+    render: ("with(this){return " + code + "}"),
+    staticRenderFns: state.staticRenderFns
+  }
+}
+```
 ## vm._render
 vm._render 函数的作用是调用 vm.$options.render 函数并返回生成的虚拟节点(vnode)
 
