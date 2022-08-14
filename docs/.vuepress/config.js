@@ -79,6 +79,7 @@ function getGuideSidebar (...cateName) {
       title: design,
       collapsable,
       children: [
+        'design/points',
         'design/essence-of-components',
         'design/create-element-fun',
         'design/render',
@@ -289,6 +290,7 @@ function getGuideSidebar (...cateName) {
         'tools/style',
         'tools/html',
         'tools/browser',
+        'tools/markdown',
       ]
     }
   ]
