@@ -183,6 +183,7 @@ function getGuideSidebar (...cateName) {
         'vscode/code-snippets',
         'vscode/short-cut-key',
         'vscode/search',
+        'vscode/plugin',
       ]
     },
     {
