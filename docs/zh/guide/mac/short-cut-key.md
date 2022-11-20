@@ -9,6 +9,9 @@ title: 快捷键
 ## 刷新网页
 Command+R
 
+## 切换窗口
+command + tab (类似Windows窗口的切换方式)
+
 ## 删除/usr/bin中的文件
 其实是自从OS X 10.11的El Captain开始引入的一个系统安全功能，叫做系统完整性保护，英文是System Integrity Protection，简称SIP。    
 有个这个保护之后，你就无法更改系统文件，即使你sudo获取root权限，也没有权限。    
