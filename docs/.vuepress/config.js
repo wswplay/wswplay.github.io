@@ -156,6 +156,7 @@ function getGuideSidebar (...cateName) {
         'basic/rest',
         'basic/iife',
         'basic/es6',
+        'basic/iterator',
       ]
     },
     {
