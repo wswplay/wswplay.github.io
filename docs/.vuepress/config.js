@@ -57,6 +57,7 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'typescript/init',
+        'typescript/declare',
       ]
     },
     {
