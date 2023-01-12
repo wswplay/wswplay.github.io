@@ -258,6 +258,7 @@ function getGuideSidebar (...cateName) {
       collapsable,
       children: [
         'vite/init',
+        'vite/basic',
       ]
     },
     {
