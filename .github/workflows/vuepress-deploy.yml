@@ -7,8 +7,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@main
 
-      - name: vuepress-deploy
-        uses: wswplay/vuepress-deploy@main
+      - name: wswplay
+        uses: wswplay/wswplay.github.io@main
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           BUILD_SCRIPT: yarn && yarn build
