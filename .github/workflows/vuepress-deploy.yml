@@ -4,9 +4,6 @@ jobs:
   the-first-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@master
-
       - name: Build & Deploy
         uses: wswplay/wswplay.github.io@main
         env:
