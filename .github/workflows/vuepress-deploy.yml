@@ -1,7 +1,7 @@
 name: BianCheng Deploy
 on: [push]
 jobs:
-  the-first-job:
+  first-job:
     runs-on: ubuntu-latest
     steps:
       - name: Build & Deploy
