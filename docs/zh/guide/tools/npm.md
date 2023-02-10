@@ -5,7 +5,10 @@ title: npm
 ## 创建`package.json`文件
 
 ```bash
+# 交互式创建
 npm init
+# 快速创建默认文件
+npm init -y
 ```
 
 ## 设置源地址
