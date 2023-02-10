@@ -1,0 +1,9 @@
+name: 'Vuepress deploy'
+description: 'Vuepress for blog'
+author: 'wswplay'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+branding:
+  icon: 'upload-cloud'
+  color: 'gray-dark'
