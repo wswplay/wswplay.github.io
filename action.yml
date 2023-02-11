@@ -2,8 +2,8 @@ name: 'Vuepress deploy'
 description: 'Vuepress for blog'
 author: 'wswplay'
 runs:
-  using: 'node16'
-  main: 'lib/main.js'
+  using: 'docker'
+  image: 'Dockerfile'
 branding:
-  icon: 'git-commit'
-  color: 'orange'
+  icon: 'upload-cloud'
+  color: 'gray-dark'
