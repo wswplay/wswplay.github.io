@@ -9,5 +9,5 @@ LABEL "repository"="https://github.com/wswplay/wswplay.github.io"
 
 RUN apt-get update && apt-get install -y git jq
 
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY deploy.sh /deploy.sh
+ENTRYPOINT ["/deploy.sh"]
