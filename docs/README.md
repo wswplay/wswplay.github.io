@@ -2,7 +2,7 @@
 home: true
 # heroImage: https://avatars.githubusercontent.com/u/13958395?s=460&u=b30a9731e3748ced50e5b17402ab59f15f59ae05&v=4
 heroText: null
-tagline: 一念偏见2，一念偏爱，三重门外
+tagline: 一念偏见，一念偏爱，三重门外
 # tagline: What，Where，How
 # tagline: 解决代码的 3 大问题
 # actionText: 按门铃 :)
