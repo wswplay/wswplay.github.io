@@ -11,7 +11,7 @@ echo "注释为: $MSG"
 # 等待5秒
 sleep 5
 
-git commit -m '$MSG'
+git commit -m $MSG
 
 echo "完成推送!"
 git status
