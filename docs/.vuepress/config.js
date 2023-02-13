@@ -247,7 +247,13 @@ function getGuideSidebar(...cateName) {
     {
       title: node,
       collapsable,
-      children: ["node/nvm", "node/init", "node/exports", "node/path"],
+      children: [
+        "node/nvm",
+        "node/init",
+        "node/exports",
+        "node/path",
+        "node/npm",
+      ],
     },
     {
       title: vuepress,
@@ -291,7 +297,6 @@ function getGuideSidebar(...cateName) {
         "tools/yarn",
         "tools/monorepo-pnpm",
         "tools/python",
-        "tools/npm",
         "tools/axios",
         "tools/style",
         "tools/html",
