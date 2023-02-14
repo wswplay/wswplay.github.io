@@ -1,13 +1,18 @@
 {
-  "name": "wswplay.github.io",
+  "name": "three-theme-demo",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
-  "license": "MIT",
   "scripts": {
-    "dev": "vuepress dev docs --open",
-    "build": "vuepress build docs"
+    "dev": "vitepress --open --port 3066",
+    "dev-c": "rm -rf .vitepress/cache && npm run dev"
   },
-  "devDependencies": {
-    "vuepress": "^1.8.2"
+  "author": "wswplay",
+  "license": "ISC",
+  "dependencies": {
+    "@vue/theme": "^1.3.0",
+    "less": "^4.1.3",
+    "vitepress": "1.0.0-alpha.45",
+    "vue": "^3.2.47"
   }
 }
