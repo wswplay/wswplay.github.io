@@ -7,7 +7,7 @@
     "dev": "vitepress --open --port 3066",
     "dev-c": "rm -rf .vitepress/cache && npm run dev",
     "dist-c": "rm -rf .vitepress/dist",
-    "build": "pnpm run dist-c && vitepress build"
+    "build": "npm run dist-c && vitepress build"
   },
   "author": "wswplay",
   "license": "ISC",
