@@ -38,9 +38,13 @@
 
 <script setup lang="ts">
 const homeInfo = {
-  action: "解决",
-  tool: "代码",
-  target: "3大问题",
+  // action: "解决",
+  // tool: "代码",
+  // target: "3大问题",
+  action: "Resolution",
+  tool: "Code",
+  target: "Three Major Problems",
+  // target: "Three Problems",
   desc: "给岁月以文明，我看过许多地方的云。——边城执剑人",
   mainBtnText: "开启「三体」",
   details: [

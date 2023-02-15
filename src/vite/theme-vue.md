@@ -4,11 +4,12 @@ title: Vue3 Vitepress官方文档主题介绍及使用
 
 # Vue3 官方文档 theme 介绍
 
-此主题源于/用于`Vue3`官方文档，本站也是。[Github 地址](https://github.com/vuejs/theme)     
+此主题源于/用于`Vue3`官方文档，本站也是。[Github 地址](https://github.com/vuejs/theme)  
 由于主题本身没有说明文档，且有些地方是硬编码，所以不太好直接用。只能看源码，去一点点的照着来。
 
-## .vitepress/config.ts
+## 站点配置
 
+站点配置文件：`.vitepress/config.ts`。  
 用非默认主题时，`Vitepress`建议用`defineConfigWithTheme`方法定义一下设置文件。
 
 ```ts
@@ -22,7 +23,9 @@ export default defineConfigWithTheme<ThemeConfig>({
 });
 ```
 
-## .vitepress/theme/index.ts
+## 主题配置
+
+主题配置文件：`.vitepress/theme/index.ts`。
 
 ```ts
 import { VPTheme } from "@vue/theme";
