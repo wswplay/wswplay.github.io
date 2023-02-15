@@ -46,7 +46,7 @@ function geneNav(): ThemeConfig["nav"] {
       link: "/vite/",
     },
     {
-      text: "Nodejs",
+      text: "Node",
       activeMatch: "^/node/",
       link: "/node/",
     },

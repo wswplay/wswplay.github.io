@@ -15,8 +15,13 @@ title: Github Token设置及Pages自动部署
 
 ## 集成自动化部署
 
+#### Vitepress
+
+[Vitepress 集成自动化部署](/vite/vitepress.html#集成自动化部署)
+
 #### Travis CI
 
+年轻不懂事的时候，用完了免费时间额度。现在`Travis CI`向我收费:sob:才能玩。  
 网上很多教程都是垃圾！  
 唯有这个很好、很高效——[将 Hexo 部署到 GitHub Pages](https://hexo.io/zh-cn/docs/github-pages)
 :::tip
