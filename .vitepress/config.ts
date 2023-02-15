@@ -35,16 +35,11 @@ function geneNav(): ThemeConfig["nav"] {
     //     { text: "Vue2", link: "/vue2/" },
     //   ],
     // },
-    // {
-    //   text: "Vite",
-    //   activeMatch: "^/vite/",
-    //   link: "/vite/",
-    // },
-    // {
-    //   text: "Vitepress",
-    //   activeMatch: "^/press/",
-    //   link: "/press/",
-    // },
+    {
+      text: "Vite",
+      activeMatch: "^/vite/",
+      link: "/vite/",
+    },
     {
       text: "Nodejs",
       activeMatch: "^/node/",
@@ -72,9 +67,17 @@ function geneSidebar(): ThemeConfig["sidebar"] {
     ],
     "/vite/": [
       {
-        text: "Vite的原理",
+        text: "Vitepress",
         items: [
-          { text: "简介", link: "/vite/" },
+          { text: "Vitepress", link: "/vite/vitepress" },
+          { text: "默认主题(default)", link: "/vite/theme-default" },
+          { text: "Vue官方主题(Vue3)", link: "/vite/theme-vue" },
+        ],
+      },
+      {
+        text: "Vite",
+        items: [
+          { text: "Vite", link: "/vite/" },
           { text: "Rollup", link: "/vite/rollup" },
         ],
       },
