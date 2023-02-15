@@ -2,9 +2,9 @@
   <section id="hero">
     <h1 class="tagline">
       {{ homeInfo.action }}
-      <span>{{ homeInfo.tool }}</span>
+      <span class="accent">{{ homeInfo.tool }}</span>
       <br />
-      <span class="accent">{{ homeInfo.target }}</span>
+      <span>{{ homeInfo.target }}</span>
     </h1>
     <p class="description">{{ homeInfo.desc }}</p>
     <a id="vuemastery-action" href="/vite/theme-vue">
@@ -38,14 +38,10 @@
 
 <script setup lang="ts">
 const homeInfo = {
-  // action: "解决",
-  // tool: "代码",
-  // target: "3大问题",
-  action: "Resolution",
-  tool: "Code",
-  target: "Three Major Problems",
-  // target: "Three Problems",
-  desc: "解决代码的3个问题，给岁月以文明。我看过许多地方的云。——边城执剑人",
+  action: "Solve",
+  tool: "Three Problems",
+  target: "For Civilization",
+  desc: "解决3个问题，给岁月以文明。我看过许多地方的云。——边城执剑人",
   mainBtnText: "开启「三体」",
   details: [
     { title: "What", brief: "是什么？" },
