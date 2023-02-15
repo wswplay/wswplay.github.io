@@ -6,7 +6,7 @@ export default {
   ...VPTheme,
   Layout() {
     return h(VPTheme.Layout, null, {
-      "sidebar-top": () => "三体",
+      // "sidebar-top": () => "三体",
       "navbar-title": () => h(NavbarTitle),
     });
   },

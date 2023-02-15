@@ -7,7 +7,7 @@
       <span class="accent">{{ homeInfo.target }}</span>
     </h1>
     <p class="description">{{ homeInfo.desc }}</p>
-    <a id="vuemastery-action" href="/press/">
+    <a id="vuemastery-action" href="/node/">
       {{ homeInfo.mainBtnText }}
       <svg
         class="icon-play"

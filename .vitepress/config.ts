@@ -26,23 +26,28 @@ function geneNav(): ThemeConfig["nav"] {
       text: "首页",
       link: "/",
     },
+    // {
+    //   text: "Vue",
+    //   activeMatch: "^/(vue3|vue2)/",
+    //   items: [
+    //     { text: "Vue3", link: "/vue3/" },
+    //     { text: "Vue2", link: "/vue2/" },
+    //   ],
+    // },
+    // {
+    //   text: "Vite",
+    //   activeMatch: "^/vite/",
+    //   link: "/vite/",
+    // },
+    // {
+    //   text: "Vitepress",
+    //   activeMatch: "^/press/",
+    //   link: "/press/",
+    // },
     {
-      text: "Vue",
-      activeMatch: "^/(vue3|vue2)/",
-      items: [
-        { text: "Vue3", link: "/vue3/" },
-        { text: "Vue2", link: "/vue2/" },
-      ],
-    },
-    {
-      text: "Vite",
-      activeMatch: "^/vite/",
-      link: "/vite/",
-    },
-    {
-      text: "Vitepress",
-      activeMatch: "^/press/",
-      link: "/press/",
+      text: "Nodejs",
+      activeMatch: "^/node/",
+      link: "/node/",
     },
   ];
 }
@@ -67,7 +72,19 @@ function geneSidebar(): ThemeConfig["sidebar"] {
     "/vite/": [
       {
         text: "Vite的原理",
-        items: [{ text: "Rollup", link: "/vite/rollup" }],
+        items: [
+          { text: "简介", link: "/vite/" },
+          { text: "Rollup", link: "/vite/rollup" },
+        ],
+      },
+    ],
+    "/node/": [
+      {
+        text: "Node系",
+        items: [
+          { text: "简介", link: "/node/" },
+          { text: "npm", link: "/node/npm" },
+        ],
       },
     ],
   };
