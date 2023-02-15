@@ -39,9 +39,9 @@ export default {
 };
 ```
 
-#### slot 说明
-
+:::tip slot 说明
 `navbar-title`：可定义网站`logo`和网站名。位置在左上角，即顶部导航的最左边。
+:::
 
 #### VPTheme 和 theme 类型定义
 
