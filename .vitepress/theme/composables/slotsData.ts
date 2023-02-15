@@ -1,4 +1,5 @@
-import { computed, onMounted, ref } from "vue";
+import { useRoute } from "vitepress";
+import { computed, onMounted, ref, watch } from "vue";
 
 export function useRandomPeotry() {
   const peoList = [
@@ -20,12 +21,17 @@ export function useRandomPeotry() {
 
   let pId = ref(0);
   const curPoe = computed(() => peoList[pId.value]);
+  const routeInfo = useRoute();
 
   function changePoe() {
     pId.value = Math.floor(Math.random() * peoList.length);
   }
 
   onMounted(() => changePoe());
+  watch(
+    () => routeInfo.path,
+    () => changePoe()
+  );
 
   return {
     curPoe,
