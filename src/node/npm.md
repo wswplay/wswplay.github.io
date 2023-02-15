@@ -1,5 +1,5 @@
 ---
-title: npm
+title: npm命令及其使用方法
 ---
 
 # Node Package Manager

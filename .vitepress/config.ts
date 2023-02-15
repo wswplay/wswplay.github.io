@@ -10,6 +10,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   themeConfig: {
     nav: geneNav(),
     sidebar: geneSidebar(),
+    i18n: geneI18n(),
     socialLinks: [
       { icon: "github", link: "https://github.com/wswplay/wswplay.github.io" },
     ],
@@ -87,5 +88,13 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         ],
       },
     ],
+  };
+}
+function geneI18n(): ThemeConfig["i18n"] {
+  return {
+    toc: "本页目录",
+    previous: "前一篇",
+    next: "下一篇",
+    pageNotFound: "页面未找到",
   };
 }
