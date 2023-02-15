@@ -92,9 +92,16 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         text: "Node系",
         items: [
           { text: "简介", link: "/node/" },
+          { text: "path方法", link: "/node/path" },
+        ],
+      },
+      {
+        text: "周边工具",
+        items: [
           { text: "npm", link: "/node/npm" },
           { text: "nvm", link: "/node/nvm" },
-          { text: "path方法", link: "/node/path" },
+          { text: "git", link: "/node/git" },
+          { text: "Github", link: "/node/github" },
         ],
       },
     ],
