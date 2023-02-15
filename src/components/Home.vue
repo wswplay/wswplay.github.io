@@ -41,7 +41,7 @@ const homeInfo = {
   action: "解决",
   tool: "代码",
   target: "3大问题",
-  desc: "给岁月以文明，我看过许多地方的云。——执剑人: 边城",
+  desc: "给岁月以文明，我看过许多地方的云。——边城执剑人",
   mainBtnText: "开启「三体」",
   details: [
     { title: "What", brief: "是什么？" },

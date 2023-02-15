@@ -85,6 +85,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         items: [
           { text: "简介", link: "/node/" },
           { text: "npm", link: "/node/npm" },
+          { text: "nvm", link: "/node/nvm" },
         ],
       },
     ],
