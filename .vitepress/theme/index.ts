@@ -1,6 +1,7 @@
 import { VPTheme } from "@vue/theme";
 import { h } from "vue";
 import NavbarTitle from "./components/NavbarTitle.vue";
+import Poetry from "./components/Poetry.vue";
 
 export default {
   ...VPTheme,
@@ -8,6 +9,7 @@ export default {
     return h(VPTheme.Layout, null, {
       // "sidebar-top": () => "三体",
       "navbar-title": () => h(NavbarTitle),
+      "aside-mid": () => h(Poetry),
     });
   },
 };
