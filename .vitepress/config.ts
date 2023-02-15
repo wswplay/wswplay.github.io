@@ -36,6 +36,11 @@ function geneNav(): ThemeConfig["nav"] {
     //   ],
     // },
     {
+      text: "Vue",
+      activeMatch: "^/vue/",
+      link: "/vue/vue3/",
+    },
+    {
       text: "Vite",
       activeMatch: "^/vite/",
       link: "/vite/",
@@ -49,20 +54,20 @@ function geneNav(): ThemeConfig["nav"] {
 }
 function geneSidebar(): ThemeConfig["sidebar"] {
   return {
-    "/vue3/": [
+    "/vue/": [
       {
-        text: "Vue3的设计与实现",
+        text: "Vue3设计与实现",
         items: [
-          { text: "Proxy", link: "/vue3/proxy" },
-          { text: "Reflect", link: "/vue3/reflect" },
-          { text: "Ref", link: "/vue3/ref" },
+          { text: "Proxy", link: "/vue/vue3/proxy" },
+          { text: "Reflect", link: "/vue/vue3/reflect" },
+          { text: "Ref", link: "/vue/vue3/ref" },
         ],
       },
-    ],
-    "/vue2": [
       {
-        text: "Vue2的原理",
-        items: [{ text: "defineProperty", link: "/vue2/defineproperty" }],
+        text: "Vue2原理",
+        items: [
+          { text: "DefineProperty", link: "/vue/vue2/defineProperty" },
+        ],
       },
     ],
     "/vite/": [

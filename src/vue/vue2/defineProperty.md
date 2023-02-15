@@ -1,4 +1,4 @@
 ---
 title: DefineProperty
 ---
-# Object.defineProperty
+# Hello DefineProperty
