@@ -74,7 +74,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
       {
         text: "Vitepress",
         items: [
-          { text: "Vitepress", link: "/vite/vitepress" },
+          { text: "简介与功能", link: "/vite/vitepress" },
           { text: "默认主题(default)", link: "/vite/theme-default" },
           { text: "Vue官方主题(Vue3)", link: "/vite/theme-vue" },
         ],

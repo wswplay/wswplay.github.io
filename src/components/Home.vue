@@ -45,7 +45,7 @@ const homeInfo = {
   tool: "Code",
   target: "Three Major Problems",
   // target: "Three Problems",
-  desc: "给岁月以文明，我看过许多地方的云。——边城执剑人",
+  desc: "解决代码的3个问题，给岁月以文明。我看过许多地方的云。——边城执剑人",
   mainBtnText: "开启「三体」",
   details: [
     { title: "What", brief: "是什么？" },
