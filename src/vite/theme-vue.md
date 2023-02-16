@@ -37,14 +37,18 @@ export default {
   Layout() {
     return h(VPTheme.Layout, null, {
       "navbar-title": () => h(NavbarTitle),
+      // 还有下面这些slots可用
+      'sidebar-top': () => h('div', 'hello top'),
+      'sidebar-bottom': () => h('div', 'hello bottom'),
+      'content-top': () => h('h1', 'Announcement!'),
+      'content-bottom': () => h('div', 'Some ads'),
+      'aside-top': () => h('div', 'this could be huge'),
+      'aside-mid': () => h('div', { style: { height: '300px' }}, 'Sponsors'),
+      'aside-bottom': () => h('div', { style: { height: '300px' }}, 'Sponsors'),
     });
   },
 };
 ```
-
-:::tip slot 说明
-`navbar-title`：可定义网站`logo`和网站名。位置在左上角，即顶部导航的最左边。
-:::
 
 #### VPTheme 和 theme 类型定义
 

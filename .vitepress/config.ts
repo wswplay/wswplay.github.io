@@ -94,7 +94,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
     ],
     "/node/": [
       {
-        text: "Node系",
+        text: "Node基础",
         items: [
           { text: "简介", link: "/node/" },
           { text: "path方法", link: "/node/path" },
