@@ -9,7 +9,7 @@ outline: deep
 由于主题本身没有说明文档，且有些地方是硬编码，所以不太好直接用。只能看源码，去一点点的照着来。
 
 【[Github 库地址](https://github.com/vuejs/theme)】  
-【[css 全局变量地址](https://github.com/vuejs/theme/blob/0496c884e37cf52a3c5775aec8d57bdd4c8e20af/src/core/styles/variables.css)】
+【[css 基础颜色变量地址](https://github.com/vuejs/theme/blob/0496c884e37cf52a3c5775aec8d57bdd4c8e20af/src/core/styles/variables.css)】
 
 ## 站点配置
 
@@ -25,6 +25,36 @@ export default defineConfigWithTheme<ThemeConfig>({
   extends: baseConfig, // baseConfig必须要有
   ...
 });
+```
+
+### 类型定义
+
+```ts
+declare function defineConfigWithTheme<ThemeConfig>(
+  config: UserConfig<ThemeConfig>
+): UserConfig<ThemeConfig>;
+
+interface UserConfig<ThemeConfig = any> {
+  extends?: RawConfigExports<ThemeConfig>;
+  base?: string;
+  lang?: string;
+  title?: string;
+  titleTemplate?: string | boolean;
+  description?: string;
+  head?: HeadConfig[];
+  appearance?: boolean | "dark";
+  themeConfig?: ThemeConfig;
+  locales?: Record<string, LocaleConfig>;
+  markdown?: MarkdownOptions;
+  lastUpdated?: boolean;
+  vue?: Options; // Options to pass on to `@vitejs/plugin-vue`
+  vite?: UserConfig$1; // Vite config
+  srcDir?: string;
+  srcExclude?: string[];
+  outDir?: string;
+  shouldPreload?: (link: string, page: string) => boolean;
+  ...
+}
 ```
 
 ## 主题配置
