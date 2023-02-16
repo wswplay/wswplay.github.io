@@ -50,6 +50,11 @@ function geneNav(): ThemeConfig["nav"] {
       activeMatch: "^/node/",
       link: "/node/",
     },
+    {
+      text: "JS基础",
+      activeMatch: "^/core/",
+      link: "/core/",
+    },
   ];
 }
 function geneSidebar(): ThemeConfig["sidebar"] {
@@ -99,9 +104,18 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         text: "周边工具",
         items: [
           { text: "npm", link: "/node/npm" },
+          { text: "package.json", link: "/node/package-json" },
           { text: "nvm", link: "/node/nvm" },
           { text: "git", link: "/node/git" },
           { text: "Github", link: "/node/github" },
+        ],
+      },
+    ],
+    "/core/": [
+      {
+        text: "JavaScript基础",
+        items: [
+          { text: "简介", link: "/core/" },
         ],
       },
     ],
