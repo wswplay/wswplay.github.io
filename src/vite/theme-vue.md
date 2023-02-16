@@ -28,8 +28,9 @@ export default defineConfigWithTheme<ThemeConfig>({
 
 ## 主题配置
 
-主题配置文件：`.vitepress/theme/index.ts`。  
-以下还列出了可用的`slot`名称。
+主题配置文件：`.vitepress/theme/index.ts`。
+
+#### 启用主题和各种 slot
 
 ```ts
 import { VPTheme } from "@vue/theme";
@@ -55,9 +56,32 @@ export default {
 };
 ```
 
-#### VPTheme 和 theme 类型定义
+#### 注册全局组件/数据
 
 ```ts
+import { VPTheme } from "@vue/theme";
+import { h, App } from "vue";
+import VueSchoolLink from './components/VueSchoolLink.vue'
+
+export default {
+  ...VPTheme,
+  Layout() {...},
+  enhanceApp({ app }: { app: App }) {
+    app.provide('prefer-composition', "全局数据")
+    app.component('VueSchoolLink', VueSchoolLink)
+  }
+};
+```
+
+#### 相关类型定义
+
+```ts
+export type Awaitable<T> = T | PromiseLike<T>;
+interface EnhanceAppContext {
+  app: App;
+  router: Router;
+  siteData: Ref<SiteData>;
+}
 interface Theme {
   Layout: Component;
   NotFound?: Component;
