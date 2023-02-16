@@ -215,7 +215,7 @@ html:not(.dark) .accent,
   font-weight: 600;
   font-size: 20px;
   letter-spacing: -0.4px;
-  color: var(--vt-c-text-1);
+  color: var(--vt-c-green-dark);
   transition: color 0.5s;
   margin-bottom: 0.75em;
 }

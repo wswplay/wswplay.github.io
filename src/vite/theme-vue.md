@@ -4,8 +4,11 @@ title: Vue3 Vitepress官方文档主题介绍及使用
 
 # Vue3 官方文档 theme 介绍
 
-此主题源于/用于`Vue3`官方文档，本站也是。[Github 地址](https://github.com/vuejs/theme)  
+此主题源于/用于`Vue3`官方文档，本站也是。
 由于主题本身没有说明文档，且有些地方是硬编码，所以不太好直接用。只能看源码，去一点点的照着来。
+
+【[Github 库地址](https://github.com/vuejs/theme)】  
+【[css 全局变量地址](https://github.com/vuejs/theme/blob/0496c884e37cf52a3c5775aec8d57bdd4c8e20af/src/core/styles/variables.css)】
 
 ## 站点配置
 
@@ -25,7 +28,8 @@ export default defineConfigWithTheme<ThemeConfig>({
 
 ## 主题配置
 
-主题配置文件：`.vitepress/theme/index.ts`。
+主题配置文件：`.vitepress/theme/index.ts`。  
+以下还列出了可用的`slot`名称。
 
 ```ts
 import { VPTheme } from "@vue/theme";
@@ -38,13 +42,14 @@ export default {
     return h(VPTheme.Layout, null, {
       "navbar-title": () => h(NavbarTitle),
       // 还有下面这些slots可用
-      'sidebar-top': () => h('div', 'hello top'),
-      'sidebar-bottom': () => h('div', 'hello bottom'),
-      'content-top': () => h('h1', 'Announcement!'),
-      'content-bottom': () => h('div', 'Some ads'),
-      'aside-top': () => h('div', 'this could be huge'),
-      'aside-mid': () => h('div', { style: { height: '300px' }}, 'Sponsors'),
-      'aside-bottom': () => h('div', { style: { height: '300px' }}, 'Sponsors'),
+      "sidebar-top": () => h("div", "hello top"),
+      "sidebar-bottom": () => h("div", "hello bottom"),
+      "content-top": () => h("h1", "Announcement!"),
+      "content-bottom": () => h("div", "Some ads"),
+      "aside-top": () => h("div", "this could be huge"),
+      "aside-mid": () => h("div", { style: { height: "300px" } }, "Sponsors"),
+      "aside-bottom": () =>
+        h("div", { style: { height: "300px" } }, "Sponsors"),
     });
   },
 };
