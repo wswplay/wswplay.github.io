@@ -3,6 +3,8 @@ import { h } from "vue";
 import NavbarTitle from "./components/NavbarTitle.vue";
 import Poetry from "./components/Poetry.vue";
 
+import "./override.css";
+
 export default {
   ...VPTheme,
   Layout() {

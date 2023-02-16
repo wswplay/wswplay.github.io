@@ -16,7 +16,7 @@ outline: deep
 站点配置文件：`.vitepress/config.ts`。  
 用非默认主题时，`Vitepress`建议用`defineConfigWithTheme`方法，提供类型推导。
 
-```ts
+```ts {6}
 import { defineConfigWithTheme } from "vitepress";
 import { type Config as ThemeConfig } from "@vue/theme";
 import baseConfig from "@vue/theme/config";
@@ -89,7 +89,7 @@ export default {
 
 ### 注册全局组件/数据
 
-```ts
+```ts {8-11}
 import { VPTheme } from "@vue/theme";
 import { h, App } from "vue";
 import VueSchoolLink from './components/VueSchoolLink.vue'

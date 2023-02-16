@@ -18,6 +18,9 @@ export default defineConfigWithTheme<ThemeConfig>({
       copyright: `Copyright © 2020-${new Date().getFullYear()} 边城`,
     },
   },
+  markdown: {
+    lineNumbers: true,
+  },
 });
 
 // 工具函数
@@ -70,9 +73,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
       },
       {
         text: "Vue2原理",
-        items: [
-          { text: "DefineProperty", link: "/vue/vue2/defineProperty" },
-        ],
+        items: [{ text: "DefineProperty", link: "/vue/vue2/defineProperty" }],
       },
     ],
     "/vite/": [
@@ -114,9 +115,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
     "/core/": [
       {
         text: "JavaScript基础",
-        items: [
-          { text: "简介", link: "/core/" },
-        ],
+        items: [{ text: "简介", link: "/core/" }],
       },
     ],
   };
