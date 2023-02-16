@@ -1,5 +1,6 @@
 ---
 title: Vue3 Vitepress官方文档主题介绍及使用
+outline: deep
 ---
 
 # Vue3 官方文档 theme 介绍
@@ -13,7 +14,7 @@ title: Vue3 Vitepress官方文档主题介绍及使用
 ## 站点配置
 
 站点配置文件：`.vitepress/config.ts`。  
-用非默认主题时，`Vitepress`建议用`defineConfigWithTheme`方法定义一下设置文件。
+用非默认主题时，`Vitepress`建议用`defineConfigWithTheme`方法，提供类型推导。
 
 ```ts
 import { defineConfigWithTheme } from "vitepress";
@@ -30,7 +31,7 @@ export default defineConfigWithTheme<ThemeConfig>({
 
 主题配置文件：`.vitepress/theme/index.ts`。
 
-#### 启用主题和各种 slot
+### 启用主题和各种 slot
 
 ```ts
 import { VPTheme } from "@vue/theme";
@@ -56,7 +57,7 @@ export default {
 };
 ```
 
-#### 注册全局组件/数据
+### 注册全局组件/数据
 
 ```ts
 import { VPTheme } from "@vue/theme";
@@ -73,7 +74,7 @@ export default {
 };
 ```
 
-#### 相关类型定义
+### 相关类型定义
 
 ```ts
 export type Awaitable<T> = T | PromiseLike<T>;
