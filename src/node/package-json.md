@@ -31,9 +31,24 @@ title: package.json生成,设置,各字段介绍与作用
 不要使用 browser 字段，永远使用 module 字段支持 Tree-shaking。如必须支持 umd ，可以添加至 umd:main 字段（[Specifying builds in package.json](https://github.com/developit/microbundle#specifying-builds-in-packagejson)）
 :::
 
-## repository
+## type
 
-用于指定代码所在的位置，通常使用`Github`库地址。
+用于定义 package.json 文件和该文件所在目录根目录中 `.js` 文件和无扩展名文件的模块化处理规范，默认值为`'commonjs'`。
+
+> 在早期的 nodejs 版本中，node 仅支持 Commonjs 模块化方案，不过在 nodejs 版本 13.2.0 中，node 正式支持 ES Modules 模块化，在 package.json 中的 type 字段声明。
+
+```json
+{
+  "type": "module"
+}
+```
+
+:::tip
+
+- type 字段省略，则默认采用 commonjs 规范，当指定值为 module 时采用 ESModule 规范
+- node 官方建议包的开发者明确指定 package.json 中的 type 字段值
+- 不论 package.json 中的 type 字段为何值，.mjs 的文件都按照 es 模块来处理，.cjs 的文件都按照 commonjs 模块来处理  
+  :::
 
 ## types / typings
 
@@ -99,5 +114,20 @@ title: package.json生成,设置,各字段介绍与作用
     "./macros-global": "./macros-global.d.ts",
     "./ref-macros": "./ref-macros.d.ts"
   }
+}
+```
+
+## repository
+
+用于指定代码所在的位置，通常使用`Github`库地址。
+
+## packageManager
+
+定义处理当前项目时预期使用的包管理器，该领域目前处于`试验阶段`。  
+它可以设置为任何[支持的包管理器](http://nodejs.cn/api-v18/corepack.html#supported-package-managers)，并确保您的团队使用完全相同的包管理器版本，而无需安装 Node.js 以外的任何其他东西。
+
+```json
+{
+  "packageManager": "pnpm@7.27.0"
 }
 ```

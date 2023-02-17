@@ -4,10 +4,14 @@ title: 用Vitepress重写你的博客
 
 # 基于 Vite 和 Vue 的静态网页生成器
 
+## 中文文档
+
+【[Vitepress 中文文档](https://process1024.github.io/vitepress/)】
+
 ## 集成自动化部署
 
 先看`Vitepress`官方[部署文档](https://vitepress.vuejs.org/guide/deploying#github-pages)。  
-但是，它的这个文档我多次部署失败:sweat_smile:。算了。    
+但是，它的这个文档我多次部署失败:sweat_smile:。算了。  
 我用了这个：[deploy.yml](https://github.com/wswplay/wswplay.github.io/blob/main/.github/workflows/deploy.yml)
 
 ```yaml
