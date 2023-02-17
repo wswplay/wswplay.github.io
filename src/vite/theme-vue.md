@@ -104,7 +104,7 @@ export default {
 };
 ```
 
-### 相关类型定义
+### 类型定义
 
 ```ts
 export type Awaitable<T> = T | PromiseLike<T>;
