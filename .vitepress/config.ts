@@ -39,24 +39,24 @@ function geneNav(): ThemeConfig["nav"] {
     //   ],
     // },
     {
-      text: "Vue",
+      text: "Vue·周边",
       activeMatch: "^/vue/",
       link: "/vue/vue3/",
     },
     {
-      text: "Vite",
+      text: "Vite·Press",
       activeMatch: "^/vite/",
       link: "/vite/",
     },
     {
-      text: "Node",
+      text: "Node·周边",
       activeMatch: "^/node/",
       link: "/node/",
     },
     {
-      text: "JS基础",
-      activeMatch: "^/core/",
-      link: "/core/",
+      text: "Js·Ts",
+      activeMatch: "^/core",
+      link: "/core/javascript/",
     },
   ];
 }
@@ -115,7 +115,11 @@ function geneSidebar(): ThemeConfig["sidebar"] {
     "/core/": [
       {
         text: "JavaScript基础",
-        items: [{ text: "简介", link: "/core/" }],
+        items: [{ text: "简介", link: "/core/javascript/" }],
+      },
+      {
+        text: "TypeScript基础",
+        items: [{ text: "简介", link: "/core/typescript/" }],
       },
     ],
   };
