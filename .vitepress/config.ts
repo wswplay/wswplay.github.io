@@ -88,7 +88,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
       {
         text: "Vite",
         items: [
-          { text: "Vite", link: "/vite/" },
+          { text: "Vite基础", link: "/vite/" },
           { text: "Rollup", link: "/vite/rollup" },
         ],
       },
