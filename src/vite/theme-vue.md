@@ -16,13 +16,14 @@ outline: deep
 站点配置文件：`.vitepress/config.ts`。  
 用非默认主题时，`Vitepress`建议用`defineConfigWithTheme`方法，提供类型推导。
 
-```ts {6}
+```ts {7}
 import { defineConfigWithTheme } from "vitepress";
 import { type Config as ThemeConfig } from "@vue/theme";
 import baseConfig from "@vue/theme/config";
 
 export default defineConfigWithTheme<ThemeConfig>({
-  extends: baseConfig, // baseConfig必须要有
+  // baseConfig必须有，否则会报错。待研究
+  extends: baseConfig, // [!code focus]
   ...
 });
 ```
@@ -125,3 +126,10 @@ const VPTheme: Theme = {
   NotFound: VPNotFound,
 };
 ```
+
+## 其他配置
+
+### 覆写行号颜色
+
+Markdown 行号的颜色配置的太深了，以至白色主题时，看不见行号。  
+在`.vitepress/theme`中，添加 [override.css](https://github.com/wswplay/wswplay.github.io/blob/main/.vitepress/theme/override.css) 文件，单独设置行号的颜色即可。
