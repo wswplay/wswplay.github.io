@@ -104,6 +104,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
       {
         text: "周边工具",
         items: [
+          { text: "本地调试Nodejs(浏览器)", link: "/node/debug" },
           { text: "npm", link: "/node/npm" },
           { text: "package.json", link: "/node/package-json" },
           { text: "nvm", link: "/node/nvm" },
