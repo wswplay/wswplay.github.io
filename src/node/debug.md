@@ -1,5 +1,5 @@
 ---
-title: 本地怎么调试nodejs文件项目(浏览器)
+title: 本地怎么调试nodejs项目文件(浏览器)
 outline: deep
 ---
 
@@ -8,7 +8,7 @@ outline: deep
 **调试**，是开发、学习、借鉴的第一步。  
 是前进的阶梯，是更上一层楼的敲门砖。——鲁迅没说过这话:laughing:
 
-## 浏览器本地调试 Nodejs
+## 本地调试 Nodejs(浏览器)
 
 ### --inspect-brk
 
