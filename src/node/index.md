@@ -23,7 +23,11 @@ if (existsSync("/etc/passwd")) console.log("The path exists.");
 
 ### fs.readdirSync(path[, options])
 
-读取目录的内容。
+同步读取**目录**的内容。
+
+### fs.readFileSync(path[, options])
+
+同步读取**文件**的内容。
 
 ### fs.writeFileSync(file, data[, options])
 
@@ -36,3 +40,18 @@ if (existsSync("/etc/passwd")) console.log("The path exists.");
 ### fs.copyFileSync(src, dest[, mode])
 
 同步地复制 src 到 dest。
+
+## url 模块
+
+### url.fileURLToPath(url)
+
+此函数可确保正确解码百分比编码字符，并确保跨平台有效的绝对路径字符串。
+
+```js
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+
+new URL("file:///C:/path/").pathname; // 错误: /C:/path/
+fileURLToPath("file:///C:/path/"); // 正确: C:\path\ (Windows)
+```
