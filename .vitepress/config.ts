@@ -98,7 +98,8 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         text: "Node基础",
         items: [
           { text: "简介", link: "/node/" },
-          { text: "path方法", link: "/node/path" },
+          { text: "path路径", link: "/node/path" },
+          { text: "process进程", link: "/node/process" },
         ],
       },
       {
@@ -107,6 +108,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "本地调试Node项目文件", link: "/node/debug" },
           { text: "写个Node命令行工具", link: "/node/cli" },
           { text: "npm", link: "/node/npm" },
+          { text: "npx", link: "/node/npx" },
           { text: "package.json", link: "/node/package-json" },
           { text: "nvm", link: "/node/nvm" },
           { text: "git", link: "/node/git" },
