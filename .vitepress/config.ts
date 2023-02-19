@@ -131,6 +131,10 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "用tsx直接执行ts文件", link: "/core/typescript/tsx" },
         ],
       },
+      {
+        text: "周边及工具",
+        items: [{ text: "Markdown及生成目录", link: "/core/tools/markdown" }],
+      },
     ],
   };
 }
