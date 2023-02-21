@@ -110,6 +110,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "npm", link: "/node/npm" },
           { text: "npx", link: "/node/npx" },
           { text: "package.json", link: "/node/package-json" },
+          { text: "pnpm和monorepo", link: "/node/pnpm-monorepo" },
           { text: "nvm", link: "/node/nvm" },
           { text: "git", link: "/node/git" },
           { text: "Github", link: "/node/github" },
