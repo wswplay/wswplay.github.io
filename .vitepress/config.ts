@@ -114,6 +114,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "nvm", link: "/node/nvm" },
           { text: "git", link: "/node/git" },
           { text: "Github", link: "/node/github" },
+          { text: "npm-run-all", link: "/node/npm-run-all" },
         ],
       },
     ],
