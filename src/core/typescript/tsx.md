@@ -55,4 +55,5 @@ npx tsx ...
 
 ### 3、输入调试命令，开调！
 
+由于我是全局安装 tsx，直接输入命令 `tsx src/node/cli.ts dev docs`，开调！
 ![An image](./img/code.png)
