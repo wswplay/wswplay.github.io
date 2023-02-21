@@ -131,7 +131,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         items: [
           { text: "基本认知", link: "/core/typescript/" },
           { text: "declare及声明文件", link: "/core/typescript/declare" },
-          { text: "用tsx直接执行ts文件", link: "/core/typescript/tsx" },
+          { text: "tsx执行ts及VSCode调试ts", link: "/core/typescript/tsx" },
         ],
       },
       {

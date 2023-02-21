@@ -1,8 +1,9 @@
 ---
-title: tsx直接执行ts文件,ts文件执行器
+title: tsx怎么执行ts文件,VSCode调试ts文件
+outline: deep
 ---
 
-# tsx：TS 文件执行器
+# tsx 执行 ts 文件，VSCode 调试 ts 文件
 
 众所周知，Node.js 并不支持直接执行 TS 文件，一般借助第三方才能执行。如之前的 ts-node，现在的 tsx。
 
@@ -10,7 +11,7 @@ tsx：`TypeScript Execute` 的缩写，出自 [esbuild](https://github.com/esbui
 
 【[Github 库地址](https://github.com/esbuild-kit/tsx)】
 
-## 安装
+## tsx 安装与使用
 
 ### 全局安装
 
@@ -41,3 +42,17 @@ npm install --save-dev tsx
 ```bash
 npx tsx ...
 ```
+
+## VSCode 调试 ts 文件
+
+### 1、标注断点位置
+
+![An image](./img/point.png)
+
+### 2、命令行切换到 JavaScript 调试终端
+
+![An image](./img/switch.png)
+
+### 3、输入调试命令，开调！
+
+![An image](./img/code.png)
