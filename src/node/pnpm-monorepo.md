@@ -1,5 +1,6 @@
 ---
 title: pnpm和monorepo介绍与使用方法
+# outline: deep
 ---
 # pnpm和monorepo介绍与使用
 

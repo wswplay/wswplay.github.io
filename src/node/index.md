@@ -41,6 +41,16 @@ if (existsSync("/etc/passwd")) console.log("The path exists.");
 
 同步地复制 src 到 dest。
 
+## fs-extra(fs 扩展)
+
+### fs.pathExistsSync(path: string): boolean
+
+`fs.existsSync(path)` 的别名。如果路径存在则返回 true，否则返回 false。
+
+### fs.pathExists(path: string)
+
+异步。返回值为 `Promise<boolean>`。如果路径存在则返回 true，否则返回 false。
+
 ## url 模块
 
 ### url.fileURLToPath(url)
