@@ -43,6 +43,8 @@ if (existsSync("/etc/passwd")) console.log("The path exists.");
 
 ## fs-extra(fs 扩展)
 
+【[Github 地址](https://github.com/jprichardson/node-fs-extra)】
+
 ### fs.pathExistsSync(path: string): boolean
 
 `fs.existsSync(path)` 的别名。如果路径存在则返回 true，否则返回 false。

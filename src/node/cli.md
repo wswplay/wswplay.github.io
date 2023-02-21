@@ -22,7 +22,7 @@ touch index.js
 code .
 ```
 
-## 在文件中写入代码
+## 初级：打印个 Hello 先
 
 ### index.js
 
@@ -90,9 +90,58 @@ xiao-cli
 # Hello, Cli
 ```
 
-### where xiao-cli
+### 初级目录结构
 
-**看看命令到底是安装在什么地方呢？**
+```bash
+first-node-cli
+├── package.json
+└── index.js
+```
+
+## 进阶：参数处理
+
+### process.argv
+
+`process.argv` 返回一个数组，前两位固定为 `node 程序的路径`和`脚本存放的位置`。  
+从第 3 位开始才是我们输入的内容。
+
+```js
+// index.js
+#!/usr/bin/env node
+
+console.log(process.argv);
+```
+
+执行：`./xiao.js --template vue`
+
+```bash
+./xiao.js --template vue
+```
+
+```bash
+[
+  '/Users/youraccount/.nvm/versions/node/v18.14.0/bin/node',
+  '/Users/youraccount/study/node-lab/first-node-cli/index.js',
+  '--template',
+  'vue'
+]
+```
+
+执行：`./xiao.js --template=vue`
+
+```bash
+./xiao.js --template=vue
+```
+
+```bash
+[
+  '/Users/youraccount/.nvm/versions/node/v18.14.0/bin/node',
+  '/Users/youraccount/study/node-lab/first-node-cli/index.js',
+  '--template=vue'
+]
+```
+
+## PS：命令安装的位置
 
 ```bash
 where xiao-cli
