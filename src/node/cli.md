@@ -90,15 +90,15 @@ xiao-cli
 # Hello, Cli
 ```
 
-### 初级目录结构
+### 目录结构
 
-```bash
+```md
 first-node-cli
 ├── package.json
 └── index.js
 ```
 
-## 进阶：参数处理
+## 进阶：整个高级点的
 
 ### process.argv
 
@@ -112,10 +112,10 @@ first-node-cli
 console.log(process.argv);
 ```
 
-执行：`./xiao.js --template vue`
+执行：`./index.js --template vue`
 
 ```bash
-./xiao.js --template vue
+./index.js --template vue
 ```
 
 ```bash
@@ -127,10 +127,10 @@ console.log(process.argv);
 ]
 ```
 
-执行：`./xiao.js --template=vue`
+执行：`./index.js --template=vue`
 
 ```bash
-./xiao.js --template=vue
+./index.js --template=vue
 ```
 
 ```bash
@@ -139,6 +139,66 @@ console.log(process.argv);
   '/Users/youraccount/study/node-lab/first-node-cli/index.js',
   '--template=vue'
 ]
+```
+
+### commander 处理参数
+
+当参数很复杂时，需要借助第三方工具处理。【[Github 地址](https://github.com/tj/commander.js)】
+
+**在安装前，先调整目录结构：**  
+1、新建 bin 目录专门放置命令文件，将 index.js 移入其中。修改内容为：
+
+```js
+// index.js
+#!/usr/bin/env node
+const { Command } = require("commander");
+const programer = new Command();
+
+programer.version(require("../package.json").version);
+programer.parse(process.argv);
+```
+
+2、在 package.json 中添加如下配置：
+
+```json {2-4}
+{
+  "bin": {
+    "xiao-cli": "bin/index.js"
+  }
+}
+```
+
+3、安装 commander
+
+```bash
+pnpm i commander -S
+```
+
+运行命令看看效果
+
+```bash
+xiao-cli -v
+# error: unknown option '-v'
+# V 要大写才行
+xiao-cli -V
+# 1.0.0
+xiao-cli -h
+# Usage: xiao-cli [options]
+# Options:
+#   -V, --version  output the version number
+#   -h, --help     display help for command
+```
+
+### inquirer 添加问答
+
+### 目录结构
+
+```md
+first-node-cli
+├── bin
+│ └── index.js
+├── package.json
+└── pnpm-lock.yaml
 ```
 
 ## PS：命令安装的位置
