@@ -191,6 +191,59 @@ xiao-cli -h
 
 ### inquirer 添加问答
 
+```bash
+pnpm i inquirer -S
+```
+
+```js
+// bin/index.js
+#!/usr/bin/env node
+
+import { Command } from "commander";
+import inquirer from "inquirer";
+// 原生import方式引入json时，需要断言类型才不会报错。
+// 断言是一个实验性功能，所以控制台会有提示。
+import pkgInfo from "../package.json" assert { type: "json" };
+
+const programer = new Command();
+
+const initAction = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "请输入项目名称:",
+        name: "name",
+      },
+    ])
+    .then((answers) => {
+      console.log("项目名为：", answers.name);
+      console.log("正在拷贝项目，请稍等");
+    });
+};
+
+programer.command("init").description("创建项目").action(initAction);
+
+programer.version(pkgInfo.version);
+programer.parse(process.argv);
+```
+
+`package.json` 添加如下配置，这样才能用 `import` 关键字导入。
+
+```json
+// package.json
+{
+  "type": "module"
+}
+```
+看看效果如何？如下，符合预期。
+```bash
+xiao-cli init
+# ? 请输入项目名称: three-body
+# 项目名为： three-body
+# 正在拷贝项目，请稍等
+```
+
 ### 目录结构
 
 ```md
