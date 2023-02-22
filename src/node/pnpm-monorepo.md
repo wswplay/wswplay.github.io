@@ -2,7 +2,8 @@
 title: pnpm和monorepo介绍与使用方法
 # outline: deep
 ---
-# pnpm和monorepo介绍与使用
+
+# pnpm 和 monorepo 介绍与使用
 
 ## 安装 pnpm
 
@@ -41,6 +42,17 @@ dependencies 中列出的依赖包
 pnpm install typescript -D -W
 # 安装局部依赖
 pnpm install axios -r --filter @xiao/vue
+```
+
+## pnpm 报错集锦
+
+### ERR_PNPM_REGISTRIES_MISMATCH
+
+说是什么源切换导致的，我也没明白。简单粗暴解决了。
+
+```bash
+pnpm install -g
+pnpm install -g pnpm
 ```
 
 ## 创建 monorepo 项目

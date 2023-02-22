@@ -98,7 +98,7 @@ first-node-cli
 └── index.js
 ```
 
-## 进阶：整个高级点的
+## 进阶：整点高级的
 
 ### process.argv
 
@@ -236,7 +236,7 @@ programer.parse(process.argv);
   "type": "module"
 }
 ```
-看看效果如何？如下，符合预期。
+看看效果如何？如下，符合预期。:blush:
 ```bash
 xiao-cli init
 # ? 请输入项目名称: three-body
