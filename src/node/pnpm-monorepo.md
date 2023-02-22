@@ -14,7 +14,7 @@ npm install -g pnpm
 pnpm -v
 ```
 
-## pnpm 命令
+## pnpm 命令和参数
 
 ### -w, --workspace-root
 
@@ -42,6 +42,16 @@ dependencies 中列出的依赖包
 pnpm install typescript -D -W
 # 安装局部依赖
 pnpm install axios -r --filter @xiao/vue
+```
+
+### pnpm link --global, -g
+
+链接包。用于调试或其他作用。
+
+```bash
+pnpm link <dir>
+pnpm link --global
+pnpm link --global <pkg>
 ```
 
 ## pnpm 报错集锦
