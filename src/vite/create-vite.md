@@ -32,7 +32,7 @@ npm init foo -- --hello -> npx -- create-foo --hello
 因此，`npm create vite@latest my-vue-app -- --template vue` 实际上等于：
 
 ```bash
-npx create-vite@latest my-vue-app -- --template vue
+npx create-vite@latest my-vue-app --template vue
 ```
 
 **说人话就是**：临时安装 [create-vite](https://github.com/vitejs/vite/tree/main/packages/create-vite) 包，并执行 `create-vite` 命令，用后即删。
