@@ -41,6 +41,10 @@ if (existsSync("/etc/passwd")) console.log("The path exists.");
 
 同步地复制 src 到 dest。
 
+### fs.mkdirSync(path)
+
+同步地创建目录。
+
 ## fs-extra(fs 扩展)
 
 【[Github 地址](https://github.com/jprichardson/node-fs-extra)】

@@ -89,7 +89,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         text: "Vite",
         items: [
           { text: "Vite基础", link: "/vite/" },
-          { text: "Vite项目怎么自动生成", link: "/vite/create-vite" },
+          { text: "Vite怎么自动生成项目", link: "/vite/create-vite" },
           { text: "Rollup", link: "/vite/rollup" },
         ],
       },
