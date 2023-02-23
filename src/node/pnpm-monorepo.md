@@ -58,6 +58,14 @@ pnpm link --global <pkg>
 
 ### ERR_PNPM_REGISTRIES_MISMATCH
 
+```bash
+ERR_PNPM_REGISTRIES_MISMATCH:
+This modules directory was created using the following registries configuration:
+ {"default":"https://registry.npm.taobao.org/"}.
+ The current configuration is {"default":"https://registry.npmmirror.com/"}.
+ To recreate the modules directory using the new settings, run "pnpm install".
+```
+
 说是什么源切换导致的，我也没明白。简单粗暴解决了。
 
 ```bash

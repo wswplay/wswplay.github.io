@@ -195,7 +195,7 @@ xiao-cli -h
 pnpm i inquirer -S
 ```
 
-```js
+```js{12-27}
 // bin/index.js
 #!/usr/bin/env node
 
@@ -236,13 +236,61 @@ programer.parse(process.argv);
   "type": "module"
 }
 ```
+
 看看效果如何？如下，符合预期。:blush:
+
 ```bash
 xiao-cli init
 # ? 请输入项目名称: three-body
 # 项目名为： three-body
 # 正在拷贝项目，请稍等
 ```
+
+### shelljs 执行脚本
+
+```bash
+pnpm i shelljs -S
+```
+
+`bin/index.js` 添加高亮部分内容。
+
+```js{8}
+// bin/index.js
+const initAction = () => {
+  inquirer
+    .prompt(...)
+    .then((answers) => {
+      console.log("项目名为：", answers.name);
+      console.log("正在拷贝项目，请稍等");
+      cloneViteRepo(answers.name);
+    });
+};
+// 克隆Vite项目
+function cloneViteRepo(newName) {
+  const remote = "https://github.com/vitejs/vite";
+  const curName = "vite";
+
+  shell.exec(
+    `
+      git clone ${remote} --depth=1
+      mv ${curName} ${newName}
+      rm -rf ./${newName}/.git
+      cd ${newName}
+      pnpm i
+    `,
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      console.log(`${stdout}`);
+      console.log(`${stderr}`);
+    }
+  );
+}
+```
+
+大功告成。运行 `xiao-cli` 就能克隆 Vite 项目啦！:100:
 
 ### 目录结构
 
