@@ -4,6 +4,10 @@ title: Vite基本使用
 
 # Vite：为开发提供极速响应
 
+[Vite](https://github.com/vitejs/vite)，是一种新型前端构建工具，主要由两部分组成：    
+1、**一个开发服务器**。基于 `原生 ES 模块` ，提供模块热更新（HMR）。  
+2、**一套构建指令**。基于 [Rollup.js](https://rollupjs.org/) ，可输出用于生产环境的高度优化过的静态资源。
+
 ## 用 Vite 快速构建 Vue 项目
 
 ```bash
