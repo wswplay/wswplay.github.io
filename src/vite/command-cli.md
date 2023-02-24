@@ -1,8 +1,8 @@
 ---
-title: Vite命令源码解析
+title: vite命令源码解析
 ---
 
-# Vite 命令源码解析
+# vite 命令源码解析
 
 【[Github 地址](https://github.com/vitejs/vite/tree/main/packages/vite)】
 
@@ -53,8 +53,83 @@ try {
 export async function createServer(
   inlineConfig: InlineConfig = {}
 ): Promise<ViteDevServer> {
+  // 全部配置
   const config = await resolveConfig(inlineConfig, "serve");
+  // 获取根目录、服务器配置
+  const { root, server: serverConfig } = config;
+  // 插件容器？这是干嘛用的？
   const container = await createPluginContainer(config, moduleGraph, watcher);
+  // 服务实例真身
+  const server: ViteDevServer = {
+    // 监听服务
+    async listen(port?: number, isRestart?: boolean) {
+      // 开启服务，比如自动打开浏览器
+      await startServer(server, port, isRestart);
+      if (httpServer) {
+        // 解析组装url链接 如http://localhost:3062/
+        server.resolvedUrls = await resolveServerUrls(
+          httpServer,
+          config.server,
+          config
+        );
+      }
+      return server;
+    },
+    // 打印信息
+    printUrls() {
+      if (server.resolvedUrls) {
+        printServerUrls(
+          server.resolvedUrls,
+          serverConfig.host,
+          config.logger.info
+        );
+      } else if (middlewareMode) {
+        throw new Error("cannot print server URLs in middleware mode.");
+      } else {
+        throw new Error(
+          "cannot print server URLs before server.listen is called."
+        );
+      }
+    },
+  };
+  // 调用 configureServer 钩子
+  const postHooks: ((() => void) | void)[] = [];
+  for (const hook of config.getSortedPluginHooks("configureServer")) {
+    postHooks.push(await hook(server));
+  }
+  // 是否支持跨域，默认支持
+  const { cors } = serverConfig;
+  if (cors !== false) {
+    middlewares.use(corsMiddleware(typeof cors === "boolean" ? {} : cors));
+  }
+  // 代理设置
+  const { proxy } = serverConfig;
+  if (proxy) {
+    middlewares.use(proxyMiddleware(httpServer, proxy, config));
+  }
+  // 运行 post 后置钩子
+  postHooks.forEach((fn) => fn && fn());
+  // 初始化服务
+  let initingServer: Promise<void> | undefined;
+  let serverInited = false;
+  const initServer = async () => {
+    if (serverInited) {
+      return;
+    }
+    if (initingServer) {
+      return initingServer;
+    }
+    initingServer = (async function () {
+      await container.buildStart({});
+      if (isDepsOptimizerEnabled(config, false)) {
+        // non-ssr
+        await initDepsOptimizer(config, server);
+      }
+      initingServer = undefined;
+      serverInited = true;
+    })();
+    return initingServer;
+  };
 }
 ```
 
@@ -126,5 +201,46 @@ async function runConfigHook(...){
     }
   }
   return conf;
+}
+```
+
+### startServer
+
+```ts
+async function startServer(
+  server: ViteDevServer,
+  inlinePort?: number,
+  isRestart: boolean = false
+): Promise<void> {
+  const httpServer = server.httpServer;
+  if (!httpServer) {
+    throw new Error("Cannot call server.listen in middleware mode.");
+  }
+
+  const options = server.config.server;
+  // 端口
+  const port = inlinePort ?? options.port ?? DEFAULT_DEV_PORT;
+  // host设置
+  const hostname = await resolveHostname(options.host);
+  // 协议
+  const protocol = options.https ? "https" : "http";
+  const serverPort = await httpServerStart(httpServer, {
+    port,
+    strictPort: options.strictPort,
+    host: hostname.host,
+    logger: server.config.logger,
+  });
+  // 是否自动打开浏览器
+  if (options.open && !isRestart) {
+    const path =
+      typeof options.open === "string" ? options.open : server.config.base;
+    openBrowser(
+      path.startsWith("http")
+        ? path
+        : new URL(path, `${protocol}://${hostname.name}:${serverPort}`).href,
+      true,
+      server.config.logger
+    );
+  }
 }
 ```
