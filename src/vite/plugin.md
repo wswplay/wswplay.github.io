@@ -10,6 +10,9 @@ Vite 插件扩展了设计出色的 Rollup 接口，带有一些 Vite 独有的�
 
 ## 举个例子
 
+实现功能：   
+1、设置服务端口为：`3456`   
+
 ```js
 // vite-plugin-demo.ts
 import { Plugin } from "vite";
@@ -17,12 +20,15 @@ import { Plugin } from "vite";
 export default function viteDemo(): Plugin {
   return {
     name: "vite:demo",
-    enforce: "pre",
-    config(config, envConfig) {
-      console.log("vite-demo-config: ", config, envConfig);
+    config(config) {
+      return {
+        server: {
+          port: config.server?.port || 3456,
+        },
+      };
     },
-    configResolved(refConfig) {
-      console.log("vite-demo-resolved: ", refConfig);
+    configResolved(resConfig) {
+      console.log("vite-demo-resolved: ", resConfig.server);
     },
   };
 }
@@ -71,19 +77,8 @@ export default defineConfig({
 ### 源于 Rollup 的通用钩子
 
 ::: tip
-服务器启动时被调用：
 
-- options
-- buildStart
-
-在每个传入模块请求时被调用：
-
-- resolveId
-- load
-- transform
-
-服务器关闭时被调用：
-
-- buildEnd
-- closeBundle
+- 服务器启动时被调用：`options`、`buildStart`
+- 在每个传入模块请求时被调用：`resolveId`、`load`、`transform`
+- 服务器关闭时被调用：`buildEnd`、`closeBundle`
   :::
