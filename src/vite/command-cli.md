@@ -57,6 +57,12 @@ export async function createServer(
   const config = await resolveConfig(inlineConfig, "serve");
   // 获取根目录、服务器配置
   const { root, server: serverConfig } = config;
+  // 声明中间件
+  const middlewares = connect() as Connect.Server
+  // 创建http服务对象
+  const httpServer = middlewareMode
+    ? null
+    : await resolveHttpServer(serverConfig, middlewares, httpsOptions)
   // 插件容器？这是干嘛用的？
   const container = await createPluginContainer(config, moduleGraph, watcher);
   // 服务实例真身

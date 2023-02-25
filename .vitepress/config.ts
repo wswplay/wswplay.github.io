@@ -78,21 +78,21 @@ function geneSidebar(): ThemeConfig["sidebar"] {
     ],
     "/vite/": [
       {
+        text: "Vite原理与周边",
+        items: [
+          { text: "Vite基础", link: "/vite/" },
+          { text: "vite命令源码浅析", link: "/vite/command-cli" },
+          { text: "Vite自动生成项目原理", link: "/vite/create-vite" },
+          { text: "Vite插件怎么写", link: "/vite/plugin" },
+          { text: "Rollup", link: "/vite/rollup" },
+        ],
+      },
+      {
         text: "Vitepress",
         items: [
           { text: "简介与功能", link: "/vite/vitepress" },
           { text: "默认主题(default)", link: "/vite/theme-default" },
           { text: "Vue官方主题(Vue3)", link: "/vite/theme-vue" },
-        ],
-      },
-      {
-        text: "Vite",
-        items: [
-          { text: "Vite基础", link: "/vite/" },
-          { text: "vite命令源码解析", link: "/vite/command-cli" },
-          { text: "Vite自动生成项目原理", link: "/vite/create-vite" },
-          { text: "Vite插件怎么写", link: "/vite/plugin" },
-          { text: "Rollup", link: "/vite/rollup" },
         ],
       },
     ],
