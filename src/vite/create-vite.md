@@ -14,7 +14,7 @@ npm create vite@latest my-vue-app -- --template vue
 ## `npm create x` 等于 `npx create-x`
 
 【[参考 npm 文档](http://nodejs.cn/npm/cli/v8/commands/npm-init/#forwarding-additional-options)】  
-【[npx 即 npm exec](/node/npx.html)】
+【[npx 即 npm exec](/node/external/npx.html)】
 
 ```bash
 npm init <package-spec> (same as `npx <package-spec>)

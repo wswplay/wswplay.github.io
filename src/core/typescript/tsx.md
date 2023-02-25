@@ -37,7 +37,7 @@ npm install --save-dev tsx
 }
 ```
 
-运行**二进制可执行文件**时，需要 [npx](/node/npx) 调用
+运行**二进制可执行文件**时，需要 [npx](/node/external/npx) 调用
 
 ```bash
 npx tsx ...

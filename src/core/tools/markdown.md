@@ -9,7 +9,7 @@ title: Markdown介绍语法方法使用
 Markdown 默认：外链-新窗口打开，内页-直接跳转。
 
 ```html
-<a href="/zh/guide/basic/operators.html" target="_blank">基础知识-位运算</a>
+<a href="/zh/guide/basic/operators.html" target="_blank" rel="noreferrer">基础知识-位运算</a>
 ```
 
 ## 目录结构生成
