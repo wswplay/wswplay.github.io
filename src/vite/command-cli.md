@@ -1,5 +1,6 @@
 ---
 title: vite命令源码解析
+outline: deep
 ---
 
 # vite 命令源码解析
@@ -63,10 +64,25 @@ export async function createServer(
   const httpServer = middlewareMode
     ? null
     : await resolveHttpServer(serverConfig, middlewares, httpsOptions)
+  // 开启文件wather功能
+  const watcher = chokidar.watch(
+    path.resolve(root),
+    resolvedWatchOptions,
+  ) as FSWatcher
+  // 初始化模块图谱，以存储模块信息及引用关系
+  const moduleGraph: ModuleGraph = new ModuleGraph((url, ssr) =>
+    container.resolveId(url, undefined, { ssr }),
+  )
   // 插件容器？这是干嘛用的？
   const container = await createPluginContainer(config, moduleGraph, watcher);
   // 服务实例真身
   const server: ViteDevServer = {
+    config,
+    middlewares,
+    httpServer,
+    watcher,
+    pluginContainer: container,
+    moduleGraph,
     // 监听服务
     async listen(port?: number, isRestart?: boolean) {
       // 开启服务，比如自动打开浏览器
@@ -98,22 +114,25 @@ export async function createServer(
       }
     },
   };
-  // 调用 configureServer 钩子
+  // 收集transformIndexHtml钩子任务
+  server.transformIndexHtml = createDevHtmlTransformFn(server)
+  // 执行configureServer钩子
   const postHooks: ((() => void) | void)[] = [];
   for (const hook of config.getSortedPluginHooks("configureServer")) {
     postHooks.push(await hook(server));
   }
-  // 是否支持跨域，默认支持
+  // 执行一系列中间件
+  // 执行中间件：是否支持跨域，默认支持
   const { cors } = serverConfig;
   if (cors !== false) {
     middlewares.use(corsMiddleware(typeof cors === "boolean" ? {} : cors));
   }
-  // 代理设置
+  // 执行中间件：代理设置
   const { proxy } = serverConfig;
   if (proxy) {
     middlewares.use(proxyMiddleware(httpServer, proxy, config));
   }
-  // 运行 post 后置钩子
+  // 执行configureServer 后置钩子
   postHooks.forEach((fn) => fn && fn());
   // 初始化服务
   let initingServer: Promise<void> | undefined;
@@ -247,6 +266,39 @@ async function startServer(
       true,
       server.config.logger
     );
+  }
+}
+```
+
+### resolveHttpServer
+```ts
+export async function resolveHttpServer(
+  { proxy }: CommonServerOptions,
+  app: Connect.Server,
+  httpsOptions?: HttpsServerOptions,
+): Promise<HttpServer> {
+  if (!httpsOptions) {
+    const { createServer } = await import('node:http')
+    return createServer(app)
+  }
+
+  // #484 fallback to http1 when proxy is needed.
+  if (proxy) {
+    const { createServer } = await import('node:https')
+    return createServer(httpsOptions, app)
+  } else {
+    const { createSecureServer } = await import('node:http2')
+    return createSecureServer(
+      {
+        // Manually increase the session memory to prevent 502 ENHANCE_YOUR_CALM
+        // errors on large numbers of requests
+        maxSessionMemory: 1000,
+        ...httpsOptions,
+        allowHTTP1: true,
+      },
+      // @ts-expect-error TODO: is this correct?
+      app,
+    ) as unknown as HttpServer
   }
 }
 ```
