@@ -101,7 +101,10 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         text: "Node基础",
         items: [
           { text: "简介", link: "/node/core/" },
+          { text: "fs文件系统", link: "/node/core/fs" },
+          { text: "url模块", link: "/node/core/url" },
           { text: "path路径", link: "/node/core/path" },
+          { text: "http模块", link: "/node/core/http" },
           { text: "process进程", link: "/node/core/process" },
         ],
       },
