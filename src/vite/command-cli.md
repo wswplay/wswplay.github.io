@@ -59,20 +59,20 @@ export async function createServer(
   // 获取根目录、服务器配置
   const { root, server: serverConfig } = config;
   // 声明中间件
-  const middlewares = connect() as Connect.Server
+  const middlewares = connect() as Connect.Server;
   // 创建http服务对象
   const httpServer = middlewareMode
     ? null
-    : await resolveHttpServer(serverConfig, middlewares, httpsOptions)
+    : await resolveHttpServer(serverConfig, middlewares, httpsOptions);
   // 开启文件wather功能
   const watcher = chokidar.watch(
     path.resolve(root),
-    resolvedWatchOptions,
-  ) as FSWatcher
+    resolvedWatchOptions
+  ) as FSWatcher;
   // 初始化模块图谱，以存储模块信息及引用关系
   const moduleGraph: ModuleGraph = new ModuleGraph((url, ssr) =>
-    container.resolveId(url, undefined, { ssr }),
-  )
+    container.resolveId(url, undefined, { ssr })
+  );
   // 插件容器？这是干嘛用的？
   const container = await createPluginContainer(config, moduleGraph, watcher);
   // 服务实例真身
@@ -115,7 +115,7 @@ export async function createServer(
     },
   };
   // 收集transformIndexHtml钩子任务
-  server.transformIndexHtml = createDevHtmlTransformFn(server)
+  server.transformIndexHtml = createDevHtmlTransformFn(server);
   // 执行configureServer钩子
   const postHooks: ((() => void) | void)[] = [];
   for (const hook of config.getSortedPluginHooks("configureServer")) {
@@ -160,6 +160,10 @@ export async function createServer(
 
 ## 流程辅助函数
 
+### resolveConfig
+
+解析配置。执行 `config`，`configResolved` 钩子。
+
 ```ts
 // 解析配置
 export async function resolveConfig(...){
@@ -173,12 +177,36 @@ export async function resolveConfig(...){
       configFileDependencies = loadResult.dependencies
     }
   }
-  // 排序分类插件
+  // 插件分类、排序
   const [prePlugins, normalPlugins, postPlugins] =
     sortUserPlugins(rawUserPlugins)
-  // 处理服务配置
+  // 执行config钩子
+  const userPlugins = [...prePlugins, ...normalPlugins, ...postPlugins]
+  config = await runConfigHook(config, userPlugins, configEnv)
+  // 解析服务配置
   const server = resolveServerOptions(resolvedRoot, config.server, logger)
+  // 执行worker config钩子
+  workerConfig = await runConfigHook(workerConfig, workerUserPlugins, configEnv)
+  // 定义返回配置
+  const resolved: ResolvedConfig = {
+    ...config,
+    ...resolvedConfig,
+  }
+  // 执行configResolved钩子
+  await Promise.all([
+    ...resolved
+      .getSortedPluginHooks('configResolved')
+      .map((hook) => hook(resolved)),
+    ...resolvedConfig.worker
+      .getSortedPluginHooks('configResolved')
+      .map((hook) => hook(workerResolved)),
+  ])
+  // 返回处理完结的配置
+  return resolved
 }
+```
+
+```ts
 export async function loadConfigFromFile(...){
   if (configFile) {
     // 如果入参指定了配置文件，就取路径
@@ -271,23 +299,24 @@ async function startServer(
 ```
 
 ### resolveHttpServer
+
 ```ts
 export async function resolveHttpServer(
   { proxy }: CommonServerOptions,
   app: Connect.Server,
-  httpsOptions?: HttpsServerOptions,
+  httpsOptions?: HttpsServerOptions
 ): Promise<HttpServer> {
   if (!httpsOptions) {
-    const { createServer } = await import('node:http')
-    return createServer(app)
+    const { createServer } = await import("node:http");
+    return createServer(app);
   }
 
   // #484 fallback to http1 when proxy is needed.
   if (proxy) {
-    const { createServer } = await import('node:https')
-    return createServer(httpsOptions, app)
+    const { createServer } = await import("node:https");
+    return createServer(httpsOptions, app);
   } else {
-    const { createSecureServer } = await import('node:http2')
+    const { createSecureServer } = await import("node:http2");
     return createSecureServer(
       {
         // Manually increase the session memory to prevent 502 ENHANCE_YOUR_CALM
@@ -297,8 +326,8 @@ export async function resolveHttpServer(
         allowHTTP1: true,
       },
       // @ts-expect-error TODO: is this correct?
-      app,
-    ) as unknown as HttpServer
+      app
+    ) as unknown as HttpServer;
   }
 }
 ```
