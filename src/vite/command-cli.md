@@ -165,18 +165,18 @@ export async function createServer(
   };
   if (!middlewareMode && httpServer) {
     // overwrite listen to init optimizer before server start
-    const listen = httpServer.listen.bind(httpServer)
+    const listen = httpServer.listen.bind(httpServer);
     httpServer.listen = (async (port: number, ...args: any[]) => {
       try {
-        await initServer()
+        await initServer();
       } catch (e) {
-        httpServer.emit('error', e)
-        return
+        httpServer.emit("error", e);
+        return;
       }
-      return listen(port, ...args)
-    }) as any
+      return listen(port, ...args);
+    }) as any;
   } else {
-    await initServer()
+    await initServer();
   }
 
   return server;
@@ -334,6 +334,49 @@ export async function createPluginContainer(
 }
 ```
 
+### startServer 开启服务
+
+```ts
+async function startServer(
+  server: ViteDevServer,
+  inlinePort?: number,
+  isRestart: boolean = false
+): Promise<void> {
+  const httpServer = server.httpServer;
+  if (!httpServer) {
+    throw new Error("Cannot call server.listen in middleware mode.");
+  }
+
+  const options = server.config.server;
+  // 端口
+  const port = inlinePort ?? options.port ?? DEFAULT_DEV_PORT;
+  // host设置
+  const hostname = await resolveHostname(options.host);
+  // 协议
+  const protocol = options.https ? "https" : "http";
+  const serverPort = await httpServerStart(httpServer, {
+    port,
+    strictPort: options.strictPort,
+    host: hostname.host,
+    logger: server.config.logger,
+  });
+  // 是否自动打开浏览器
+  if (options.open && !isRestart) {
+    const path =
+      typeof options.open === "string" ? options.open : server.config.base;
+    openBrowser(
+      path.startsWith("http")
+        ? path
+        : new URL(path, `${protocol}://${hostname.name}:${serverPort}`).href,
+      true,
+      server.config.logger
+    );
+  }
+}
+```
+
+### 其他函数摘要
+
 ```ts
 export async function loadConfigFromFile(...){
   if (configFile) {
@@ -382,46 +425,5 @@ async function runConfigHook(...){
     }
   }
   return conf;
-}
-```
-
-### startServer开启服务
-
-```ts
-async function startServer(
-  server: ViteDevServer,
-  inlinePort?: number,
-  isRestart: boolean = false
-): Promise<void> {
-  const httpServer = server.httpServer;
-  if (!httpServer) {
-    throw new Error("Cannot call server.listen in middleware mode.");
-  }
-
-  const options = server.config.server;
-  // 端口
-  const port = inlinePort ?? options.port ?? DEFAULT_DEV_PORT;
-  // host设置
-  const hostname = await resolveHostname(options.host);
-  // 协议
-  const protocol = options.https ? "https" : "http";
-  const serverPort = await httpServerStart(httpServer, {
-    port,
-    strictPort: options.strictPort,
-    host: hostname.host,
-    logger: server.config.logger,
-  });
-  // 是否自动打开浏览器
-  if (options.open && !isRestart) {
-    const path =
-      typeof options.open === "string" ? options.open : server.config.base;
-    openBrowser(
-      path.startsWith("http")
-        ? path
-        : new URL(path, `${protocol}://${hostname.name}:${serverPort}`).href,
-      true,
-      server.config.logger
-    );
-  }
 }
 ```
