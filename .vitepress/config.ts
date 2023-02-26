@@ -121,6 +121,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "git", link: "/node/external/git" },
           { text: "Github", link: "/node/external/github" },
           { text: "npm-run-all", link: "/node/external/npm-run-all" },
+          { text: "服务器类型", link: "/node/external/server" },
         ],
       },
     ],

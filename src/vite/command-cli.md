@@ -54,17 +54,24 @@ try {
 export async function createServer(
   inlineConfig: InlineConfig = {}
 ): Promise<ViteDevServer> {
-  // 全部配置
+  // 解析、获取全部配置
   const config = await resolveConfig(inlineConfig, "serve");
   // 获取根目录、服务器配置
   const { root, server: serverConfig } = config;
+  // 解析http设置
+  const httpsOptions = await resolveHttpsConfig(config.server.https);
+  // 解析文件watch配置
+  const resolvedWatchOptions = resolveChokidarOptions(config, {
+    disableGlobbing: true,
+    ...serverConfig.watch,
+  });
   // 声明中间件
   const middlewares = connect() as Connect.Server;
   // 创建http服务对象
   const httpServer = middlewareMode
     ? null
     : await resolveHttpServer(serverConfig, middlewares, httpsOptions);
-  // 开启文件wather功能
+  // 创建文件wather设置，用于监听文件变动更新
   const watcher = chokidar.watch(
     path.resolve(root),
     resolvedWatchOptions
@@ -73,7 +80,7 @@ export async function createServer(
   const moduleGraph: ModuleGraph = new ModuleGraph((url, ssr) =>
     container.resolveId(url, undefined, { ssr })
   );
-  // 插件容器？这是干嘛用的？
+  // 创建插件容器：建立与rollup及钩子联系(继承、修改、抛错等)，整合封装出vite特色钩子体系
   const container = await createPluginContainer(config, moduleGraph, watcher);
   // 服务实例真身
   const server: ViteDevServer = {
@@ -160,7 +167,7 @@ export async function createServer(
 
 ## 流程辅助函数
 
-### resolveConfig
+### 执行 config 系钩子(resolveConfig)
 
 解析配置。执行 `config`，`configResolved` 钩子。
 
@@ -203,6 +210,109 @@ export async function resolveConfig(...){
   ])
   // 返回处理完结的配置
   return resolved
+}
+```
+
+### 解析设置 http 服务(resolveHttpServer)
+
+```ts
+export async function resolveHttpServer(
+  { proxy }: CommonServerOptions,
+  app: Connect.Server,
+  httpsOptions?: HttpsServerOptions
+): Promise<HttpServer> {
+  if (!httpsOptions) {
+    const { createServer } = await import("node:http");
+    return createServer(app);
+  }
+
+  // #484 fallback to http1 when proxy is needed.
+  if (proxy) {
+    const { createServer } = await import("node:https");
+    return createServer(httpsOptions, app);
+  } else {
+    const { createSecureServer } = await import("node:http2");
+    return createSecureServer(
+      {
+        // Manually increase the session memory to prevent 502 ENHANCE_YOUR_CALM
+        // errors on large numbers of requests
+        maxSessionMemory: 1000,
+        ...httpsOptions,
+        allowHTTP1: true,
+      },
+      // @ts-expect-error TODO: is this correct?
+      app
+    ) as unknown as HttpServer;
+  }
+}
+```
+
+### 连接 rollup 执行 options 钩子
+
+```ts
+export async function createPluginContainer(
+  config: ResolvedConfig,
+  moduleGraph?: ModuleGraph,
+  watcher?: FSWatcher
+): Promise<PluginContainer> {
+  // 引入rollup
+  import type { MinimalPluginContext, PluginContext as RollupPluginContext } from "rollup";
+  const minimalContext: MinimalPluginContext = {
+    meta: {
+      rollupVersion,
+      watchMode: true,
+    },
+  };
+  function getModuleInfo(id: string) {
+    const module = moduleGraph?.getModuleById(id);
+    if (!module) {
+      return null;
+    }
+    if (!module.info) {
+      module.info = new Proxy(
+        { id, meta: module.meta || EMPTY_OBJECT } as ModuleInfo,
+        ModuleInfoProxy
+      );
+    }
+    return module.info;
+  }
+  class Context implements PluginContext {...}
+  // 定义返回值
+  const container: PluginContainer = {
+    // options是异步立即执行函数
+    options: await (async () => {
+      let options = rollupOptions;
+      for (const optionsHook of getSortedPluginHooks("options")) {
+        // 执行options钩子
+        options = (await optionsHook.call(minimalContext, options)) || options;
+      }
+      if (options.acornInjectPlugins) {
+        parser = acorn.Parser.extend(
+          ...(arraify(options.acornInjectPlugins) as any)
+        );
+      }
+      return {
+        acorn,
+        acornInjectPlugins: [],
+        ...options,
+      };
+    })(),
+    // 获取模块信息功能函数
+    getModuleInfo,
+    async buildStart() {
+      // 执行buildStart钩子
+      await hookParallel(
+        "buildStart",
+        (plugin) => new Context(plugin),
+        () => [container.options as NormalizedInputOptions]
+      );
+    },
+    async resolveId(rawId, importer = join(root, 'index.html'), options) {...},
+    async load(id, options) {...},
+    async transform(code, id, options) {...},
+    async close() {...}
+  };
+  return container;
 }
 ```
 
@@ -294,40 +404,6 @@ async function startServer(
       true,
       server.config.logger
     );
-  }
-}
-```
-
-### resolveHttpServer
-
-```ts
-export async function resolveHttpServer(
-  { proxy }: CommonServerOptions,
-  app: Connect.Server,
-  httpsOptions?: HttpsServerOptions
-): Promise<HttpServer> {
-  if (!httpsOptions) {
-    const { createServer } = await import("node:http");
-    return createServer(app);
-  }
-
-  // #484 fallback to http1 when proxy is needed.
-  if (proxy) {
-    const { createServer } = await import("node:https");
-    return createServer(httpsOptions, app);
-  } else {
-    const { createSecureServer } = await import("node:http2");
-    return createSecureServer(
-      {
-        // Manually increase the session memory to prevent 502 ENHANCE_YOUR_CALM
-        // errors on large numbers of requests
-        maxSessionMemory: 1000,
-        ...httpsOptions,
-        allowHTTP1: true,
-      },
-      // @ts-expect-error TODO: is this correct?
-      app
-    ) as unknown as HttpServer;
   }
 }
 ```
