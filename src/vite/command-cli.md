@@ -152,6 +152,7 @@ export async function createServer(
       return initingServer;
     }
     initingServer = (async function () {
+      // 执行buildStart钩子
       await container.buildStart({});
       if (isDepsOptimizerEnabled(config, false)) {
         // non-ssr
@@ -162,6 +163,23 @@ export async function createServer(
     })();
     return initingServer;
   };
+  if (!middlewareMode && httpServer) {
+    // overwrite listen to init optimizer before server start
+    const listen = httpServer.listen.bind(httpServer)
+    httpServer.listen = (async (port: number, ...args: any[]) => {
+      try {
+        await initServer()
+      } catch (e) {
+        httpServer.emit('error', e)
+        return
+      }
+      return listen(port, ...args)
+    }) as any
+  } else {
+    await initServer()
+  }
+
+  return server;
 }
 ```
 
@@ -367,7 +385,7 @@ async function runConfigHook(...){
 }
 ```
 
-### startServer
+### startServer开启服务
 
 ```ts
 async function startServer(
