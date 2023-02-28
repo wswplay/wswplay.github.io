@@ -80,7 +80,7 @@ export async function createServer(
   const moduleGraph: ModuleGraph = new ModuleGraph((url, ssr) =>
     container.resolveId(url, undefined, { ssr })
   );
-  // 创建插件容器：建立与rollup及钩子联系(继承、修改、抛错等)，整合封装出vite特色钩子体系
+  // 创建插件容器：通过Context实现Rollupjs的PluginContext接口，返回封装的Vite特色钩子体系
   const container = await createPluginContainer(config, moduleGraph, watcher);
   // 服务实例真身
   const server: ViteDevServer = {
@@ -294,6 +294,7 @@ export async function createPluginContainer(
     }
     return module.info;
   }
+  // 通过Context实现Rollupjs的PluginContext接口
   class Context implements PluginContext {...}
   // 定义返回值
   const container: PluginContainer = {
