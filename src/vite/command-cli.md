@@ -294,7 +294,11 @@ export async function createPluginContainer(
     }
     return module.info;
   }
-  // 通过Context实现Rollupjs的PluginContext接口
+  // 通过Context实现Rollupjs的PluginContext接口，为异步钩子创建上下文。
+  // 官方注释如下：
+  // we should create a new context for each async hook pipeline so that the
+  // active plugin in that pipeline can be tracked in a concurrency-safe manner.
+  // using a class to make creating new contexts more efficient
   class Context implements PluginContext {...}
   // 定义返回值
   const container: PluginContainer = {
