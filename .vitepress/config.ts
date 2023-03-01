@@ -86,7 +86,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "vite命令源码浅析", link: "/vite/command-cli" },
           { text: "Vite自动生成项目原理", link: "/vite/create-vite" },
           { text: "Vite插件怎么写", link: "/vite/plugin" },
-          { text: "Rollup", link: "/vite/rollup" },
+          { text: "rollup.js简介", link: "/vite/rollup" },
         ],
       },
       {
