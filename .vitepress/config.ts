@@ -1,11 +1,13 @@
 import { defineConfigWithTheme } from "vitepress";
 import { type Config as ThemeConfig } from "@vue/theme";
 import baseConfig from "@vue/theme/config";
+import { logoUrl } from "./theme/composables/constant";
 
 export default defineConfigWithTheme<ThemeConfig>({
   extends: baseConfig,
 
   title: "JavaScript边城",
+  head: [["link", { rel: "icon", href: logoUrl }]],
   srcDir: "src",
   themeConfig: {
     nav: geneNav(),

@@ -9,9 +9,10 @@
 
 <script setup lang="ts">
 import { useData } from "vitepress";
+import { logoUrl } from "../composables/constant";
 const { site } = useData();
 const logoInfo = {
-  url: "https://avatars.githubusercontent.com/u/13958395?v=4",
+  url: logoUrl,
   alt: "心水喵论",
 };
 </script>
