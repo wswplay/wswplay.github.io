@@ -339,7 +339,7 @@ export async function createPluginContainer(
 }
 ```
 
-### startServer 开启服务
+### 开启 http 服务，执行 buildsStart 钩子
 
 ```ts
 async function startServer(
@@ -377,6 +377,42 @@ async function startServer(
       server.config.logger
     );
   }
+}
+// 初始化启动http服务，执行buildsStart钩子
+export async function httpServerStart(
+  httpServer: HttpServer,
+  serverOptions: {
+    port: number;
+    strictPort: boolean | undefined;
+    host: string | undefined;
+    logger: Logger;
+  }
+): Promise<number> {
+  let { port, strictPort, host, logger } = serverOptions;
+
+  return new Promise((resolve, reject) => {
+    const onError = (e: Error & { code?: string }) => {
+      if (e.code === "EADDRINUSE") {
+        if (strictPort) {
+          httpServer.removeListener("error", onError);
+          reject(new Error(`Port ${port} is already in use`));
+        } else {
+          logger.info(`Port ${port} is in use, trying another one...`);
+          httpServer.listen(++port, host);
+        }
+      } else {
+        httpServer.removeListener("error", onError);
+        reject(e);
+      }
+    };
+
+    httpServer.on("error", onError);
+    // 监听端口
+    httpServer.listen(port, host, () => {
+      httpServer.removeListener("error", onError);
+      resolve(port);
+    });
+  });
 }
 ```
 
@@ -431,41 +467,5 @@ async function runConfigHook(...){
     }
   }
   return conf;
-}
-// 启动http服务，执行buildsStart钩子
-export async function httpServerStart(
-  httpServer: HttpServer,
-  serverOptions: {
-    port: number
-    strictPort: boolean | undefined
-    host: string | undefined
-    logger: Logger
-  },
-): Promise<number> {
-  let { port, strictPort, host, logger } = serverOptions
-
-  return new Promise((resolve, reject) => {
-    const onError = (e: Error & { code?: string }) => {
-      if (e.code === 'EADDRINUSE') {
-        if (strictPort) {
-          httpServer.removeListener('error', onError)
-          reject(new Error(`Port ${port} is already in use`))
-        } else {
-          logger.info(`Port ${port} is in use, trying another one...`)
-          httpServer.listen(++port, host)
-        }
-      } else {
-        httpServer.removeListener('error', onError)
-        reject(e)
-      }
-    }
-
-    httpServer.on('error', onError)
-    // 监听端口
-    httpServer.listen(port, host, () => {
-      httpServer.removeListener('error', onError)
-      resolve(port)
-    })
-  })
 }
 ```
