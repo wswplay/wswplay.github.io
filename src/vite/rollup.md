@@ -4,7 +4,7 @@ title: Rollup.js介绍使用方法教程
 
 # Rollup Give U More Free & Feel！
 
-- `Rollup` 是一个 `JavaScript` 模块打包工具，使用 `ES6模块标准`。让你更自由，想用就用。
+- [Rollup](https://github.com/rollup/rollup) 是一个 `JavaScript` 模块打包工具，使用 `ES6模块标准`。让你更自由，想用就用。
 - `Rollup` 还可以对代码进行`静态分析`，使你最终的代码没有冗余。
 
 ## 命令安装及使用
@@ -48,6 +48,7 @@ rollup --config --configDebug
 ```
 
 为了实现互通性，Rollup 也支持从安装在 node_modules 目录下的包中加载配置文件。从 Node 包中加载配置：
+
 ```bash
 # Rollup 首先会尝试加载 "rollup-config-my-special-config";
 # 如果失败，Rollup 则会尝试加载 "my-special-config"
