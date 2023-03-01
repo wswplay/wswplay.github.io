@@ -58,8 +58,6 @@ export async function createServer(
   const config = await resolveConfig(inlineConfig, "serve");
   // 获取根目录、服务器配置
   const { root, server: serverConfig } = config;
-  // 解析http设置
-  const httpsOptions = await resolveHttpsConfig(config.server.https);
   // 解析文件watch配置
   const resolvedWatchOptions = resolveChokidarOptions(config, {
     disableGlobbing: true,
@@ -71,7 +69,7 @@ export async function createServer(
   const httpServer = middlewareMode
     ? null
     : await resolveHttpServer(serverConfig, middlewares, httpsOptions);
-  // 创建文件wather设置，用于监听文件变动更新
+  // 创建文件监听器，用于监听文件变动更新
   const watcher = chokidar.watch(
     path.resolve(root),
     resolvedWatchOptions
@@ -80,7 +78,7 @@ export async function createServer(
   const moduleGraph: ModuleGraph = new ModuleGraph((url, ssr) =>
     container.resolveId(url, undefined, { ssr })
   );
-  // 创建插件容器：通过Context实现Rollupjs的PluginContext接口，返回封装的Vite特色钩子体系
+  // 创建插件容器，返回Vite封装的特色钩子体系
   const container = await createPluginContainer(config, moduleGraph, watcher);
   // 服务实例真身
   const server: ViteDevServer = {
@@ -265,7 +263,9 @@ export async function resolveHttpServer(
 }
 ```
 
-### 连接 rollup 执行 options 钩子
+### 创建 Vite 钩子，执行 options 钩子
+
+实现 rollup 插件上下文接口，执行 options 钩子，返回 Vite 钩子。
 
 ```ts
 export async function createPluginContainer(
@@ -273,7 +273,7 @@ export async function createPluginContainer(
   moduleGraph?: ModuleGraph,
   watcher?: FSWatcher
 ): Promise<PluginContainer> {
-  // 引入rollup
+  // 引入rollup插件上下文
   import type { MinimalPluginContext, PluginContext as RollupPluginContext } from "rollup";
   const minimalContext: MinimalPluginContext = {
     meta: {
@@ -383,6 +383,7 @@ async function startServer(
 ### 其他函数摘要
 
 ```ts
+// 从配置文件中加载配置
 export async function loadConfigFromFile(...){
   if (configFile) {
     // 如果入参指定了配置文件，就取路径
@@ -430,5 +431,41 @@ async function runConfigHook(...){
     }
   }
   return conf;
+}
+// 启动http服务，执行buildsStart钩子
+export async function httpServerStart(
+  httpServer: HttpServer,
+  serverOptions: {
+    port: number
+    strictPort: boolean | undefined
+    host: string | undefined
+    logger: Logger
+  },
+): Promise<number> {
+  let { port, strictPort, host, logger } = serverOptions
+
+  return new Promise((resolve, reject) => {
+    const onError = (e: Error & { code?: string }) => {
+      if (e.code === 'EADDRINUSE') {
+        if (strictPort) {
+          httpServer.removeListener('error', onError)
+          reject(new Error(`Port ${port} is already in use`))
+        } else {
+          logger.info(`Port ${port} is in use, trying another one...`)
+          httpServer.listen(++port, host)
+        }
+      } else {
+        httpServer.removeListener('error', onError)
+        reject(e)
+      }
+    }
+
+    httpServer.on('error', onError)
+    // 监听端口
+    httpServer.listen(port, host, () => {
+      httpServer.removeListener('error', onError)
+      resolve(port)
+    })
+  })
 }
 ```
