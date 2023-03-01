@@ -469,3 +469,59 @@ async function runConfigHook(...){
   return conf;
 }
 ```
+
+## vite build
+
+调用 `Rollup.js` 打包。
+
+```ts
+const { build } = await import("./build");
+
+try {
+  await build({
+    root,
+    base: options.base,
+    mode: options.mode,
+    configFile: options.config,
+    logLevel: options.logLevel,
+    clearScreen: options.clearScreen,
+    optimizeDeps: { force: options.force },
+    build: buildOptions,
+  });
+} catch (e) {
+  createLogger(options.logLevel).error(
+    colors.red(`error during build:\n${e.stack}`),
+    { error: e }
+  );
+  process.exit(1);
+} finally {
+  stopProfiler((message) => createLogger(options.logLevel).info(message));
+}
+// Bundles the app for production.
+// Returns a Promise containing the build result.
+export async function build(
+  inlineConfig: InlineConfig = {}
+): Promise<RollupOutput | RollupOutput[] | RollupWatcher> {
+  // 解析、获取配置
+  const config = await resolveConfig(
+    inlineConfig,
+    "build",
+    "production",
+    "production"
+  );
+  // 调用rollup打包
+  const { rollup } = await import("rollup");
+  bundle = await rollup(rollupOptions);
+  // 返回打包产物
+  const res = [];
+  for (const output of normalizedOutputs) {
+    res.push(await bundle[options.write ? "write" : "generate"](output));
+  }
+  return Array.isArray(outputs) ? res : res[0];
+} catch (e) {
+  outputBuildError(e)
+  throw e
+} finally {
+  if (bundle) await bundle.close()
+}
+```
