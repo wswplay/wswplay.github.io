@@ -24,21 +24,6 @@ rollup main.js --file bundle.js --format cjs
 rollup main.js --file bundle.js --format umd --name "myBundle"
 ```
 
-## 配置文件
-
-配置文件是一个 ES 模块，它对外导出一个对象。通常位于项目根目录，命名为 `rollup.config.js` 或 `rollup.config.mjs`。
-
-```js
-// rollup.config.js
-export default {
-  input: "src/main.js",
-  output: {
-    file: "bundle.js",
-    format: "cjs",
-  },
-};
-```
-
 --config 或 -c 指向使用配置文件：
 
 ```bash
@@ -53,4 +38,52 @@ rollup --config --configDebug
 # Rollup 首先会尝试加载 "rollup-config-my-special-config";
 # 如果失败，Rollup 则会尝试加载 "my-special-config"
 rollup --config node:my-special-config
+```
+
+## 配置文件
+
+### 1、默认类型
+
+配置文件是一个 ES 模块，对外导出一个对象。位于项目根目录，命名为 `rollup.config.js` 或 `rollup.config.mjs`。
+
+```js
+// rollup.config.js
+export default {
+  input: "src/main.js",
+  output: {
+    file: "bundle.js",
+    format: "cjs",
+  },
+};
+```
+
+### 2、CommonJS
+
+如果想用 `CommonJS` 的 `require` 和 `module.exports`，配置文件后缀应为 `.cjs`。
+
+### 3、Typescript
+
+如果配置文件后缀为 `.ts`，则应安装 `@rollup/plugin-typescript` 插件，并传入 `--configPlugin` 配置项：
+
+```json
+// package.json
+{
+  "build": "rollup --config rollup.config.ts --configPlugin typescript"
+}
+```
+
+且配置文件中 `plugins` 字段需加入这个插件：
+
+```ts
+// my.config.ts
+import typescript from "@rollup/plugin-typescript";
+import { defineConfig } from "rollup";
+
+export default defineConfig({
+  input: "src/xiao.ts",
+  output: {
+    dir: "nanzhi",
+  },
+  plugins: [typescript()],
+});
 ```

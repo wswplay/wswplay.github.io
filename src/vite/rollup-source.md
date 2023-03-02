@@ -9,14 +9,21 @@ title: Rollup.js源码分析
 ## rollup
 
 ```js
-function rollup(rawInputOptions) {
-  return rollupInternal(rawInputOptions, null);
+export default function rollup(rawInputOptions: RollupOptions): Promise<RollupBuild> {
+	return rollupInternal(rawInputOptions, null);
+}
+export async function rollupInternal(
+	rawInputOptions: RollupOptions,
+	watcher: RollupWatcher | null
+): Promise<RollupBuild> {
+
 }
 async function rollupInternal(rawInputOptions, watcher) {
   // 执行options钩子
-  const { options: inputOptions, unsetOptions: unsetInputOptions } =
-    await getInputOptions(rawInputOptions, watcher !== null);
-  initialiseTimers(inputOptions);
+  const { options: inputOptions, unsetOptions: unsetInputOptions } = await getInputOptions(
+		rawInputOptions,
+		watcher !== null
+	);
   const graph = new Graph(inputOptions, watcher);
   await catchUnfinishedHookActions(graph.pluginDriver, async () => {
     try {
@@ -34,6 +41,7 @@ async function rollupInternal(rawInputOptions, watcher) {
       await graph.pluginDriver.hookParallel("closeBundle", []);
       throw error_;
     }
+    // 执行buildEnd钩子
     await graph.pluginDriver.hookParallel("buildEnd", []);
   });
 }
@@ -56,6 +64,7 @@ async hookParallel(hookName, parameters, replaceContext) {
 }
 async build() {
   timeStart('generate module graph', 2);
+  // 生成模块图谱
   await this.generateModuleGraph();
   timeEnd('generate module graph', 2);
   timeStart('sort and bind modules', 2);
