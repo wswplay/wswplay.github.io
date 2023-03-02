@@ -472,7 +472,7 @@ async function runConfigHook(...){
 
 ## vite build
 
-调用 `Rollup.js` 打包。
+调用 `Rollup.js` 打包。[Rollup 打包核心函数](/vite/rollup-source.html#打包核心函数)
 
 ```ts
 const { build } = await import("./build");
@@ -509,7 +509,8 @@ export async function build(
     "production",
     "production"
   );
-  // 调用rollup打包
+  // 调用rollup打包核心函数
+  let bundle: RollupBuild | undefined
   const { rollup } = await import("rollup");
   bundle = await rollup(rollupOptions);
   // 返回打包产物
@@ -525,3 +526,5 @@ export async function build(
   if (bundle) await bundle.close()
 }
 ```
+
+[Rollup 打包核心函数](/vite/rollup-source.html#打包核心函数)

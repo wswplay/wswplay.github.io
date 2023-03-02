@@ -91,7 +91,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
       {
         text: "Rollup.js",
         items: [
-          { text: "rollup.js简介", link: "/vite/rollup" },
+          { text: "安装命令及配置文件", link: "/vite/rollup" },
           { text: "rollup.js源码浅析", link: "/vite/rollup-source" },
         ],
       },
