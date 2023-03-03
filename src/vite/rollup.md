@@ -63,7 +63,7 @@ export default {
 
 ### 3、Typescript
 
-如果配置文件后缀为 `.ts`，则应安装 `@rollup/plugin-typescript` 插件，并传入 `--configPlugin` 配置项。还需单独安装它的依赖包：`typescript` 和 `tslib`。
+如果配置文件后缀为 `.ts`，则应安装 `@rollup/plugin-typescript` 插件，并传入 `--configPlugin` 配置项。还需单独安装它的[依赖包](https://github.com/rollup/plugins/tree/master/packages/typescript)：`typescript` 和 `tslib`。
 
 ```json
 // package.json
@@ -75,7 +75,7 @@ export default {
     "@rollup/plugin-typescript": "^11.0.0",
     "tslib": "^2.5.0",
     "typescript": "^4.9.5"
-  },
+  }
 }
 ```
 
