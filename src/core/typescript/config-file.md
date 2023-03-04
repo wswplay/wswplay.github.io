@@ -18,7 +18,7 @@ outline: deep
     "sourceMap": false, // true：则map内容以//# sourceMappingURL= 然后接base64字符串插入js文件底部
     "target": "es2016", // 指定 ts 编译完之后的版本目标
     "newLine": "LF", // 指定发送文件时要使用的行尾序列：“CRLF”（dos）或“LF”（unix）
-    "useDefineForClassFields": false,
+    "useDefineForClassFields": false, // 将 class 声明中字段语义从 [[Set]] 变更到 [[Define]]
     "module": "esnext", // // 指定使用的模块标准
     "moduleResolution": "node", // 用于选择模块解析策略，有 node 和 classic 两种类型
     "allowJs": false, // 是否允许编译 JS 文件，默认是 false，不编译
@@ -56,9 +56,46 @@ outline: deep
 
 ## 字段详解
 
-### compilerOptions
+### compilerOptions 编译选项
 
 编译器的选项，如语言版本、目标 JavaScript 版本、生成的 sourcemap 等。
+
+> useDefineForClassFields：将 class 声明中字段语义从 [[Set]] 变更到 [[Define]]
+
+```ts
+export class C {
+  foo = 100;
+  bar: string;
+}
+// useDefineForClassFields: false
+export class C {
+  constructor() {
+    this.foo = 100;
+  }
+}
+// useDefineForClassFields: true
+export class C {
+  constructor() {
+    Object.defineProperty(this, "foo", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 100,
+    });
+    Object.defineProperty(this, "bar", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0,
+    });
+  }
+}
+// 当 target 版本在 ES2022 及其以上时
+export class C {
+  foo = 100;
+  bar;
+}
+```
 
 ### exclude
 
