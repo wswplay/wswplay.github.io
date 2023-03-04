@@ -54,6 +54,8 @@ export default async function build(
 ): Promise<unknown> {
   // 唤起打包核心函数
   const bundle = await rollup(inputOptions as any);
+  // 执行 closeBundle 钩子
+  await bundle.close();
 }
 export default function rollup(
   rawInputOptions: RollupOptions
@@ -76,6 +78,7 @@ async function rollupInternal(rawInputOptions, watcher) {
 		rawInputOptions,
 		watcher !== null
 	);
+  // 创建打包上下文实例
   const graph = new Graph(inputOptions, watcher);
   await catchUnfinishedHookActions(graph.pluginDriver, async () => {
     try {
@@ -83,7 +86,7 @@ async function rollupInternal(rawInputOptions, watcher) {
       // 执行buildStart钩子
       await graph.pluginDriver.hookParallel("buildStart", [inputOptions]);
       timeEnd("initialize", 2);
-      // 就是下面的
+      // 就是下面的 async build()
       await graph.build();
     } catch (error_) {
       const watchFiles = Object.keys(graph.watchFiles);
@@ -128,11 +131,55 @@ async build() {
   timeEnd('generate module graph', 2);
   timeStart('sort and bind modules', 2);
   this.phase = BuildPhase.ANALYSE;
+  // 模块排序
   this.sortModules();
   timeEnd('sort and bind modules', 2);
   timeStart('mark included statements', 2);
+  // 这是干啥用的？
   this.includeStatements();
   timeEnd('mark included statements', 2);
   this.phase = BuildPhase.GENERATE;
+}
+// Graph.ts
+private async generateModuleGraph(): Promise<void> {
+  ({ entryModules: this.entryModules, implicitEntryModules: this.implicitEntryModules } =
+			await this.moduleLoader.addEntryModules(normalizeEntryModules(this.options.input), true));
+}
+normalizeEntryModules(...)  // 返回规范化目标模块信息对象数组
+async addEntryModules() {
+  const newEntryModules = await this.extendLoadModulesPromise(
+    Promise.all(
+      unresolvedEntryModules.map(({ id, importer }) =>
+        this.loadEntryModule(id, true, importer, null)
+      )
+    )
+  )
+}
+private async loadEntryModule() {
+  const resolveIdResult = await resolveId(...)
+}
+export async function resolveId() {
+  const pluginResult = await resolveIdViaPlugins(...)
+}
+```
+
+### 执行 resolveId 钩子
+
+```ts
+export function resolveIdViaPlugins() {
+  return pluginDriver.hookFirstAndGetPlugin(
+    "resolveId",
+    [source, importer, { assertions, custom: customOptions, isEntry }],
+    replaceContext,
+    skipped
+  );
+}
+async hookFirstAndGetPlugin() {
+  for (const plugin of this.getSortedPlugins(hookName)) {
+    if (skipped?.has(plugin)) continue;
+    const result = await this.runHook(hookName, parameters, plugin, replaceContext);
+    if (result != null) return [result, plugin];
+  }
+  return null;
 }
 ```
