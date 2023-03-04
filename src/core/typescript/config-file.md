@@ -46,9 +46,11 @@ outline: deep
     "pretty": true, // 是否格式化输出的 JavaScript 代码
     "skipLibCheck": true // 是否跳过库声明文件检查
   },
-  "include": ["src", "zhi.config.ts"],
-  "exclude": ["dist", "node_modules"],
-  "files": []
+  "include": ["src", "zhi.config.ts"], // 包括
+  "exclude": ["dist", "node_modules"], // 排除
+  "files": [], // 需要被编译的目标文件
+  "extends": "@vue/tsconfig/tsconfig.web.json", // 继承
+  "references": [{ "path": "./tsconfig.node.json" }] // 引用
 }
 ```
 
@@ -60,30 +62,46 @@ outline: deep
 
 ### exclude
 
-exclude 表示要排除的、不编译的文件，他也可以指定一个列表，规则和 include 一样，可以是文件或文件夹，可以是相对路径或绝对路径，可以使用通配符。
+exclude 表示要排除的、不编译的文件，可以指定一个列表，规则和 include 一样，可以是文件或文件夹，可以是相对路径或绝对路径，可以使用通配符。
 
 ### include
 
-include 也可以指定要编译的路径列表。但是和 files 的区别在于，这里的路径可以是文件夹，也可以是文件，可以使用相对和绝对路径，而且可以使用通配符。
+include 也可以指定要编译的路径列表。
 
-### files
+与 files 区别：可以是**文件夹、文件、相对和绝对路径**，而且**可用通配符**。
 
-files 可以配置一个数组列表，里面包含指定文件的相对或绝对路径，编译器在编译的时候只会编译包含在 files 中列出的文件。
-如果不指定，则取决于有没有设置 include 选项，如果没有 include 选项，则默认会编译根目录以及所有子目录中的文件。
+### files：只能是文件
 
-这里列出的路径必须是指定文件，而不是某个文件夹，而且不能使用 \* ? \*\*/ 等通配符
+files 可配置文件路径数组，相对或绝对路径。编译器编译时候只会编译包含在 files 中的文件。
 
-### extends
+如不指定，则取决于有没有设置 include 选项，如无 include，则默认会编译根目录以及所有子目录中文件。
 
-extends 可以通过指定一个其他的 tsconfig.json 文件路径，来继承这个配置文件里的配置，继承来的文件配置会覆盖当前文件定义的配置。TS 在 3.2 版本开始，支持继承一个来自 Node.js 包的 tsconfig.json 配置文件。
+路径必须**是文件**，而**不是文件夹**，且 \* ? \*\*/ 等**通配符不能使用**。
 
-### references
+### extends 继承与覆盖
 
-项目引用。一个对象数组，指定要引入的项目。允许用户为项目的不同部分使用不同的 TypeScript 配置。
+extends 可指定一个其他的 `tsconfig.json` 文件路径，来继承这个配置文件里的配置，继承配置会**覆盖当前**文件配置。`TS 3.2` 开始，支持继承一个来自 `Node.js` 包的 `tsconfig.json` 配置文件。
+
+### references 引用
+
+一个对象数组，指定要引入的项目。可为项目不同部分使用不同 `ts` 配置。
+
+使用 `references` 字段引入的配置文件需要设置 `composite: true` 字段，并用 `include 或 files` 等等属性指明配置覆盖的文件范围。
 
 ```json
+// tsconfig.json
 {
   "references": [{ "path": "./tsconfig.node.json" }]
+}
+```
+
+```json
+// tsconfig.node.json
+{
+  "compilerOptions": {
+    "composite": true
+  },
+  "include": ["vite.config.ts"]
 }
 ```
 
