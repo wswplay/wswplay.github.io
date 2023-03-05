@@ -68,7 +68,7 @@ export default function rollup(
 
 ### rollupInternal()
 
-```ts
+```ts{10,11}
 export default function rollup(rawInputOptions: RollupOptions): Promise<RollupBuild> {
 	return rollupInternal(rawInputOptions, null);
 }
@@ -78,7 +78,7 @@ async function rollupInternal(rawInputOptions, watcher) {
 		rawInputOptions,
 		watcher !== null
 	);
-  // 创建打包上下文实例
+  // 创建打包上下文实例(很重要，就是它了)
   const graph = new Graph(inputOptions, watcher);
   await catchUnfinishedHookActions(graph.pluginDriver, async () => {
     try {
@@ -120,44 +120,108 @@ async hookParallel(hookName, parameters, replaceContext) {
 }
 ```
 
+### class Graph
+
+```ts
+export default class Graph {
+  constructor() {
+    // 插件驱动
+    this.pluginDriver = new PluginDriver();
+    this.acornParser = acorn.Parser.extend();
+    // 模块加载器
+    this.moduleLoader = new ModuleLoader();
+    // 文件操作队列
+    this.fileOperationQueue = new Queue();
+    this.pureFunctions = getPureFunctions(options);
+  }
+}
+export class ModuleLoader {
+  private async fetchModule() {
+    // 创建模块实例
+    const module = new Module();
+    this.modulesById.set(id, module);
+    this.graph.watchFiles[id] = true;
+    const loadPromise: LoadModulePromise = this.addModuleSource(...).then(() => [
+      this.getResolveStaticDependencyPromises(module),
+      this.getResolveDynamicImportPromises(module),
+      loadAndResolveDependenciesPromise,
+    ]);
+    this.moduleLoadPromises.set(module, loadPromise);
+    const resolveDependencyPromises = await loadPromise;
+    if (!isPreload) {
+      await this.fetchModuleDependencies(module, ...resolveDependencyPromises);
+    } else if (isPreload === RESOLVE_DEPENDENCIES) {
+      await loadAndResolveDependenciesPromise;
+    }
+    return module;
+  }
+}
+```
+
 ### async build()
 
 ```ts
-// 上一步的 graph.build();
-async build() {
-  timeStart('generate module graph', 2);
-  // 生成模块图谱
-  await this.generateModuleGraph();
-  timeEnd('generate module graph', 2);
-  timeStart('sort and bind modules', 2);
-  this.phase = BuildPhase.ANALYSE;
-  // 模块排序
-  this.sortModules();
-  timeEnd('sort and bind modules', 2);
-  timeStart('mark included statements', 2);
-  // 这是干啥用的？
-  this.includeStatements();
-  timeEnd('mark included statements', 2);
-  this.phase = BuildPhase.GENERATE;
-}
 // Graph.ts
-private async generateModuleGraph(): Promise<void> {
-  ({ entryModules: this.entryModules, implicitEntryModules: this.implicitEntryModules } =
-			await this.moduleLoader.addEntryModules(normalizeEntryModules(this.options.input), true));
+export default class Graph {
+  ...
+  constructor() {...}
+  // 上一步的 graph.build();
+  async build() {
+    // 进入加载、解析阶段：获取模块信息、引用依赖关系等，生成模块图谱谱系
+    timeStart('generate module graph', 2);
+    await this.generateModuleGraph();
+    timeEnd('generate module graph', 2);
+
+    // 进入分析阶段：排序、绑定
+    timeStart('sort and bind modules', 2);
+    this.phase = BuildPhase.ANALYSE;
+    this.sortModules();
+    timeEnd('sort and bind modules', 2);
+
+    timeStart('mark included statements', 2);
+    this.includeStatements();
+    timeEnd('mark included statements', 2);
+
+    // 进入生成阶段：
+    this.phase = BuildPhase.GENERATE;
+  }
+  private async generateModuleGraph(): Promise<void> {
+    // 解析获取入口模块
+    ({ entryModules: this.entryModules, implicitEntryModules: this.implicitEntryModules } =
+        await this.moduleLoader.addEntryModules(normalizeEntryModules(this.options.input), true));
+    // 如没有入口模块，则提示报错信息
+    if (this.entryModules.length === 0) {
+			throw new Error('You must supply options.input to rollup');
+		}
+    // 将模块信息存入模块数组
+    for (const module of this.modulesById.values()) {
+			if (module instanceof Module) {
+				this.modules.push(module);
+			} else {
+				this.externalModules.push(module);
+			}
+		}
+  }
 }
 normalizeEntryModules(...)  // 返回规范化目标模块信息对象数组
-async addEntryModules() {
-  const newEntryModules = await this.extendLoadModulesPromise(
-    Promise.all(
-      unresolvedEntryModules.map(({ id, importer }) =>
-        this.loadEntryModule(id, true, importer, null)
+// ModuleLoader.ts
+export class ModuleLoader {
+  ...
+  constructor() {...}
+  async addEntryModules() {
+    const newEntryModules = await this.extendLoadModulesPromise(
+      Promise.all(
+        unresolvedEntryModules.map(({ id, importer }) =>
+          this.loadEntryModule(id, true, importer, null)
+        )
       )
     )
-  )
+  }
+  private async loadEntryModule() {
+    const resolveIdResult = await resolveId(...)
+  }
 }
-private async loadEntryModule() {
-  const resolveIdResult = await resolveId(...)
-}
+// resolveid.ts
 export async function resolveId() {
   const pluginResult = await resolveIdViaPlugins(...)
 }
