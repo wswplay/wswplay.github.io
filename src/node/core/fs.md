@@ -45,6 +45,29 @@ if (existsSync("/etc/passwd")) console.log("The path exists.");
 
 同步地创建目录。
 
+### fs.unlink/fsPromises.unlink
+
+`fs.unlink(path, callback)` 和 `fsPromises.unlink(path)`。
+
+异步地删除文件或符号链接。fs.unlink() 不适用于目录，无论是空目录还是其他目录。 要删除目录，请使用 fs.rmdir()。
+
+```js
+// callback 方式
+import { unlink } from "node:fs";
+unlink("/tmp/hello", (err) => {
+  if (err) throw err;
+  console.log("successfully deleted /tmp/hello");
+});
+// promises 方式
+import { unlink } from "node:fs/promises";
+try {
+  await unlink("/tmp/hello");
+  console.log("successfully deleted /tmp/hello");
+} catch (error) {
+  console.error("there was an error:", error.message);
+}
+```
+
 ## fs-extra(fs 扩展)
 
 【[Github 地址](https://github.com/jprichardson/node-fs-extra)】

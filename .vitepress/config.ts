@@ -83,7 +83,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         text: "Vite原理与周边",
         items: [
           { text: "Vite基础", link: "/vite/" },
-          { text: "vite命令源码浅析", link: "/vite/command-cli" },
+          { text: "vite命令源码摘要", link: "/vite/command-cli" },
           { text: "Vite自动生成项目原理", link: "/vite/create-vite" },
           { text: "Vite插件怎么写", link: "/vite/plugin" },
         ],
@@ -92,7 +92,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         text: "Rollup.js",
         items: [
           { text: "安装命令及配置文件", link: "/vite/rollup" },
-          { text: "rollup.js源码浅析", link: "/vite/rollup-source" },
+          { text: "rollup.js源码摘要", link: "/vite/rollup-source" },
         ],
       },
       {
@@ -109,7 +109,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         text: "Node基础",
         items: [
           { text: "简介", link: "/node/core/" },
-          { text: "fs文件系统", link: "/node/core/fs" },
+          { text: "fs文件系统及扩展", link: "/node/core/fs" },
           { text: "url模块", link: "/node/core/url" },
           { text: "path路径", link: "/node/core/path" },
           { text: "http模块", link: "/node/core/http" },

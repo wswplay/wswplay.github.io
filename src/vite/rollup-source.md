@@ -3,7 +3,7 @@ title: Rollup.js源码分析
 outline: deep
 ---
 
-# Rollup.js 源码浅析
+# Rollup.js 源码摘要
 
 [Github 地址](https://github.com/rollup/rollup)
 

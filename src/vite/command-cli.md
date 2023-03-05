@@ -3,9 +3,9 @@ title: vite命令源码解析
 outline: deep
 ---
 
-# vite 命令源码解析
+# vite 命令源码摘要
 
-【[Github 地址](https://github.com/vitejs/vite/tree/main/packages/vite)】
+【[Vite Github 地址](https://github.com/vitejs/vite/tree/main/packages/vite)】
 
 ## vite [dev/serve]
 
