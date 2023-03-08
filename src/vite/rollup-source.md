@@ -186,7 +186,7 @@ export default class Graph {
     this.phase = BuildPhase.GENERATE;
   }
   private async generateModuleGraph(): Promise<void> {
-    // 解析获取入口模块
+    // 解析获取入口模块，执行 resolveId 钩子
     ({ entryModules: this.entryModules, implicitEntryModules: this.implicitEntryModules } =
         await this.moduleLoader.addEntryModules(normalizeEntryModules(this.options.input), true));
     // 如没有入口模块，则提示报错信息
@@ -245,5 +245,39 @@ async hookFirstAndGetPlugin() {
     if (result != null) return [result, plugin];
   }
   return null;
+}
+```
+
+### 执行 load 钩子
+
+```ts
+// ModuleLoader.ts
+export class ModuleLoader {
+  private async addModuleSource() {
+    try {
+      source = await this.graph.fileOperationQueue.run(
+        async () =>
+          (await this.pluginDriver.hookFirst('load', [id])) ?? (await readFile(id, 'utf8'))
+      );
+    }
+  }
+}
+```
+
+### 执行 transform 钩子
+
+```ts
+// transform.ts
+export default async function transform() {
+  try {
+	  code = await pluginDriver.hookReduceArg0('transform', ...)
+  }
+}
+```
+
+```ts
+// Graph.ts
+private sortModules(): void {
+  const { orderedModules, cyclePaths } = analyseModuleExecution(this.entryModules);
 }
 ```
