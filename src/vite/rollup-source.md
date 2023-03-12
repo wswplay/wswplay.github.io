@@ -5,7 +5,21 @@ outline: deep
 
 # Rollup.js 源码摘要
 
-[Github 地址](https://github.com/rollup/rollup)
+[Rollup.js Github 地址](https://github.com/rollup/rollup)
+
+调试命令：
+
+```bash
+# 构建
+pnpm run build
+# 进入调试流程
+./dist/bin/rollup -c zhi.config.ts --configPlugin typescript
+```
+
+> **看源码技能 get :white_check_mark:**  
+- 1、注意 class 类，尤其是属性；
+- 2、注意方法名称，代表功能；
+- 3、看函数返回了什么，返回值才是目的嘛；
 
 ## rollup 命令源码
 
@@ -66,7 +80,7 @@ export default function rollup(
 
 ## 打包核心函数
 
-### rollupInternal()
+### rollupInternal() 执行 options 钩子
 
 ```ts{10,11}
 export default function rollup(rawInputOptions: RollupOptions): Promise<RollupBuild> {
@@ -117,6 +131,21 @@ async hookParallel(hookName, parameters, replaceContext) {
     }
   }
   await Promise.all(parallelPromises);
+}
+async function getInputOptions() {
+  const { options, unsetOptions } = await normalizeInputOptions(
+		await rawPlugins.reduce(applyOptionHook(watchMode), Promise.resolve(rawInputOptions))
+	);
+}
+// 执行options钩子
+function applyOptionHook(watchMode: boolean) {
+	return async (inputOptions: Promise<RollupOptions>, plugin: Plugin): Promise<InputOptions> => {
+		const handler = 'handler' in plugin.options! ? plugin.options.handler : plugin.options!;
+		return (
+			(await handler.call({ meta: { rollupVersion, watchMode } }, await inputOptions)) ||
+			inputOptions
+		);
+	};
 }
 ```
 
@@ -186,21 +215,18 @@ export default class Graph {
     this.phase = BuildPhase.GENERATE;
   }
   private async generateModuleGraph(): Promise<void> {
-    // 解析获取入口模块，执行 resolveId 钩子
+    // 解析入口文件所有模块，执行 resolveId 钩子
     ({ entryModules: this.entryModules, implicitEntryModules: this.implicitEntryModules } =
         await this.moduleLoader.addEntryModules(normalizeEntryModules(this.options.input), true));
-    // 如没有入口模块，则提示报错信息
-    if (this.entryModules.length === 0) {
-			throw new Error('You must supply options.input to rollup');
-		}
-    // 将模块信息存入模块数组
+    // 将模块信息分组保存：内部模块和外部模块
     for (const module of this.modulesById.values()) {
-			if (module instanceof Module) {
-				this.modules.push(module);
-			} else {
-				this.externalModules.push(module);
-			}
-		}
+      if (module instanceof Module) {
+        this.modules.push(module);
+      } else {
+        // 外部模块
+        this.externalModules.push(module);
+      }
+    }
   }
 }
 normalizeEntryModules(...)  // 返回规范化目标模块信息对象数组
@@ -279,5 +305,332 @@ export default async function transform() {
 // Graph.ts
 private sortModules(): void {
   const { orderedModules, cyclePaths } = analyseModuleExecution(this.entryModules);
+}
+```
+
+```ts
+const inputOptions = {
+  external: (id: string) =>
+    (id[0] !== "." && !isAbsolute(id)) || id.slice(-5, id.length) === ".json",
+  input: fileName,
+  onwarn: warnings.add,
+  plugins: [],
+  treeshake: false,
+};
+export async function normalizeInputOptions(config: InputOptions): Promise<{
+  options: NormalizedInputOptions;
+  unsetOptions: Set<string>;
+}> {
+  // These are options that may trigger special warnings or behaviour later
+  // if the user did not select an explicit value
+  const unsetOptions = new Set<string>();
+
+  const context = config.context ?? "undefined";
+  const onwarn = getOnwarn(config);
+  const strictDeprecations = config.strictDeprecations || false;
+  const maxParallelFileOps = getmaxParallelFileOps(
+    config,
+    onwarn,
+    strictDeprecations
+  );
+  const options: NormalizedInputOptions & InputOptions = {
+    acorn: getAcorn(config) as unknown as NormalizedInputOptions["acorn"],
+    acornInjectPlugins: getAcornInjectPlugins(config),
+    cache: getCache(config),
+    context,
+    experimentalCacheExpiry: config.experimentalCacheExpiry ?? 10,
+    experimentalLogSideEffects: config.experimentalLogSideEffects || false,
+    external: getIdMatcher(config.external),
+    inlineDynamicImports: getInlineDynamicImports(
+      config,
+      onwarn,
+      strictDeprecations
+    ),
+    input: getInput(config),
+    makeAbsoluteExternalsRelative:
+      config.makeAbsoluteExternalsRelative ?? "ifRelativeSource",
+    manualChunks: getManualChunks(config, onwarn, strictDeprecations),
+    maxParallelFileOps,
+    maxParallelFileReads: maxParallelFileOps,
+    moduleContext: getModuleContext(config, context),
+    onwarn,
+    perf: config.perf || false,
+    plugins: await normalizePluginOption(config.plugins),
+    preserveEntrySignatures: config.preserveEntrySignatures ?? "exports-only",
+    preserveModules: getPreserveModules(config, onwarn, strictDeprecations),
+    preserveSymlinks: config.preserveSymlinks || false,
+    shimMissingExports: config.shimMissingExports || false,
+    strictDeprecations,
+    treeshake: getTreeshake(config),
+  };
+  return { options, unsetOptions };
+}
+async function mergeInputOptions() {
+  const inputOptions: CompleteInputOptions<keyof InputOptions> = {
+    acorn: getOption("acorn"),
+    acornInjectPlugins: config.acornInjectPlugins as
+      | (() => unknown)[]
+      | (() => unknown)
+      | undefined,
+    cache: config.cache as false | RollupCache | undefined,
+    context: getOption("context"),
+    experimentalCacheExpiry: getOption("experimentalCacheExpiry"),
+    experimentalLogSideEffects: getOption("experimentalLogSideEffects"),
+    external: getExternal(config, overrides),
+    inlineDynamicImports: getOption("inlineDynamicImports"),
+    input: getOption("input") || [],
+    makeAbsoluteExternalsRelative: getOption("makeAbsoluteExternalsRelative"),
+    manualChunks: getOption("manualChunks"),
+    maxParallelFileOps: getOption("maxParallelFileOps"),
+    maxParallelFileReads: getOption("maxParallelFileReads"),
+    moduleContext: getOption("moduleContext"),
+    onwarn: getOnWarn(config, defaultOnWarnHandler),
+    perf: getOption("perf"),
+    plugins: await normalizePluginOption(config.plugins),
+    preserveEntrySignatures: getOption("preserveEntrySignatures"),
+    preserveModules: getOption("preserveModules"),
+    preserveSymlinks: getOption("preserveSymlinks"),
+    shimMissingExports: getOption("shimMissingExports"),
+    strictDeprecations: getOption("strictDeprecations"),
+    treeshake: getObjectOption(
+      config,
+      overrides,
+      "treeshake",
+      objectifyOptionWithPresets(
+        treeshakePresets,
+        "treeshake",
+        URL_TREESHAKE,
+        "false, true, "
+      )
+    ),
+    watch: getWatch(config, overrides),
+  };
+}
+async function mergeOutputOptions(
+  config: OutputOptions,
+  overrides: OutputOptions,
+  warn: WarningHandler
+): Promise<OutputOptions> {
+  const getOption = (name: keyof OutputOptions): any =>
+    overrides[name] ?? config[name];
+  const outputOptions: CompleteOutputOptions<keyof OutputOptions> = {
+    amd: getObjectOption(config, overrides, "amd"),
+    assetFileNames: getOption("assetFileNames"),
+    banner: getOption("banner"),
+    chunkFileNames: getOption("chunkFileNames"),
+    compact: getOption("compact"),
+    dir: getOption("dir"),
+    dynamicImportFunction: getOption("dynamicImportFunction"),
+    dynamicImportInCjs: getOption("dynamicImportInCjs"),
+    entryFileNames: getOption("entryFileNames"),
+    esModule: getOption("esModule"),
+    experimentalDeepDynamicChunkOptimization: getOption(
+      "experimentalDeepDynamicChunkOptimization"
+    ),
+    experimentalMinChunkSize: getOption("experimentalMinChunkSize"),
+    exports: getOption("exports"),
+    extend: getOption("extend"),
+    externalImportAssertions: getOption("externalImportAssertions"),
+    externalLiveBindings: getOption("externalLiveBindings"),
+    file: getOption("file"),
+    footer: getOption("footer"),
+    format: getOption("format"),
+    freeze: getOption("freeze"),
+    generatedCode: getObjectOption(
+      config,
+      overrides,
+      "generatedCode",
+      objectifyOptionWithPresets(
+        generatedCodePresets,
+        "output.generatedCode",
+        URL_OUTPUT_GENERATEDCODE,
+        ""
+      )
+    ),
+    globals: getOption("globals"),
+    hoistTransitiveImports: getOption("hoistTransitiveImports"),
+    indent: getOption("indent"),
+    inlineDynamicImports: getOption("inlineDynamicImports"),
+    interop: getOption("interop"),
+    intro: getOption("intro"),
+    manualChunks: getOption("manualChunks"),
+    minifyInternalExports: getOption("minifyInternalExports"),
+    name: getOption("name"),
+    namespaceToStringTag: getOption("namespaceToStringTag"),
+    noConflict: getOption("noConflict"),
+    outro: getOption("outro"),
+    paths: getOption("paths"),
+    plugins: await normalizePluginOption(config.plugins),
+    preferConst: getOption("preferConst"),
+    preserveModules: getOption("preserveModules"),
+    preserveModulesRoot: getOption("preserveModulesRoot"),
+    sanitizeFileName: getOption("sanitizeFileName"),
+    sourcemap: getOption("sourcemap"),
+    sourcemapBaseUrl: getOption("sourcemapBaseUrl"),
+    sourcemapExcludeSources: getOption("sourcemapExcludeSources"),
+    sourcemapFile: getOption("sourcemapFile"),
+    sourcemapIgnoreList: getOption("sourcemapIgnoreList"),
+    sourcemapPathTransform: getOption("sourcemapPathTransform"),
+    strict: getOption("strict"),
+    systemNullSetters: getOption("systemNullSetters"),
+    validate: getOption("validate"),
+  };
+}
+export async function normalizeOutputOptions() {
+  const outputOptions: NormalizedOutputOptions & OutputOptions = {
+    amd: getAmd(config),
+    assetFileNames: config.assetFileNames ?? "assets/[name]-[hash][extname]",
+    banner: getAddon(config, "banner"),
+    chunkFileNames: config.chunkFileNames ?? "[name]-[hash].js",
+    compact,
+    dir: getDir(config, file),
+    dynamicImportFunction: getDynamicImportFunction(
+      config,
+      inputOptions,
+      format
+    ),
+    dynamicImportInCjs: config.dynamicImportInCjs ?? true,
+    entryFileNames: getEntryFileNames(config, unsetOptions),
+    esModule: config.esModule ?? "if-default-prop",
+    experimentalDeepDynamicChunkOptimization:
+      getExperimentalDeepDynamicChunkOptimization(config, inputOptions),
+    experimentalMinChunkSize: config.experimentalMinChunkSize || 0,
+    exports: getExports(config, unsetOptions),
+    extend: config.extend || false,
+    externalImportAssertions: config.externalImportAssertions ?? true,
+    externalLiveBindings: config.externalLiveBindings ?? true,
+    file,
+    footer: getAddon(config, "footer"),
+    format,
+    freeze: config.freeze ?? true,
+    generatedCode,
+    globals: config.globals || {},
+    hoistTransitiveImports: config.hoistTransitiveImports ?? true,
+    indent: getIndent(config, compact),
+    inlineDynamicImports,
+    interop: getInterop(config),
+    intro: getAddon(config, "intro"),
+    manualChunks: getManualChunks(
+      config,
+      inlineDynamicImports,
+      preserveModules,
+      inputOptions
+    ),
+    minifyInternalExports: getMinifyInternalExports(config, format, compact),
+    name: config.name,
+    namespaceToStringTag: getNamespaceToStringTag(
+      config,
+      generatedCode,
+      inputOptions
+    ),
+    noConflict: config.noConflict || false,
+    outro: getAddon(config, "outro"),
+    paths: config.paths || {},
+    plugins: await normalizePluginOption(config.plugins),
+    preferConst,
+    preserveModules,
+    preserveModulesRoot: getPreserveModulesRoot(config),
+    sanitizeFileName:
+      typeof config.sanitizeFileName === "function"
+        ? config.sanitizeFileName
+        : config.sanitizeFileName === false
+        ? (id) => id
+        : defaultSanitizeFileName,
+    sourcemap: config.sourcemap || false,
+    sourcemapBaseUrl: getSourcemapBaseUrl(config),
+    sourcemapExcludeSources: config.sourcemapExcludeSources || false,
+    sourcemapFile: config.sourcemapFile,
+    sourcemapIgnoreList:
+      typeof config.sourcemapIgnoreList === "function"
+        ? config.sourcemapIgnoreList
+        : config.sourcemapIgnoreList === false
+        ? () => false
+        : (relativeSourcePath) => relativeSourcePath.includes("node_modules"),
+    sourcemapPathTransform: config.sourcemapPathTransform as
+      | SourcemapPathTransformOption
+      | undefined,
+    strict: config.strict ?? true,
+    systemNullSetters: config.systemNullSetters ?? true,
+    validate: config.validate || false,
+  };
+  return { options: outputOptions, unsetOptions };
+}
+```
+
+### 插件上下文
+
+```ts
+export function getPluginContext(
+  plugin: Plugin,
+  pluginCache: Record<string, SerializablePluginCache> | void,
+  graph: Graph,
+  options: NormalizedInputOptions,
+  fileEmitter: FileEmitter,
+  existingPluginNames: Set<string>
+): PluginContext {
+  ...
+  return {
+    addWatchFile(id) {
+      if (graph.phase >= BuildPhase.GENERATE) {
+        return this.error(errorInvalidRollupPhaseForAddWatchFile());
+      }
+      graph.watchFiles[id] = true;
+    },
+    cache: cacheInstance,
+    emitFile: fileEmitter.emitFile.bind(fileEmitter),
+    error(error_): never {
+      return error(errorPluginError(error_, plugin.name));
+    },
+    getFileName: fileEmitter.getFileName,
+    getModuleIds: () => graph.modulesById.keys(),
+    getModuleInfo: graph.getModuleInfo,
+    getWatchFiles: () => Object.keys(graph.watchFiles),
+    load(resolvedId) {
+      return graph.moduleLoader.preloadModule(resolvedId);
+    },
+    meta: {
+      rollupVersion,
+      watchMode: graph.watchMode,
+    },
+    get moduleIds() {
+      function* wrappedModuleIds() {
+        // We are wrapping this in a generator to only show the message once we are actually iterating
+        warnDeprecation(
+          `Accessing "this.moduleIds" on the plugin context by plugin ${plugin.name} is deprecated. The "this.getModuleIds" plugin context function should be used instead.`,
+          URL_THIS_GETMODULEIDS,
+          true,
+          options,
+          plugin.name
+        );
+        yield* moduleIds;
+      }
+
+      const moduleIds = graph.modulesById.keys();
+      return wrappedModuleIds();
+    },
+    parse: graph.contextParse.bind(graph),
+    resolve(
+      source,
+      importer,
+      { assertions, custom, isEntry, skipSelf } = BLANK
+    ) {
+      return graph.moduleLoader.resolveId(
+        source,
+        importer,
+        custom,
+        isEntry,
+        assertions || EMPTY_OBJECT,
+        skipSelf ? [{ importer, plugin, source }] : null
+      );
+    },
+    setAssetSource: fileEmitter.setAssetSource,
+    warn(warning) {
+      if (typeof warning === "string") warning = { message: warning };
+      if (warning.code) warning.pluginCode = warning.code;
+      warning.code = "PLUGIN_WARNING";
+      warning.plugin = plugin.name;
+      options.onwarn(warning);
+    },
+  };
 }
 ```
