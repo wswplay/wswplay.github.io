@@ -16,10 +16,20 @@ pnpm run build
 ./dist/bin/rollup -c zhi.config.ts --configPlugin typescript
 ```
 
-> **看源码技能 get :white_check_mark:**  
+> **看源码技能 get :white_check_mark:**
+
 - 1、注意 class 类，尤其是属性；
 - 2、注意方法名称，代表功能；
 - 3、看函数返回了什么，返回值才是目的嘛；
+
+## 流程简介
+
+主要分为两个大阶段：
+
+- 1、打包 `build` 阶段。
+- 2、输出 `generate`(如 ts 配置文件) 或者 写入 `write` 阶段。  
+  generate 意思是，只输出在内存中，比如 `ts` 配置文件，会被先打包成 `.mjs` 文件，再读取配置内容，随后立即删除这个临时文件。  
+  write 就是真正写入磁盘，变成看得见的实体文件。所有目标模块，都写入成实体文件。
 
 ## rollup 命令源码
 
@@ -68,6 +78,8 @@ export default async function build(
 ): Promise<unknown> {
   // 唤起打包核心函数
   const bundle = await rollup(inputOptions as any);
+  // 输出打包产物、写入目标文件
+  await Promise.all(outputOptions.map(bundle.write));
   // 执行 closeBundle 钩子
   await bundle.close();
 }
@@ -78,7 +90,7 @@ export default function rollup(
 }
 ```
 
-## 打包核心函数
+## 打包 build 核心函数
 
 ### rollupInternal() 执行 options 钩子
 
@@ -632,5 +644,79 @@ export function getPluginContext(
       options.onwarn(warning);
     },
   };
+}
+```
+
+## 输出 generate 核心函数
+
+```ts
+// 开始输出函数 handleGenerateWrite
+export async function rollupInternal() {
+  const result: RollupBuild = {
+    async generate(rawOutputOptions: OutputOptions) {...},
+    async write(rawOutputOptions: OutputOptions) {
+      if (result.closed) return error(errorAlreadyClosed());
+      return handleGenerateWrite(
+        true,
+        inputOptions,
+        unsetInputOptions,
+        rawOutputOptions,
+        graph
+      );
+    },
+  };
+  return result;
+}
+async function handleGenerateWrite() {
+  // 获取输出配置项
+  const { options: outputOptions } = await getOutputOptionsAndPluginDriver();
+  return catchUnfinishedHookActions(outputPluginDriver, async () => {
+    const bundle = new Bundle(outputOptions, unsetOptions, inputOptions, outputPluginDriver, graph);
+    // 进入输出核心函数
+    const generated = await bundle.generate(isWrite);
+  }
+}
+```
+
+### bundle.generate
+
+```ts
+export default class Bundle {
+  async generate(isWrite: boolean): Promise<OutputBundle> {
+    try {
+      const outputBundleBase: OutputBundle = Object.create(null);
+      // 执行 renderStart 钩子
+      await this.pluginDriver.hookParallel("renderStart", [
+        this.outputOptions,
+        this.inputOptions,
+      ]);
+      // 生成 chunk
+      const chunks = await this.generateChunks(
+        outputBundle,
+        getHashPlaceholder
+      );
+      for (const chunk of chunks) {
+        chunk.generateExports();
+      }
+      await renderChunks(
+        chunks,
+        outputBundle,
+        this.pluginDriver,
+        this.outputOptions,
+        this.inputOptions.onwarn
+      );
+    } catch (error_: any) {
+      await this.pluginDriver.hookParallel("renderError", [error_]);
+      throw error_;
+    }
+    // 执行 generateBundle 钩子
+    await this.pluginDriver.hookSeq("generateBundle", [
+      this.outputOptions,
+      outputBundle as OutputBundle,
+      isWrite,
+    ]);
+    // 返回基础信息包
+    return outputBundleBase;
+  }
 }
 ```
