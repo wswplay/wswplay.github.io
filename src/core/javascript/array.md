@@ -2,7 +2,7 @@
 title: 数组特点,定义,方法介绍与使用
 ---
 
-# Array
+# Array 数组
 
 ## Array.prototype.flatMap()
 
@@ -13,4 +13,19 @@ const arr1 = [1, 2, [3], [4, 5], 6, []];
 const flattened = arr1.flatMap((num) => num);
 console.log(flattened);
 // [ 1, 2, 3, 4, 5, 6 ]
+```
+
+## Array.prototype.flat()
+
+`flat()` 方法会按照一个可指定的深度递归遍历数组，并将所有元素与遍历到的子数组中的元素合并为一个新数组返回。
+
+```ts
+const arr1 = [0, 1, 2, [3, 4]];
+console.log(arr1.flat());
+// [0, 1, 2, 3, 4]
+
+const arr2 = [0, 1, 2, [[[3, 4]]]];
+// 深度为 2
+console.log(arr2.flat(2));
+// [0, 1, 2, Array [3, 4]]
 ```

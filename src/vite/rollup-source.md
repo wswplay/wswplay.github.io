@@ -90,7 +90,7 @@ export default function rollup(
 }
 ```
 
-## 打包 build 核心函数
+## 打包
 
 ### rollupInternal() 执行 options 钩子
 
@@ -647,7 +647,18 @@ export function getPluginContext(
 }
 ```
 
-## 输出 generate 核心函数
+## 输出
+
+```md
+rollupInternal
+├── async write()
+│ └── handleGenerateWrite()
+├── src
+│ ├── plugins
+│ │ └── zhi-rollup-plugin.ts
+│ └── xiao.ts
+└── zhi.config.ts
+```
 
 ```ts
 // 开始输出函数 handleGenerateWrite

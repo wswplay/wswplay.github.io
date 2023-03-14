@@ -139,13 +139,17 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         items: [
           { text: "简介", link: "/core/javascript/" },
           { text: "Array数组", link: "/core/javascript/array" },
+          { text: "Object对象", link: "/core/javascript/object" },
         ],
       },
       {
         text: "TypeScript基础",
         items: [
           { text: "基本认知与区别", link: "/core/typescript/" },
-          { text: "tsconfig.json字段详解", link: "/core/typescript/config-file" },
+          {
+            text: "tsconfig.json字段详解",
+            link: "/core/typescript/config-file",
+          },
           { text: "declare及声明文件", link: "/core/typescript/declare" },
           { text: "tsx执行ts及VSCode调试ts", link: "/core/typescript/tsx" },
         ],
