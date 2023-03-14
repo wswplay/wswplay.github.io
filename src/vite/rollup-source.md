@@ -674,11 +674,26 @@ async function handleGenerateWrite() {
     const bundle = new Bundle(outputOptions, unsetOptions, inputOptions, outputPluginDriver, graph);
     // 进入输出核心函数
     const generated = await bundle.generate(isWrite);
+    // 如果是写入那就 writeOutputFile
+    if (isWrite) {
+      timeStart('WRITE', 1);
+      if (!outputOptions.dir && !outputOptions.file) {
+        return error(errorMissingFileOrDirOption());
+      }
+      await Promise.all(
+        Object.values(generated).map(chunk =>
+          graph.fileOperationQueue.run(() => writeOutputFile(chunk, outputOptions))
+        )
+      );
+      await outputPluginDriver.hookParallel('writeBundle', [outputOptions, generated]);
+      timeEnd('WRITE', 1);
+    }
+    return createOutput(generated);
   }
 }
 ```
 
-### bundle.generate
+### bundle.generate()
 
 ```ts
 export default class Bundle {
@@ -717,6 +732,84 @@ export default class Bundle {
     ]);
     // 返回基础信息包
     return outputBundleBase;
+  }
+}
+```
+
+### generateChunks
+
+```ts
+export default class Bundle {
+  private async generateChunks() {
+    const chunks: Chunk[] = [];
+    for (const { alias, modules } of inlineDynamicImports) {
+      const chunk = new Chunk(
+        modules,
+        this.inputOptions,
+        this.outputOptions,
+        this.unsetOptions,
+        this.pluginDriver,
+        this.graph.modulesById,
+        chunkByModule,
+        externalChunkByModule,
+        this.facadeChunkByModule,
+        this.includedNamespaces,
+        alias,
+        getHashPlaceholder,
+        bundle,
+        inputBase,
+        snippets
+      );
+      chunks.push(chunk);
+    }
+    return [...chunks, ...facades];
+  }
+}
+export async function renderChunks() {
+  const renderedChunks = await Promise.all(
+    chunks.map((chunk) => chunk.render())
+  );
+  const chunkGraph = getChunkGraph(chunks);
+}
+export default class Chunk {
+  async render(): Promise<ChunkRenderResult> {
+    const {
+      accessedGlobals,
+      indent,
+      magicString,
+      renderedSource,
+      usedModules,
+      usesTopLevelAwait,
+    } = this.renderModules(preliminaryFileName.fileName);
+    return {
+      chunk: this,
+      magicString,
+      preliminaryFileName,
+      usedModules,
+    };
+  }
+  private renderModules(fileName: string) {
+    const renderOptions: RenderOptions = {
+      dynamicImportFunction,
+      exportNamesByVariable,
+      format,
+      freeze,
+      indent,
+      namespaceToStringTag,
+      pluginDriver,
+      snippets,
+      useOriginalName: null,
+    };
+    const rendered = module.render(renderOptions);
+    const { renderedExports, removedExports } = module.getRenderedExports();
+    return {
+      accessedGlobals,
+      indent,
+      magicString,
+      renderedSource,
+      usedModules,
+      usesTopLevelAwait,
+    };
   }
 }
 ```
