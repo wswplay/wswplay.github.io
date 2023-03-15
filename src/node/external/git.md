@@ -123,7 +123,11 @@ git pull origin master --allow-unrelated-histories
 ## 撤销 commit 提交
 
 ```bash
-# 撤销最近一次commit
+# 整体回到上次一次操作，绿字变红字(撤销add)
+git reset HEAD
+# 红字变无 (撤销没add修改)
+git reset HEAD 路径文件名
+# 撤销最近一次commit，git status 显示绿字
 git reset --soft HEAD^
 # 慎用！慎用！慎用！撤销commit，且会删除所有改动的代码。一夜回到解放前！
 git reset --hard HEAD~1
