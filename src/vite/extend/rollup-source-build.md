@@ -1,4 +1,4 @@
-### build 流程函数目录
+### build 函数谱系集锦
 
 ```ts
 runRollup()
@@ -25,6 +25,7 @@ runRollup()
                     await graph.pluginDriver.hookParallel("buildStart")
                     // 打包
                     await graph.build() {
+                      // 生成模块关系图谱
                       await this.generateModuleGraph() {
                         await this.moduleLoader.addEntryModules(normalizeEntryModules()) {
                           await this.extendLoadModulesPromise() {
@@ -65,17 +66,65 @@ runRollup()
                           await this.awaitLoadModulesPromise()
                           return { entryModules, ..., newEntryModules }
                         }
+                        // 标记内部、外部模块
                         if (module instanceof Module) {
                           this.modules.push(module);
                         } else {
                           this.externalModules.push(module);
                         }
                       }
-                      // 排序
-                      this.sortModules()
-                      // 标记
-                      this.includeStatements()
+
+                      // 排序、绑定引用
+                      this.sortModules() {
+                        // 排序：递归分析模块，并标记执行顺序，返回排序后的模块数组
+                        const { orderedModules, cyclePaths } = analyseModuleExecution(this.entryModules) {
+                          const analyseModule = (module) => {
+                            if (module instanceof Module) {
+                              for (const dependency of module.dependencies) {
+                                analyseModule(dependency);
+                              }
+                            }
+                            module.execIndex = nextExecIndex++;
+                            analysedModules.add(module);
+                          }
+                          return { cyclePaths, orderedModules };
+                        }
+                        // 绑定引用
+                        for (const module of this.modules) {
+                          module.bindReferences() {
+                            this.ast!.bind() {
+                              for (const key of this.keys) {
+                                child?.bind()
+                              }
+                            }
+                          }
+                        }
+                      }
+
+                      // 标记入包状态
+                      this.includeStatements() {
+                        for (const module of entryModules) {
+                          markModuleAndImpureDependenciesAsExecuted(module) { 
+                            baseModule.isExecuted = true;
+                          }
+                        }
+                        for (const module of this.modules) {
+                          module.includeAllInBundle() {
+                            this.ast!.include(createInclusionContext(), true) {
+                              // Program.ts
+                              include() {
+                                this.included = true
+                                for (const node of this.body) {
+                                  if(...) node.include(context, includeChildrenRecursively)
+                                }
+                              }
+                            }
+                            this.includeAllExports(false);
+                          }
+                        }
+                      }
                     }
+                    // 执行 buildEnd 钩子
                     await graph.pluginDriver.hookParallel('buildEnd')
                   }
                 const result = {
