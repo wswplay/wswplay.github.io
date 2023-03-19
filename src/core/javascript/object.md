@@ -16,3 +16,17 @@ Object.entries([11, 66, 99]);
 Object.entries({ id: 666, name: "三体" });
 // [ [ 'id', 666 ], [ 'name', '三体' ] ]
 ```
+
+## Object.fromEntries()
+
+把键值对列表转换为一个对象。
+
+```ts
+const entries = new Map([
+  ["foo", "bar"],
+  ["baz", 42],
+]);
+const obj = Object.fromEntries(entries);
+console.log(obj);
+// { foo: "bar", baz: 42 }
+```

@@ -31,11 +31,41 @@ runRollup() {
                         this.pluginDriver.setOutputBundle(outputBundle, this.outputOptions)
                         try {
                           await this.pluginDriver.hookParallel('renderStart')
-                          const chunks = await this.generateChunks(outputBundle, getHashPlaceholder)
+                          const chunks = await this.generateChunks(outputBundle) {
+                            const snippets = getGenerateCodeSnippets(this.outputOptions)
+                            const chunks: Chunk[] = []
+                            for(const xxx of xxx) {
+                              const chunk = new Chunk()
+                            }
+                            for (const chunk of chunks) {
+                              chunk.link()
+                            }
+                            return [...chunks, ...facades]
+                          }
                           for (const chunk of chunks) {
                             chunk.generateExports()
                           }
-                          await renderChunks(...)
+                          await renderChunks(...) {
+                            const renderedChunks = await Promise.all(chunks.map(chunk => chunk.render()) {
+                              const { xxx } = this.renderModules(fileName) {
+                                const magicString = new MagicStringBundle({ separator: `${n}${n}` })
+                                const renderOptions = {...}
+                                for (const module of orderedModules) {
+                                  const rendered = module.render(renderOptions)
+                                }
+                                return { magicString, renderedSource, ... }
+                              }
+                              const { intro, outro, banner, footer } = await createAddons()
+                              return { chunk: this, magicString, preliminaryFileName, usedModules }
+                            })
+                            // 创建 chunk 图谱
+                            const chunkGraph = getChunkGraph(chunks)
+                            const { xxx } = await transformChunksAndGenerateContentHashes()
+                            const hashesByPlaceholder = generateFinalHashes()
+                            addChunksToBundle()
+                          }
+                          // 移除未引用的物料
+                          removeUnreferencedAssets(outputBundle)
                           await this.pluginDriver.hookSeq('generateBundle')
                           return outputBundleBase;
                         }
