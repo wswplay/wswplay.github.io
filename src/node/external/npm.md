@@ -36,30 +36,6 @@ npm publish --access public
 
 发布成功后，登录[npm 官网](https://www.npmjs.com/)个人中心`packages`中可以看到。
 
-## nrm 管理 npm 源地址
-
-```bash
-# 全局安装nrm
-npm install -g nrm
-# 如下安装 nrm ls时，当前使用库前面会带*
-npm install Pana/nrm -g
-# 查看可选的源地址
-nrm ls
-# npm ---------- https://registry.npmjs.org/
-# yarn --------- https://registry.yarnpkg.com/
-# tencent ------ https://mirrors.cloud.tencent.com/npm/
-# cnpm --------- https://r.cnpmjs.org/
-# * taobao ----- https://registry.npmmirror.com/
-# npmMirror ---- https://skimdb.npmjs.com/registry/
-
-# 查看当前正在使用的库 You are using taobao registry.
-nrm current
-# 切换到淘宝源
-nrm use taobao
-# 测试速度
-nrm test npm
-```
-
 ## 设置源地址
 
 > 有些项目，有些时候，我们一定要切到官方的源上，才能安装。如果不，会提示一些莫名其妙的错误。
