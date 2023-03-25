@@ -1,23 +1,28 @@
 ### build 函数谱系集锦
 
 ```ts
-runRollup()
-  getConfigs()
-    getConfigPath()
+runRollup(command)
+  getConfigs(command)
+    const configFile = await getConfigPath(command.config)
     // 加载配置文件
-    loadConfigFile()
-      getConfigList()
-        getConfigFileExport()
-          loadTranspiledConfigFile()
-            addPluginsFromCommandOption()
+    const { options, warnings } = await loadConfigFile(configFile, command)
+      getConfigList(fileName, commandOptions)
+        getConfigFileExport(fileName, commandOptions)
+          loadTranspiledConfigFile(fileName, commandOptions)
+            const inputOptions = {..., plugins: [] }
+            addPluginsFromCommandOption(configPlugin, inputOptions)
             // 解析打包配置文件
-            const bundle = await rollup.rollup() {
-              rollupInternal() {
+            const bundle = await rollup.rollup(inputOptions) {
+              rollupInternal(rawInputOptions, null) {
                 // 获取配置文件入口配置
-                const { options: inputOptions } = await getInputOptions() {
-                  getSortedValidatedPlugins('options')
-                  await normalizeInputOptions()
-                  return { options, unsetOptions }
+                const { options: inputOptions } = await getInputOptions(rawInputOptions) {
+                  const rawPlugins = getSortedValidatedPlugins('options')
+                  const { options } = await normalizeInputOptions(
+                    rawPlugins.reduce(..., rawInputOptions)) {
+                    const options = {..., input: getInput(config)}
+                    return { options }
+                  }
+                  return { options }
                 }
                 // 构建图谱实例
                 const graph = new Graph(inputOptions, watcher)
