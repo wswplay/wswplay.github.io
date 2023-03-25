@@ -11,18 +11,20 @@ runRollup()
           loadTranspiledConfigFile()
             addPluginsFromCommandOption()
             // 解析打包配置文件
-            const bundle = await rollup.rollup()
-              rollupInternal()
+            const bundle = await rollup.rollup() {
+              rollupInternal() {
                 // 获取配置文件入口配置
-                getInputOptions()
-                  getSortedValidatedPlugins("options")
+                const { options: inputOptions } = await getInputOptions() {
+                  getSortedValidatedPlugins('options')
                   await normalizeInputOptions()
+                  return { options, unsetOptions }
+                }
                 // 构建图谱实例
-                const graph = new Graph()
+                const graph = new Graph(inputOptions, watcher)
                 // 进入核心打包流程
-                await catchUnfinishedHookActions()
+                await catchUnfinishedHookActions() {
                   try {
-                    await graph.pluginDriver.hookParallel("buildStart")
+                    await graph.pluginDriver.hookParallel('buildStart')
                     // 打包
                     await graph.build() {
                       // 生成模块关系图谱
@@ -32,8 +34,8 @@ runRollup()
                             Promise.all(
                               this.loadEntryModule() {
                                 const resolveIdResult = await resolveId() {
-                                  await resolveIdViaPlugins() {
-                                    return pluginDriver.hookFirstAndGetPlugin("resolveId")
+                                  const pluginResult = await resolveIdViaPlugins() {
+                                    // return pluginDriver.hookFirstAndGetPlugin('resolveId')
                                   }
                                   return addJsExtensionIfNecessary()
                                 }
@@ -41,10 +43,10 @@ runRollup()
                                   const module = new Module()
                                   this.addModuleSource() {
                                     source = await this.pluginDriver.hookFirst('load')
-                                    module.updateOptions()
-                                    module.setSource(transform() {
-                                      code = await pluginDriver.hookReduceArg0("transform")
-                                      return { code, ast, ... }
+                                    module.updateOptions(sourceDescription)
+                                    module.setSource(transform(sourceDescription) {
+                                      code = await pluginDriver.hookReduceArg0('transform')
+                                      return { code, ... }
                                     }) {
                                       const moduleAst = ast ?? this.tryParse()
                                       this.astContext = {...}
@@ -54,12 +56,12 @@ runRollup()
                                       this.info.ast = moduleAst;
                                     }
                                   }
-                                  this.pluginDriver.hookParallel("moduleParsed")
-                                  await this.fetchModuleDependencies()
+                                  this.pluginDriver.hookParallel('moduleParsed')
+                                  await this.fetchModuleDependencies(module)
                                   return module;
                                 }
                               }
-                            }).then(entryModules => {
+                            ).then(entryModules => {
                               return entryModules;
                             })
                           }
@@ -127,6 +129,7 @@ runRollup()
                     // 执行 buildEnd 钩子
                     await graph.pluginDriver.hookParallel('buildEnd')
                   }
+                }
                 const result = {
                   // 只生成。不写入
                   async generate() {
@@ -134,4 +137,6 @@ runRollup()
                   }
                 }
                 return result;
+              }
+            }
 ```
