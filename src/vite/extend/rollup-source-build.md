@@ -25,7 +25,11 @@ runRollup(command)
                   return { options }
                 }
                 // 构建图谱实例
-                const graph = new Graph(inputOptions, watcher)
+                const graph = new Graph(inputOptions, watcher) {
+                  readonly modulesById = new Map()
+                  this.pluginDriver = new PluginDriver(this, options, options.plugins)
+                  this.moduleLoader = new ModuleLoader(this, this.modulesById)
+                }
                 // 进入核心打包流程
                 await catchUnfinishedHookActions() {
                   try {
@@ -35,22 +39,29 @@ runRollup(command)
                       // 生成模块关系图谱
                       await this.generateModuleGraph() {
                         await this.moduleLoader.addEntryModules(normalizeEntryModules()) {
-                          await this.extendLoadModulesPromise() {
+                          const newEntryModules = await this.extendLoadModulesPromise() {
                             Promise.all(
-                              this.loadEntryModule() {
-                                const resolveIdResult = await resolveId() {
-                                  const pluginResult = await resolveIdViaPlugins() {
+                              this.loadEntryModule(id) {
+                                const resolveIdResult = await resolveId(unresolvedId) {
+                                  const pluginResult = await resolveIdViaPlugins(source) {
                                     // return pluginDriver.hookFirstAndGetPlugin('resolveId')
                                   }
-                                  return addJsExtensionIfNecessary()
+                                  return addJsExtensionIfNecessary(source)
                                 }
-                                return this.fetchModule(this.getResolvedIdWithDefaults()) {
-                                  const module = new Module()
-                                  this.addModuleSource() {
-                                    source = await this.pluginDriver.hookFirst('load')
+                                return this.fetchModule(this.getResolvedIdWithDefaults(id)) {
+                                  // 创建模块实例
+                                  const module = new Module(id, ...)
+                                  this.modulesById.set(id, module)
+                                  // 添加模块源信息
+                                  const loadPromise = this.addModuleSource(id, module) {
+                                    try {
+                                      source = await this.pluginDriver.hookFirst('load', [id])
+                                    }
+                                    // 更新模块相关信息
                                     module.updateOptions(sourceDescription)
-                                    module.setSource(transform(sourceDescription) {
-                                      code = await pluginDriver.hookReduceArg0('transform')
+                                    // 设置模块相关信息
+                                    module.setSource(transform(module) {
+                                      code = await pluginDriver.hookReduceArg0('transform', module.id)
                                       return { code, ... }
                                     }) {
                                       const moduleAst = ast ?? this.tryParse()
@@ -60,24 +71,41 @@ runRollup(command)
                                       this.ast = new Program()
                                       this.info.ast = moduleAst;
                                     }
-                                  }
+                                  }.then(() => {
+                                    this.getResolveStaticDependencyPromises(module),
+                                    this.getResolveDynamicImportPromises(module),
+                                    loadAndResolveDependenciesPromise
+                                  })
                                   this.pluginDriver.hookParallel('moduleParsed')
-                                  await this.fetchModuleDependencies(module)
+                                  const resolveDependencyPromises = await loadPromise;
+                                  await this.fetchModuleDependencies(module, ...resolveDependencyPromises)
                                   return module;
                                 }
                               }
                             ).then(entryModules => {
+                              for (const [index, entryModule] of entryModules.entries()) {
+                                addChunkNamesToModule(entryModule)
+                                this.indexedEntryModules.push({index: xxx, module: entryModule})
+                                this.indexedEntryModules.sort(({index: indexA}, {index: indexB}) => {
+                                  indexA > indexB ? 1 : -1
+                                })
+                              }
                               return entryModules;
                             })
                           }
                           await this.awaitLoadModulesPromise()
-                          return { entryModules, ..., newEntryModules }
+                          return {
+                            entryModules: this.indexedEntryModules.map(({ module }) => module),
+                            newEntryModules
+                          }
                         }
                         // 标记内部、外部模块
-                        if (module instanceof Module) {
-                          this.modules.push(module);
-                        } else {
-                          this.externalModules.push(module);
+                        for (const module of this.modulesById.values()) {
+                          if (module instanceof Module) {
+                            this.modules.push(module);
+                          } else {
+                            this.externalModules.push(module);
+                          }
                         }
                       }
 
