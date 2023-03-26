@@ -25,10 +25,13 @@ runRollup() {
                   }
                   return catchUnfinishedHookActions() {
                     const bundle = new Bundle(outputOptions, outputPluginDriver, graph) {
+                      constructor() {
+                        private readonly outputOptions
+                      }
                       async generate() {
                         // 声明返回数据
                         const outputBundleBase: OutputBundle = Object.create(null)
-                        // 创建返回数据代理
+                        // 创建返回数据转发代理
                         const outputBundle = getOutputBundle(outputBundleBase)
                         this.pluginDriver.setOutputBundle(outputBundle, this.outputOptions)
                         try {
@@ -37,8 +40,8 @@ runRollup() {
                           const chunks = await this.generateChunks(outputBundle) {
                             const snippets = getGenerateCodeSnippets(this.outputOptions)
                             const chunks: Chunk[] = []
-                            for(const xxx of xxx) {
-                              const chunk = new Chunk()
+                            for(const {alias, modules} of getChunkAssignments(this.graph.entryModules)) {
+                              const chunk = new Chunk(modules, this.inputOptions, this.outputOptions)
                             }
                             for (const chunk of chunks) {
                               // 设置chunk依赖、导入、导出等
@@ -51,9 +54,12 @@ runRollup() {
                             chunk.generateExports()
                           }
                           // 渲染chunk
-                          await renderChunks(...) {
+                          await renderChunks(chunks, outputBundle) {
                             const renderedChunks = await Promise.all(chunks.map(chunk => chunk.render()) {
-                              const { xxx } = this.renderModules(fileName) {
+                              // 预备文件名
+                              const preliminaryFileName = this.getPreliminaryFileName()
+                              const { xxx } = this.renderModules(preliminaryFileName.fileName) {
+                                const { orderedModules } = this
                                 const magicString = new MagicStringBundle({ separator: `${n}${n}` })
                                 const renderOptions = {...}
                                 for (const module of orderedModules) {
@@ -67,10 +73,14 @@ runRollup() {
                             // 创建 chunk 图谱
                             const chunkGraph = getChunkGraph(chunks)
                             // 生成chunk哈希
-                            const { xxx } = await transformChunksAndGenerateContentHashes()
-                            const hashesByPlaceholder = generateFinalHashes()
+                            const { nonHashedChunksWithPlaceholders } = await transformChunksAndGenerateContentHashes(renderedChunks, chunkGraph)
+                            const hashesByPlaceholder = generateFinalHashes(..., outputBundle, )
                             // 整合chunk
-                            addChunksToBundle(...)
+                            addChunksToBundle(..., outputBundle, nonHashedChunksWithPlaceholders) {
+                              for (const { chunk, code, fileName, map } of nonHashedChunksWithPlaceholders) {
+                                outputBundle[fileName] = chunk.finalizeChunk(...)
+                              }
+                            }
                           }
                           // 移除未引用的物料
                           removeUnreferencedAssets(outputBundle)
