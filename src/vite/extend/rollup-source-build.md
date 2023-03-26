@@ -36,7 +36,7 @@ runRollup(command)
                     await graph.pluginDriver.hookParallel('buildStart')
                     // 打包
                     await graph.build() {
-                      // 生成模块关系图谱
+                      // 深度优先递归解析模块内容、依赖等信息，生成关系图谱
                       await this.generateModuleGraph() {
                         await this.moduleLoader.addEntryModules(normalizeEntryModules()) {
                           const newEntryModules = await this.extendLoadModulesPromise() {
@@ -109,7 +109,7 @@ runRollup(command)
                         }
                       }
 
-                      // 排序、绑定引用
+                      // 按模块及依赖执行先后排序，ast按照各自类型绑定引用
                       this.sortModules() {
                         // 排序：递归分析模块，并标记执行顺序，返回排序后的模块数组
                         const { orderedModules, cyclePaths } = analyseModuleExecution(this.entryModules) {
@@ -124,7 +124,8 @@ runRollup(command)
                           }
                           return { cyclePaths, orderedModules };
                         }
-                        // 绑定引用
+                        this.modules = orderedModules;
+                        // ast绑定引用
                         for (const module of this.modules) {
                           module.bindReferences() {
                             this.ast!.bind() {
@@ -136,7 +137,7 @@ runRollup(command)
                         }
                       }
 
-                      // 标记入包状态
+                      // 运行node.hasEffects()，标记ast属性included是否含true，确认该片段是否入包
                       this.includeStatements() {
                         for (const module of entryModules) {
                           markModuleAndImpureDependenciesAsExecuted(module) { 
