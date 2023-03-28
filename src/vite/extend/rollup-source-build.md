@@ -24,7 +24,7 @@ runRollup(command)
                   }
                   return { options }
                 }
-                // 构建图谱实例
+                // 创建图谱实例
                 const graph = new Graph(inputOptions, watcher) {
                   readonly modulesById = new Map()
                   this.pluginDriver = new PluginDriver(this, options, options.plugins)

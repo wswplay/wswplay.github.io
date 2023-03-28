@@ -7,21 +7,27 @@ runRollup() {
     for (const inputOptions of options) {
       await build(inputOptions, warnings, command.silent) {
         const outputOptions = inputOptions.output
-        // 返回 build 结果
+        // 声明 build 结果
         const bundle = await rollup(inputOptions as any) {
           return rollupInternal(rawInputOptions, null) {
             const { options: inputOptions } = await getInputOptions(rawInputOptions)
             const graph = new Graph(inputOptions, watcher)
             await catchUnfinishedHookActions(graph.pluginDriver, async () => {
-              await graph.build(); // build细节参见build谱系函数集锦
+              await graph.build(); // build细节参见 build谱系函数集锦
             });
             const result = {
               // 写入、生成文件
               async write() {
                 return handleGenerateWrite(true, inputOptions, unsetInputOptions, rawOutputOptions, graph) {
-                  const { outputOptions, outputPluginDriver } = await getOutputOptionsAndPluginDriver() {
+                  const { outputOptions, outputPluginDriver } = await getOutputOptionsAndPluginDriver(rawOutputOptions) {
+                    const rawPlugins = await normalizePluginOption(rawOutputOptions.plugins)
                     const outputPluginDriver = inputPluginDriver.createOutputPluginDriver(rawPlugins)
-                    return { outputPluginDriver, outputOptions }
+                    return {
+                      ...(await getOutputOptions(rawOutputOptions) {
+                        return normalizeOutputOptions(outputPluginDriver.hookReduceArg0Sync('outputOptions', [rawOutputOptions], ...))
+                      }),
+                      outputPluginDriver
+                    }
                   }
                   return catchUnfinishedHookActions() {
                     const bundle = new Bundle(outputOptions, outputPluginDriver, graph) {
@@ -41,31 +47,59 @@ runRollup() {
                             const snippets = getGenerateCodeSnippets(this.outputOptions)
                             const chunks: Chunk[] = []
                             for(const {alias, modules} of getChunkAssignments(this.graph.entryModules)) {
-                              const chunk = new Chunk(modules, this.inputOptions, this.outputOptions)
+                              const chunk = new Chunk(modules, this.inputOptions, this.outputOptions) {
+                                constructor(
+                                  // 即第一个参数: modules
+                                  private readonly orderedModules: readonly Module[]
+                                ) {}
+                              }
                             }
                             for (const chunk of chunks) {
                               // 设置chunk依赖、导入、导出等
-                              chunk.link()
+                              chunk.link() {
+                                this.dependencies = getStaticDependencies(this)
+                                for (const module of this.orderedModules) {
+                                  this.addImplicitlyLoadedBeforeFromModule(module)
+                                  this.setUpChunkImportsAndExportsForModule(module)
+                                }
+                              }
                             }
                             return [...chunks, ...facades]
                           }
                           // 生成chunk导出变量、模式等
                           for (const chunk of chunks) {
-                            chunk.generateExports()
+                            chunk.generateExports() {}
+                            const exportNamesByVariable = this.facadeModule.getExportNamesByVariable()
+                            this.exportMode = getExportMode()
                           }
                           // 渲染chunk
-                          await renderChunks(chunks, outputBundle) {
+                          await renderChunks(chunks, outputBundle = bundle) {
                             const renderedChunks = await Promise.all(chunks.map(chunk => chunk.render()) {
                               // 预备文件名
                               const preliminaryFileName = this.getPreliminaryFileName()
-                              const { xxx } = this.renderModules(preliminaryFileName.fileName) {
+                              const { magicString, usedModules } = this.renderModules(preliminaryFileName.fileName) {
                                 const { orderedModules } = this
                                 const magicString = new MagicStringBundle({ separator: `${n}${n}` })
+                                const usedModules: Module[] = []
                                 const renderOptions = {...}
                                 for (const module of orderedModules) {
-                                  const rendered = module.render(renderOptions)
+                                  const rendered = module.render(renderOptions) {
+                                    const source = this.magicString.clone()
+                                    this.ast!.render(source = code, options) {
+                                      if (code.original.startsWith('#!')) code.remove(0, start)
+                                      if (this.body.length > 0) {
+                                        renderStatementList(code, ..., options)
+                                      } else {
+                                        super.render(code, options)
+                                      }
+                                    }
+                                    return { source, ... }
+                                  }
+                                  ({ source } = rendered)
+                                  magicString.addSource(source)
+                                  usedModules.push(module)
                                 }
-                                return { magicString, renderedSource, ... }
+                                return { magicString, renderedSource, usedModules, ... }
                               }
                               const { intro, outro, banner, footer } = await createAddons()
                               return { chunk: this, magicString, preliminaryFileName, usedModules }
@@ -74,11 +108,11 @@ runRollup() {
                             const chunkGraph = getChunkGraph(chunks)
                             // 生成chunk哈希
                             const { nonHashedChunksWithPlaceholders } = await transformChunksAndGenerateContentHashes(renderedChunks, chunkGraph)
-                            const hashesByPlaceholder = generateFinalHashes(..., outputBundle, )
+                            const hashesByPlaceholder = generateFinalHashes(..., bundle, )
                             // 整合chunk
-                            addChunksToBundle(..., outputBundle, nonHashedChunksWithPlaceholders) {
+                            addChunksToBundle(..., bundle, nonHashedChunksWithPlaceholders) {
                               for (const { chunk, code, fileName, map } of nonHashedChunksWithPlaceholders) {
-                                outputBundle[fileName] = chunk.finalizeChunk(...)
+                                bundle[fileName] = chunk.finalizeChunk(...)
                               }
                             }
                           }
@@ -92,7 +126,11 @@ runRollup() {
                     }
                     const generated = await bundle.generate(isWrite)
                     if (isWrite) {
-                      await Promise.all(writeOutputFile(chunk, outputOptions))
+                      await Promise.all(
+                        Object.values(generated).map(chunk => {
+                          graph.fileOperationQueue.run(() => writeOutputFile(chunk, outputOptions))
+                        })
+                      )
                       await outputPluginDriver.hookParallel('writeBundle')
                     }
                     return createOutput(generated) {
@@ -102,12 +140,12 @@ runRollup() {
                 }
               }
             }
-            return result;
+            return result
           }
         }
         // 唤起写入功能
         await Promise.all(outputOptions.map(bundle.write))
-        await bundle.close();
+        await bundle.close()
       }
     }
   }

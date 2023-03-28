@@ -22,7 +22,7 @@ pnpm run build
 - 2、注意方法名称，代表功能；
 - 3、看函数返回了什么，返回值才是目的嘛；
 
-## rollup-cli 源码摘要
+## rollup(命令) 源码摘要
 
 - 获取参数。
 - 解析配置。
@@ -81,7 +81,7 @@ export default function rollup(
 }
 ```
 
-## 流程简介
+## 打包流程简介
 
 主要分为 `2` 大阶段：
 
@@ -90,7 +90,7 @@ export default function rollup(
   `generate` 意思是，只输出在内存中，比如 `ts` 配置文件，会被先打包成 `.mjs` 文件，再读取配置内容，随后立即删除这个临时文件。  
   `write` 就是真正写入磁盘，变成看得见的实体文件。所有目标模块，都写入成实体文件。
 
-## 流程集锦
+## 打包流程集锦
 
 <!--@include: ./extend/rollup-source-build.md-->
 <!--@include: ./extend/rollup-source-write.md-->
