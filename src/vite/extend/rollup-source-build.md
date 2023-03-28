@@ -11,7 +11,7 @@ runRollup(command)
           loadTranspiledConfigFile(fileName, commandOptions)
             const inputOptions = {..., plugins: [] }
             addPluginsFromCommandOption(configPlugin, inputOptions)
-            // 解析打包配置文件
+            // 解析配置文件
             const bundle = await rollup.rollup(inputOptions) {
               rollupInternal(rawInputOptions, null) {
                 // 获取配置文件入口配置
@@ -30,11 +30,11 @@ runRollup(command)
                   this.pluginDriver = new PluginDriver(this, options, options.plugins)
                   this.moduleLoader = new ModuleLoader(this, this.modulesById)
                 }
-                // 进入核心打包流程
+                // 进入核心构建流程
                 await catchUnfinishedHookActions() {
                   try {
                     await graph.pluginDriver.hookParallel('buildStart')
-                    // 打包
+                    // 构建
                     await graph.build() {
                       // 深度优先递归解析模块内容、依赖等信息，生成关系图谱
                       await this.generateModuleGraph() {
@@ -137,7 +137,7 @@ runRollup(command)
                         }
                       }
 
-                      // 运行node.hasEffects()，标记ast属性included是否含true，确认该片段是否入包
+                      // 运行node.hasEffects()，标记ast属性included是否含true，决定该节点是否入包
                       this.includeStatements() {
                         for (const module of entryModules) {
                           markModuleAndImpureDependenciesAsExecuted(module) { 
@@ -145,17 +145,28 @@ runRollup(command)
                           }
                         }
                         for (const module of this.modules) {
-                          module.includeAllInBundle() {
-                            this.ast!.include(createInclusionContext(), true) {
-                              // Program.ts
-                              include() {
-                                this.included = true
-                                for (const node of this.body) {
-                                  if(...) node.include(context, includeChildrenRecursively)
+                          if (module.info.moduleSideEffects === 'no-treeshake') {
+                            module.includeAllInBundle() {
+                              this.ast!.include(createInclusionContext(), true) {
+                                // Program.ts
+                                include() {
+                                  this.included = true
+                                  for (const node of this.body) {
+                                    if(...) node.include(context, includeChildrenRecursively)
+                                  }
+                                }
+                              }
+                              this.includeAllExports(false)
+                            } else {
+                              module.include() {
+                                const context = createInclusionContext()
+                                if (this.ast!.shouldBeIncluded(context) {
+                                  return this.included || (!context.brokenFlow && this.hasEffects(createHasEffectsContext()))
+                                }) {
+                                  this.ast!.include(context, false)
                                 }
                               }
                             }
-                            this.includeAllExports(false);
                           }
                         }
                       }
@@ -167,7 +178,7 @@ runRollup(command)
                 const result = {
                   // 只生成。不写入
                   async generate() {
-                    return handleGenerateWrite(false)
+                    return handleGenerateWrite(false, ...)
                   }
                 }
                 return result;
