@@ -1,4 +1,4 @@
-### generate / write 函数谱系集锦
+### write/generate谱系函数集锦
 
 ```ts
 runRollup() {
@@ -13,7 +13,7 @@ runRollup() {
             const { options: inputOptions } = await getInputOptions(rawInputOptions)
             const graph = new Graph(inputOptions, watcher)
             await catchUnfinishedHookActions(graph.pluginDriver, async () => {
-              await graph.build();
+              await graph.build(); // build细节参见build谱系函数集锦
             });
             const result = {
               // 写入、生成文件

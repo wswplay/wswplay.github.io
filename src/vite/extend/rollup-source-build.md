@@ -1,4 +1,4 @@
-### build 函数谱系集锦
+### build谱系函数集锦
 
 ```ts
 runRollup(command)
