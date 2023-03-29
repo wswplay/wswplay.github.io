@@ -71,7 +71,7 @@ runRollup() {
                           for (const chunk of chunks) {
                             chunk.generateExports() {
                               const exportNamesByVariable = this.facadeModule.getExportNamesByVariable()
-                              this.exportMode = getExportMode()
+                              this.exportMode = getExportMode(...)
                             }
                           }
                           // 渲染chunk
@@ -107,7 +107,14 @@ runRollup() {
                               return { chunk: this, magicString, preliminaryFileName, usedModules }
                             })
                             // 创建 chunk 图谱
-                            const chunkGraph = getChunkGraph(chunks)
+                            const chunkGraph = getChunkGraph(chunks) {
+                              return Object.fromEntries(
+                                chunks.map(chunk => {
+                                  const renderedChunkInfo = chunk.getRenderedChunkInfo()
+                                  return [renderedChunkInfo.fileName, renderedChunkInfo]
+                                }
+                              )
+                            }
                             // 生成chunk哈希
                             const { nonHashedChunksWithPlaceholders } = await transformChunksAndGenerateContentHashes(renderedChunks, chunkGraph)
                             const hashesByPlaceholder = generateFinalHashes(..., bundle, )

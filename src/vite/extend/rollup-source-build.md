@@ -68,8 +68,9 @@ runRollup(command)
                                         code = await pluginDriver.hookReduceArg0('transform', module.id)
                                         return { code, ... }
                                       }) {
+                                        this.info.code = code
                                         const moduleAst = ast ?? this.tryParse()
-                                        this.astContext = {...}
+                                        this.astContext = {code, ...}
                                         this.scope = new ModuleScope()
                                         this.namespace = new NamespaceVariable()
                                         this.ast = new Program()
