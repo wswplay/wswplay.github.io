@@ -90,7 +90,7 @@ export default function rollup(
   `generate` 意思是，只输出在内存中，比如 `ts` 配置文件，会被先打包成 `.mjs` 文件，再读取配置内容，随后立即删除这个临时文件。  
   `write` 就是真正写入磁盘，变成看得见的实体文件。所有目标模块，都写入成实体文件。
 
-## 打包流程集锦
+## 流程函数集锦
 
 <!--@include: ./extend/rollup-source-build.md-->
 <!--@include: ./extend/rollup-source-write.md-->

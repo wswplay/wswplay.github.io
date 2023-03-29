@@ -53,6 +53,7 @@ runRollup() {
                                   private readonly orderedModules: readonly Module[]
                                 ) {}
                               }
+                              chunks.push(chunk)
                             }
                             for (const chunk of chunks) {
                               // 设置chunk依赖、导入、导出等
@@ -68,9 +69,10 @@ runRollup() {
                           }
                           // 生成chunk导出变量、模式等
                           for (const chunk of chunks) {
-                            chunk.generateExports() {}
-                            const exportNamesByVariable = this.facadeModule.getExportNamesByVariable()
-                            this.exportMode = getExportMode()
+                            chunk.generateExports() {
+                              const exportNamesByVariable = this.facadeModule.getExportNamesByVariable()
+                              this.exportMode = getExportMode()
+                            }
                           }
                           // 渲染chunk
                           await renderChunks(chunks, outputBundle = bundle) {
@@ -117,7 +119,11 @@ runRollup() {
                             }
                           }
                           // 移除未引用的物料
-                          removeUnreferencedAssets(outputBundle)
+                          removeUnreferencedAssets(outputBundle) {
+                            for (const file of unreferencedAssets) {
+                              delete outputBundle[file]
+                            }
+                          }
                           await this.pluginDriver.hookSeq('generateBundle')
                           // 返回数据
                           return outputBundleBase;
@@ -128,7 +134,11 @@ runRollup() {
                     if (isWrite) {
                       await Promise.all(
                         Object.values(generated).map(chunk => {
-                          graph.fileOperationQueue.run(() => writeOutputFile(chunk, outputOptions))
+                          graph.fileOperationQueue.run(() => writeOutputFile(chunk = outputFile, outputOptions) {
+                            const fileName = resolve(outputOptions.dir || dirname(outputOptions.file!), outputFile.fileName)
+                            await mkdir(dirname(fileName), { recursive: true })
+                            return writeFile(fileName, outputFile.type === 'asset' ? outputFile.source : outputFile.code)
+                          })
                         })
                       )
                       await outputPluginDriver.hookParallel('writeBundle')

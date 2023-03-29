@@ -38,48 +38,53 @@ runRollup(command)
                     await graph.build() {
                       // 深度优先递归解析模块内容、依赖等信息，生成关系图谱
                       await this.generateModuleGraph() {
-                        await this.moduleLoader.addEntryModules(normalizeEntryModules()) {
+                        await this.moduleLoader.addEntryModules(
+                            normalizeEntryModules(this.options.input),
+                            true
+                          ) {
                           const newEntryModules = await this.extendLoadModulesPromise() {
                             Promise.all(
-                              this.loadEntryModule(id) {
-                                const resolveIdResult = await resolveId(unresolvedId) {
-                                  const pluginResult = await resolveIdViaPlugins(source) {
-                                    // return pluginDriver.hookFirstAndGetPlugin('resolveId')
+                              unresolvedEntryModules.map(({ id, importer }) => {
+                                this.loadEntryModule(id) {
+                                  const resolveIdResult = await resolveId(unresolvedId) {
+                                    const pluginResult = await resolveIdViaPlugins(source) {
+                                      // return pluginDriver.hookFirstAndGetPlugin('resolveId')
+                                    }
+                                    return addJsExtensionIfNecessary(source)
                                   }
-                                  return addJsExtensionIfNecessary(source)
-                                }
-                                return this.fetchModule(this.getResolvedIdWithDefaults(id)) {
-                                  // 创建模块实例
-                                  const module = new Module(id, ...)
-                                  this.modulesById.set(id, module)
-                                  // 添加模块源信息
-                                  const loadPromise = this.addModuleSource(id, module) {
-                                    try {
-                                      source = await this.pluginDriver.hookFirst('load', [id])
-                                    }
-                                    // 更新模块相关信息
-                                    module.updateOptions(sourceDescription)
-                                    // 设置模块相关信息
-                                    module.setSource(transform(module) {
-                                      code = await pluginDriver.hookReduceArg0('transform', module.id)
-                                      return { code, ... }
-                                    }) {
-                                      const moduleAst = ast ?? this.tryParse()
-                                      this.astContext = {...}
-                                      this.scope = new ModuleScope()
-                                      this.namespace = new NamespaceVariable()
-                                      this.ast = new Program()
-                                      this.info.ast = moduleAst;
-                                    }
-                                  }.then(() => {
-                                    this.getResolveStaticDependencyPromises(module),
-                                    this.getResolveDynamicImportPromises(module),
-                                    loadAndResolveDependenciesPromise
-                                  })
-                                  this.pluginDriver.hookParallel('moduleParsed')
-                                  const resolveDependencyPromises = await loadPromise;
-                                  await this.fetchModuleDependencies(module, ...resolveDependencyPromises)
-                                  return module;
+                                  return this.fetchModule(this.getResolvedIdWithDefaults(id)) {
+                                    // 创建模块实例
+                                    const module = new Module(id, ...)
+                                    this.modulesById.set(id, module)
+                                    // 添加模块源信息
+                                    const loadPromise = this.addModuleSource(id, module) {
+                                      try {
+                                        source = await this.pluginDriver.hookFirst('load', [id])
+                                      }
+                                      // 更新模块相关信息
+                                      module.updateOptions(sourceDescription)
+                                      // 设置模块相关信息
+                                      module.setSource(transform(module) {
+                                        code = await pluginDriver.hookReduceArg0('transform', module.id)
+                                        return { code, ... }
+                                      }) {
+                                        const moduleAst = ast ?? this.tryParse()
+                                        this.astContext = {...}
+                                        this.scope = new ModuleScope()
+                                        this.namespace = new NamespaceVariable()
+                                        this.ast = new Program()
+                                        this.info.ast = moduleAst;
+                                      }
+                                    }.then(() => {
+                                      this.getResolveStaticDependencyPromises(module),
+                                      this.getResolveDynamicImportPromises(module),
+                                      loadAndResolveDependenciesPromise
+                                    })
+                                    this.pluginDriver.hookParallel('moduleParsed')
+                                    const resolveDependencyPromises = await loadPromise;
+                                    await this.fetchModuleDependencies(module, ...resolveDependencyPromises)
+                                    return module;
+                                  }
                                 }
                               }
                             ).then(entryModules => {
