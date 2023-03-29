@@ -10,7 +10,7 @@ outline: deep
 调试命令：
 
 ```bash
-# 构建
+# 先构建
 pnpm run build
 # 进入调试流程
 ./dist/bin/rollup -c zhi.config.ts --configPlugin typescript

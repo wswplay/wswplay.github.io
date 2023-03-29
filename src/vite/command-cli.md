@@ -7,6 +7,25 @@ outline: deep
 
 【[Vite Github 地址](https://github.com/vitejs/vite/tree/main/packages/vite)】
 
+**调试步骤：**
+
+- 1、`vite源码`在`vite项目`中路径为：`vite/packages/vite`。
+- 2、在 `package.json` 中查看 `vite命令` 路径为：`bin/vite.js`。
+- 3、`bin/vite.js` 中，从 `start()` 函数开始。实际是引入了 `node/cli.js`。
+
+```ts
+function start() {
+  return import("../dist/node/cli.js");
+}
+```
+
+- 4、对应找到 `src/node/cli.ts`，在合适位置打上断点，就可以调试了。
+
+```bash
+# 调试命令
+tsx cli.ts --open --port 9000
+```
+
 ## vite [dev/serve]
 
 ```ts
@@ -472,7 +491,7 @@ async function runConfigHook(...){
 
 ## vite build
 
-调用 `Rollup.js` 打包。[Rollup 打包核心函数](/vite/rollup-source.html#打包核心函数)
+调用 `Rollup.js` 打包，详情参见 [Rollup.js 源码摘要](/vite/rollup-source.html#打包核心函数)。
 
 ```ts
 const { build } = await import("./build");
