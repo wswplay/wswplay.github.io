@@ -43,7 +43,7 @@ function geneNav(): ThemeConfig["nav"] {
     {
       text: "Vue·周边",
       activeMatch: "^/vue/",
-      link: "/vue/vue3/",
+      link: "/vue/vue3/source-code",
     },
     {
       text: "Vite·Press",
@@ -71,6 +71,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "Proxy", link: "/vue/vue3/proxy" },
           { text: "Reflect", link: "/vue/vue3/reflect" },
           { text: "Ref", link: "/vue/vue3/ref" },
+          { text: "Vue3.0源码摘要", link: "/vue/vue3/source-code" },
         ],
       },
       {
