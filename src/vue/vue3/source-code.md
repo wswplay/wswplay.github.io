@@ -1,10 +1,12 @@
 ---
 title: Vue3.0源码分析
+outline: deep
 ---
 
 # Vue3.0 源码摘要
 
 ## 流程函数谱系集锦
+### 创建app：createApp()
 
 ```ts
 createApp(...args) {
@@ -60,12 +62,16 @@ createApp(...args) {
                             unmount(container._vnode, null, null, true)
                           }
                         } else {
-                          patch(container._vnode || null, vnode, container, ...) {
-                            // patch
-                          }
+                          // 详情见下面的 patch 函数
+                          patch(container._vnode || null, vnode, container, ...)
                         }
+                        flushPreFlushCbs()
+                        flushPostFlushCbs()
+                        container._vnode = vnode
                       }
                     }
+                    isMounted = true
+                    app._container = rootContainer
                   }
                 }
                 unmount() {},
@@ -93,4 +99,67 @@ createApp(...args) {
 
   return app
 }.mount(container)
+```
+### 补丁：patch()函数
+
+```ts
+patch(container._vnode || null, vnode, container, ...) {
+  // patch(n1, n2, container)
+  const { type, ref, shapeFlag } = n2
+  switch (type) {
+    case:
+    ...
+    default: 
+      if(shapeFlag & ShapeFlags.COMPONENT) {
+        processComponent(n1, n2, container) {
+          if (n1 == null) {
+            mountComponent(n2, container) {
+              // mountComponent(initialVNode, container)
+              // 创建组件实例
+              const instance = initialVNode.component = createComponentInstance(initialVNode) {
+                // createComponentInstance(vnode, parent)
+                const type = vnode.type
+                const instance = {
+                  uid: uid++,
+                  vnode,
+                  type,
+                  parent,
+                  isMounted: false
+                }
+                if (__DEV__) {
+                  instance.ctx = createDevRenderContext(instance)
+                } else {
+                  instance.ctx = { _: instance }
+                }
+                instance.root = parent ? parent.root : instance
+                instance.emit = emit.bind(null, instance)
+                return instance
+              }
+              // 执行、设置setup
+              setupComponent(instance) {
+                const { props, children } = instance.vnode
+                const isStateful = isStatefulComponent(instance)
+                initProps(instance, props, isStateful, isSSR)
+                initSlots(instance, children)
+                const setupResult = isStateful && setupStatefulComponent(instance, isSSR) {
+                  const Component = instance.type as ComponentOptions
+                  const { setup } = Component
+                  if (setup) {
+                    createSetupContext(instance)
+                    setCurrentInstance(instance)
+                  } else {
+                    finishComponentSetup(instance, isSSR)
+                  }
+                }
+                return setupResult
+              }
+              setupRenderEffect(instance, initialVNode, container) {
+                // 设置副作用函数
+              }
+            }
+          }
+        }
+      }
+  }
+}
 ```
