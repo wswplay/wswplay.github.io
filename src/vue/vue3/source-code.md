@@ -100,7 +100,7 @@ createApp(...args) {
   return app
 }.mount(container)
 ```
-### 补丁：patch()函数
+### 渲染 or 更新：patch()
 
 ```ts
 patch(container._vnode || null, vnode, container, ...) {
@@ -154,12 +154,81 @@ patch(container._vnode || null, vnode, container, ...) {
                 return setupResult
               }
               setupRenderEffect(instance, initialVNode, container) {
-                // 设置副作用函数
+                const componentUpdateFn = () => {
+                  if (!instance.isMounted) {
+                    // beforeMount 钩子
+                    if (bm) invokeArrayFns(bm)
+                    if (el && hydrateNode) {
+                      // sth
+                    } else {
+                      // 构建vnode子树
+                      const subTree = (instance.subTree = renderComponentRoot(instance)) {
+                        const { type: Component, vnode, render } = instance
+                        let result
+                        // 设置当前渲染实例
+                        const prev = setCurrentRenderingInstance(instance)
+                        try {
+                          if (vnode.shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
+                            const proxyToUse = withProxy || proxy
+                            result = normalizeVNode(render!.call(proxyToUse, ...))
+                          } else {
+                            // functional 函数式组件
+                          }
+                        }
+                        setCurrentRenderingInstance(prev)
+                        return result
+                      }
+                      patch(null, subTree, container)
+                      initialVNode.el = subTree.el
+                    }
+                    // 执行 mounted 钩子
+                    if(m) queuePostRenderEffect(m, parentSuspense)
+                    // 标记实例为已挂载
+                    instance.isMounted = true
+                  } else {
+                  }
+                }
+                // 为渲染器创建响应式效应
+                const effect = (instance.effect = new ReactiveEffect({
+                  componentUpdateFn,
+                  () => queueJob(update),
+                  instance.scope
+                }))
+                const update: SchedulerJob = (instance.update = () => effect.run())
+                update.id = instance.uid
+                update()
               }
             }
           }
         }
       }
+  }
+}
+```
+
+### 响应式效应：class ReactiveEffect
+
+```ts
+export let activeEffect: ReactiveEffect | undefined
+export class ReactiveEffect<T = any> {
+  active = true
+  deps: Dep[] = []
+  constructor(
+    public fn: () => T,
+    public scheduler: EffectScheduler | null = null,
+    scope?: EffectScope
+  ) {
+    recordEffectScope(this, scope)
+  }
+  run() {
+    if (!this.active) return this.fn()
+    let parent: ReactiveEffect | undefined = activeEffect
+    try {
+      this.parent = activeEffect
+      activeEffect = this
+      shouldTrack = true
+      return this.fn()
+    } finally {}
   }
 }
 ```
