@@ -265,7 +265,7 @@ export class ReactiveEffect<T = any> {
 
 ## 其他集锦
 
-### 枚举 vnode 类型标识(位运算)
+### 枚举 vnode 类型标识（[位运算](/core/javascript/operators.html)）
 
 ```ts
 export const enum ShapeFlags {
