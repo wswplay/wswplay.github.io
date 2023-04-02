@@ -123,7 +123,33 @@ patch(container._vnode || null, vnode, container, ...) {
       break
     ...
     default:
-      if(shapeFlag & ShapeFlags.COMPONENT) {
+      if (shapeFlag & ShapeFlags.ELEMENT) {
+        processElement(n1, n2, container) {
+          if (n1 == null) {
+            mountElement(n2, container) {
+              // mountElement(vnode, container)
+              let el: RendererElement
+              const { type, props, shapeFlag, transition, dirs } = vnode
+              el = vnode.el = hostCreateElement(vnode.type as string)
+              if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
+                hostSetElementText(el, vnode.children as string)
+              } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+                mountChildren(vnode.children, el, optimized) {
+                  // mountChildren(children, container, optimized)
+                  for (let i = start; i < children.length; i++) {
+                    const child = (children[i] =
+                      optimized ? cloneIfMounted(children[i]) : normalizeVNode(children[i]))
+                    patch(null, child, container)
+                  }
+                }
+              }
+              hostInsert(el, container)
+            }
+          } else {
+            patchElement(n1, n2)
+          }
+        }
+      } else if(shapeFlag & ShapeFlags.COMPONENT) {
         processComponent(n1, n2, container) {
           if (n1 == null) {
             mountComponent(n2, container) {
