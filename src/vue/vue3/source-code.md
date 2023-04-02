@@ -6,7 +6,8 @@ outline: deep
 # Vue3.0 源码摘要
 
 ## 流程函数谱系集锦
-### 创建app：createApp()
+
+### 创建 app：createApp()
 
 ```ts
 createApp(...args) {
@@ -88,7 +89,7 @@ createApp(...args) {
   const { mount } = app
   // 重写mount函数
   app.mount = (containerOrSelector: Element | ShadowRoot | string): any => {
-    // 格式化容器
+    // 容器规范化
     const container = normalizeContainer(containerOrSelector)
     const component = app._component
     // 打扫清空容器内容
@@ -100,6 +101,7 @@ createApp(...args) {
   return app
 }.mount(container)
 ```
+
 ### 渲染 or 更新：patch()
 
 ```ts
@@ -107,9 +109,20 @@ patch(container._vnode || null, vnode, container, ...) {
   // patch(n1, n2, container)
   const { type, ref, shapeFlag } = n2
   switch (type) {
-    case:
+    case Text:
+      processText(n1, n2, container, anchor) {
+        if (n1 == null) {
+          hostInsert((n2.el = hostCreateText(n2.children as string)), container, anchor)
+        } else {
+          const el = (n2.el = n1.el!)
+          if (n2.children !== n1.children) {
+            hostSetText(el, n2.children as string)
+          }
+        }
+      }
+      break
     ...
-    default: 
+    default:
       if(shapeFlag & ShapeFlags.COMPONENT) {
         processComponent(n1, n2, container) {
           if (n1 == null) {
@@ -153,6 +166,7 @@ patch(container._vnode || null, vnode, container, ...) {
                 }
                 return setupResult
               }
+              // 设置响应式渲染机制
               setupRenderEffect(instance, initialVNode, container) {
                 const componentUpdateFn = () => {
                   if (!instance.isMounted) {
@@ -170,7 +184,22 @@ patch(container._vnode || null, vnode, container, ...) {
                         try {
                           if (vnode.shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
                             const proxyToUse = withProxy || proxy
-                            result = normalizeVNode(render!.call(proxyToUse, ...))
+                            result = normalizeVNode(render!.call(proxyToUse, ...)) {
+                              // normalizeVNode(child: VNodeChild)
+                              if (child == null || typeof child === 'boolean') {
+                                // empty placeholder
+                                return createVNode(Comment)
+                              } else if (isArray(child)) {
+                                // fragment
+                                return createVNode(Fragment, null, child.slice()
+                                )
+                              } else if (typeof child === 'object') {
+                                return cloneIfMounted(child)
+                              } else {
+                                // 字符串或数字
+                                return createVNode(Text, null, String(child))
+                              }
+                            }
                           } else {
                             // functional 函数式组件
                           }
@@ -209,26 +238,47 @@ patch(container._vnode || null, vnode, container, ...) {
 ### 响应式效应：class ReactiveEffect
 
 ```ts
-export let activeEffect: ReactiveEffect | undefined
+export let activeEffect: ReactiveEffect | undefined;
 export class ReactiveEffect<T = any> {
-  active = true
-  deps: Dep[] = []
+  active = true;
+  deps: Dep[] = [];
   constructor(
     public fn: () => T,
     public scheduler: EffectScheduler | null = null,
     scope?: EffectScope
   ) {
-    recordEffectScope(this, scope)
+    recordEffectScope(this, scope);
   }
   run() {
-    if (!this.active) return this.fn()
-    let parent: ReactiveEffect | undefined = activeEffect
+    if (!this.active) return this.fn();
+    let parent: ReactiveEffect | undefined = activeEffect;
     try {
-      this.parent = activeEffect
-      activeEffect = this
-      shouldTrack = true
-      return this.fn()
-    } finally {}
+      this.parent = activeEffect;
+      activeEffect = this;
+      shouldTrack = true;
+      return this.fn();
+    } finally {
+    }
   }
+}
+```
+
+## 其他集锦
+
+### 枚举 vnode 类型标识(位运算)
+
+```ts
+export const enum ShapeFlags {
+  ELEMENT = 1,
+  FUNCTIONAL_COMPONENT = 1 << 1,
+  STATEFUL_COMPONENT = 1 << 2,
+  TEXT_CHILDREN = 1 << 3,
+  ARRAY_CHILDREN = 1 << 4,
+  SLOTS_CHILDREN = 1 << 5,
+  TELEPORT = 1 << 6,
+  SUSPENSE = 1 << 7,
+  COMPONENT_SHOULD_KEEP_ALIVE = 1 << 8,
+  COMPONENT_KEPT_ALIVE = 1 << 9,
+  COMPONENT = ShapeFlags.STATEFUL_COMPONENT | ShapeFlags.FUNCTIONAL_COMPONENT,
 }
 ```
