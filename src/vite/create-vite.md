@@ -39,7 +39,7 @@ npx create-vite@latest my-vue-app --template vue
 
 ## create-vite 命令源码分析
 
-直接调试、分析 ts 代码。【[参考：VSCode 调试 ts 文件](/core/typescript/tsx.html)】
+直接调试、分析 ts 代码。【[参考：VSCode 调试 ts 文件](/basic/typescript/tsx.html)】
 
 > 进入 vite/packages/create-vite ，调试如下命令：
 > `tsx src/index.ts my-vue-app --template vue`

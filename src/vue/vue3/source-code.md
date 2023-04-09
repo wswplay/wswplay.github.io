@@ -289,7 +289,7 @@ export class ReactiveEffect<T = any> {
 }
 ```
 
-### 响应式 reactive
+## 响应式 reactive
 
 ```ts {8}
 export const reactiveMap = new WeakMap<Target, any>()
@@ -381,7 +381,7 @@ export const collectionHandlers: ProxyHandler<CollectionTypes> = {
 
 ## 其他集锦
 
-### 枚举 vnode 类型标识（[位运算](/core/javascript/operators.html)）
+### 枚举 vnode 类型标识（[位运算](/basic/javascript/operators.html)）
 
 ```ts
 export const enum ShapeFlags {

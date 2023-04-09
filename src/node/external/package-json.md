@@ -19,7 +19,7 @@ title: package.json生成,设置,各字段介绍与作用
 ## module
 
 指定 ES6 模块化(esm)引入的入口文件。如`import xxx from xxx`；  
-**模块化主流标准**：CommonJS、AMD、CMD、UMD、ES6 【[模块化有哪些规范](/core/javascript/#模块化及规范)】
+**模块化主流标准**：CommonJS、AMD、CMD、UMD、ES6 【[模块化有哪些规范](/basic/javascript/#模块化及规范)】
 
 | 字段    | 规范 |
 | ------- | :--: |

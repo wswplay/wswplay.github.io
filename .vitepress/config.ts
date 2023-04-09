@@ -57,8 +57,8 @@ function geneNav(): ThemeConfig["nav"] {
     },
     {
       text: "Js·Ts",
-      activeMatch: "^/core",
-      link: "/core/javascript/",
+      activeMatch: "^/basic",
+      link: "/basic/javascript/",
     },
   ];
 }
@@ -66,12 +66,10 @@ function geneSidebar(): ThemeConfig["sidebar"] {
   return {
     "/vue/": [
       {
-        text: "Vue3设计与实现",
+        text: "Vue3.0设计与实现",
         items: [
-          { text: "Proxy", link: "/vue/vue3/proxy" },
-          { text: "Reflect", link: "/vue/vue3/reflect" },
+          { text: "源码摘要", link: "/vue/vue3/source-code" },
           { text: "Ref", link: "/vue/vue3/ref" },
-          { text: "Vue3.0源码摘要", link: "/vue/vue3/source-code" },
         ],
       },
       {
@@ -134,34 +132,36 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         ],
       },
     ],
-    "/core/": [
+    "/basic/": [
       {
         text: "JavaScript基础",
         items: [
-          { text: "简介", link: "/core/javascript/" },
-          { text: "Array数组", link: "/core/javascript/array" },
-          { text: "Object对象", link: "/core/javascript/object" },
-          { text: "Function函数", link: "/core/javascript/function" },
-          { text: "Symbol标识符", link: "/core/javascript/symbol" },
-          { text: "Promise", link: "/core/javascript/promise" },
-          { text: "位运算", link: "/core/javascript/operators" },
+          { text: "简介", link: "/basic/javascript/" },
+          { text: "Array数组", link: "/basic/javascript/array" },
+          { text: "Object对象", link: "/basic/javascript/object" },
+          { text: "Function函数", link: "/basic/javascript/function" },
+          { text: "Symbol标识符", link: "/basic/javascript/symbol" },
+          { text: "Promise", link: "/basic/javascript/promise" },
+          { text: "Proxy", link: "/basic/javascript/proxy" },
+          { text: "Reflect", link: "/basic/javascript/reflect" },
+          { text: "位运算", link: "/basic/javascript/operators" },
         ],
       },
       {
         text: "TypeScript基础",
         items: [
-          { text: "基本认知与区别", link: "/core/typescript/" },
+          { text: "基本认知与区别", link: "/basic/typescript/" },
           {
             text: "tsconfig.json字段详解",
-            link: "/core/typescript/config-file",
+            link: "/basic/typescript/config-file",
           },
-          { text: "declare及声明文件", link: "/core/typescript/declare" },
-          { text: "tsx执行ts及VSCode调试ts", link: "/core/typescript/tsx" },
+          { text: "declare及声明文件", link: "/basic/typescript/declare" },
+          { text: "tsx执行ts及VSCode调试ts", link: "/basic/typescript/tsx" },
         ],
       },
       {
         text: "周边及工具",
-        items: [{ text: "Markdown及生成目录", link: "/core/tools/markdown" }],
+        items: [{ text: "Markdown及生成目录", link: "/basic/tools/markdown" }],
       },
     ],
   };
