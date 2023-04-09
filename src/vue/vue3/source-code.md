@@ -291,7 +291,7 @@ export class ReactiveEffect<T = any> {
 
 ### 响应式 reactive
 
-```ts
+```ts {8}
 export const reactiveMap = new WeakMap<Target, any>()
 export function reactive(target: object) {
   if (isReadonly(target)) return target
@@ -307,6 +307,76 @@ export function reactive(target: object) {
     return proxy
   }
 }
+export const mutableHandlers: ProxyHandler<object> = {
+  get,
+  set,
+  deleteProperty,
+  has,
+  ownKeys,
+};
+const get = /*#__PURE__*/ createGetter()
+function createGetter(isReadonly = false, shallow = false) {
+  return function get(target: Target, key: string | symbol, receiver: object) {
+    if(xxx) return target
+    // 如果数组
+    const targetIsArray = isArray(target)
+    if (!isReadonly) {
+      if (targetIsArray && hasOwn(arrayInstrumentations, key)) {
+        return Reflect.get(arrayInstrumentations, key, receiver)
+      }
+    }
+    // 声明结果值
+    const res = Reflect.get(target, key, receiver)
+    // 重要了注意了！！！建立追踪
+    if (!isReadonly) track(target, TrackOpTypes.GET, key)
+    // 如果浅响应式
+    if (shallow) return res
+    // 如果ref值
+    if (isRef(res)) return targetIsArray && isIntegerKey(key) ? res : res.value
+    // 如果对象，则递归执行相关操作
+    if (isObject(res)) return isReadonly ? readonly(res) : reactive(res)
+    // 返回结果值
+    return res
+  }
+}
+export function track(target: object, type: TrackOpTypes, key: unknown) {
+  if (shouldTrack && activeEffect) {
+    let depsMap = targetMap.get(target)
+    if (!depsMap) {
+      targetMap.set(target, (depsMap = new Map()))
+    }
+    let dep = depsMap.get(key)
+    if (!dep) {
+      depsMap.set(key, (dep = createDep()))
+    }
+    const eventInfo = __DEV__
+      ? { effect: activeEffect, target, type, key }
+      : undefined
+    trackEffects(dep, eventInfo)
+  }
+}
+export function trackEffects(
+  dep: Dep,
+  debuggerEventExtraInfo?: DebuggerEventExtraInfo
+) {
+  let shouldTrack = false
+  if (effectTrackDepth <= maxMarkerBits) {
+    if (!newTracked(dep)) {
+      dep.n |= trackOpBit // set newly tracked
+      shouldTrack = !wasTracked(dep)
+    }
+  } else {
+    // Full cleanup mode.
+    shouldTrack = !dep.has(activeEffect!)
+  }
+  if (shouldTrack) {
+    dep.add(activeEffect!)
+    activeEffect!.deps.push(dep)
+  }
+}
+export const collectionHandlers: ProxyHandler<CollectionTypes> = {
+  get: /*#__PURE__*/ createInstrumentationGetter(false, false),
+};
 ```
 
 ## 其他集锦
@@ -327,14 +397,4 @@ export const enum ShapeFlags {
   COMPONENT_KEPT_ALIVE = 1 << 9,
   COMPONENT = ShapeFlags.STATEFUL_COMPONENT | ShapeFlags.FUNCTIONAL_COMPONENT,
 }
-export const mutableHandlers: ProxyHandler<object> = {
-  get,
-  set,
-  deleteProperty,
-  has,
-  ownKeys,
-};
-export const collectionHandlers: ProxyHandler<CollectionTypes> = {
-  get: /*#__PURE__*/ createInstrumentationGetter(false, false),
-};
 ```
