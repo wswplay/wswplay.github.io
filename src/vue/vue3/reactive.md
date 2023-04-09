@@ -1,5 +1,6 @@
 ---
 title: Vue3.0响应式系统reactive源码分析
+outline: deep
 ---
 
 # Reactive：响应式系统
@@ -34,7 +35,7 @@ export const collectionHandlers: ProxyHandler<CollectionTypes> = {
 };
 ```
 
-## getter
+### getter
 
 ```ts
 // getter
@@ -100,7 +101,7 @@ export function trackEffects(
 }
 ```
 
-## setter
+### setter
 
 ```ts
 // setter
