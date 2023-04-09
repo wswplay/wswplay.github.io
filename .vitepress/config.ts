@@ -142,6 +142,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "Array数组", link: "/core/javascript/array" },
           { text: "Object对象", link: "/core/javascript/object" },
           { text: "Function函数", link: "/core/javascript/function" },
+          { text: "Symbol标识符", link: "/core/javascript/symbol" },
           { text: "Promise", link: "/core/javascript/promise" },
           { text: "位运算", link: "/core/javascript/operators" },
         ],

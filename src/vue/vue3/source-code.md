@@ -201,7 +201,7 @@ patch(container._vnode || null, vnode, container, ...) {
                     if (el && hydrateNode) {
                       // sth
                     } else {
-                      // 构建vnode子树
+                      // 构建子vnode
                       const subTree = (instance.subTree = renderComponentRoot(instance)) {
                         const { type: Component, vnode, render } = instance
                         let result
@@ -261,7 +261,7 @@ patch(container._vnode || null, vnode, container, ...) {
 }
 ```
 
-### 响应式效应：class ReactiveEffect
+### 响应式效应 class ReactiveEffect
 
 ```ts
 export let activeEffect: ReactiveEffect | undefined;
@@ -289,6 +289,26 @@ export class ReactiveEffect<T = any> {
 }
 ```
 
+### 响应式 reactive
+
+```ts
+export const reactiveMap = new WeakMap<Target, any>()
+export function reactive(target: object) {
+  if (isReadonly(target)) return target
+  return createReactiveObject(target, false, mutableHandlers, collectionHandlers, reactiveMap) {
+    // createReactiveObject(target, false, baseHandlers, collectionHandlers, proxyMap)
+    const existingProxy = proxyMap.get(target)
+    if (existingProxy) { return existingProxy }
+    const proxy = new Proxy(
+      target,
+      argetType === TargetType.COLLECTION ? collectionHandlers : baseHandlers
+    )
+    proxyMap.set(target, proxy)
+    return proxy
+  }
+}
+```
+
 ## 其他集锦
 
 ### 枚举 vnode 类型标识（[位运算](/core/javascript/operators.html)）
@@ -307,4 +327,14 @@ export const enum ShapeFlags {
   COMPONENT_KEPT_ALIVE = 1 << 9,
   COMPONENT = ShapeFlags.STATEFUL_COMPONENT | ShapeFlags.FUNCTIONAL_COMPONENT,
 }
+export const mutableHandlers: ProxyHandler<object> = {
+  get,
+  set,
+  deleteProperty,
+  has,
+  ownKeys,
+};
+export const collectionHandlers: ProxyHandler<CollectionTypes> = {
+  get: /*#__PURE__*/ createInstrumentationGetter(false, false),
+};
 ```
