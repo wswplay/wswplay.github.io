@@ -3,7 +3,7 @@ title: Vue3.0源码分析
 outline: deep
 ---
 
-# Vue3.0 源码摘要
+# Vue3.0 流程源码摘要
 
 ## 流程函数谱系集锦
 
@@ -289,97 +289,7 @@ export class ReactiveEffect<T = any> {
 }
 ```
 
-## 响应式 reactive
-
-```ts {8}
-export const reactiveMap = new WeakMap<Target, any>()
-export function reactive(target: object) {
-  if (isReadonly(target)) return target
-  return createReactiveObject(target, false, mutableHandlers, collectionHandlers, reactiveMap) {
-    // createReactiveObject(target, false, baseHandlers, collectionHandlers, proxyMap)
-    const existingProxy = proxyMap.get(target)
-    if (existingProxy) { return existingProxy }
-    const proxy = new Proxy(
-      target,
-      argetType === TargetType.COLLECTION ? collectionHandlers : baseHandlers
-    )
-    proxyMap.set(target, proxy)
-    return proxy
-  }
-}
-export const mutableHandlers: ProxyHandler<object> = {
-  get,
-  set,
-  deleteProperty,
-  has,
-  ownKeys,
-};
-const get = /*#__PURE__*/ createGetter()
-function createGetter(isReadonly = false, shallow = false) {
-  return function get(target: Target, key: string | symbol, receiver: object) {
-    if(xxx) return target
-    // 如果数组
-    const targetIsArray = isArray(target)
-    if (!isReadonly) {
-      if (targetIsArray && hasOwn(arrayInstrumentations, key)) {
-        return Reflect.get(arrayInstrumentations, key, receiver)
-      }
-    }
-    // 声明结果值
-    const res = Reflect.get(target, key, receiver)
-    // 重要了注意了！！！建立追踪
-    if (!isReadonly) track(target, TrackOpTypes.GET, key)
-    // 如果浅响应式
-    if (shallow) return res
-    // 如果ref值
-    if (isRef(res)) return targetIsArray && isIntegerKey(key) ? res : res.value
-    // 如果对象，则递归执行相关操作
-    if (isObject(res)) return isReadonly ? readonly(res) : reactive(res)
-    // 返回结果值
-    return res
-  }
-}
-export function track(target: object, type: TrackOpTypes, key: unknown) {
-  if (shouldTrack && activeEffect) {
-    let depsMap = targetMap.get(target)
-    if (!depsMap) {
-      targetMap.set(target, (depsMap = new Map()))
-    }
-    let dep = depsMap.get(key)
-    if (!dep) {
-      depsMap.set(key, (dep = createDep()))
-    }
-    const eventInfo = __DEV__
-      ? { effect: activeEffect, target, type, key }
-      : undefined
-    trackEffects(dep, eventInfo)
-  }
-}
-export function trackEffects(
-  dep: Dep,
-  debuggerEventExtraInfo?: DebuggerEventExtraInfo
-) {
-  let shouldTrack = false
-  if (effectTrackDepth <= maxMarkerBits) {
-    if (!newTracked(dep)) {
-      dep.n |= trackOpBit // set newly tracked
-      shouldTrack = !wasTracked(dep)
-    }
-  } else {
-    // Full cleanup mode.
-    shouldTrack = !dep.has(activeEffect!)
-  }
-  if (shouldTrack) {
-    dep.add(activeEffect!)
-    activeEffect!.deps.push(dep)
-  }
-}
-export const collectionHandlers: ProxyHandler<CollectionTypes> = {
-  get: /*#__PURE__*/ createInstrumentationGetter(false, false),
-};
-```
-
-## 其他集锦
+## 辅助信息集锦
 
 ### 枚举 vnode 类型标识（[位运算](/basic/javascript/operators.html)）
 
