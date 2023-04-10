@@ -69,7 +69,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         text: "Vue3.0设计与实现",
         items: [
           { text: "流程源码摘要", link: "/vue/vue3/source-code" },
-          { text: "响应式系统", link: "/vue/vue3/reactive" },
+          { text: "Reactive响应式系统", link: "/vue/vue3/reactive" },
           { text: "Ref", link: "/vue/vue3/ref" },
         ],
       },

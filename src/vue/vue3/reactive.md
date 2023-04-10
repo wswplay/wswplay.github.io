@@ -202,6 +202,72 @@ function triggerEffect(
 }
 ```
 
+## computed 计算属性
+
+```ts
+export function computed<T>(
+  getterOrOptions: ComputedGetter<T> | WritableComputedOptions<T>,
+  debugOptions?: DebuggerOptions,
+  isSSR = false
+) {
+  let getter: ComputedGetter<T>;
+  let setter: ComputedSetter<T>;
+  const onlyGetter = isFunction(getterOrOptions);
+  if (onlyGetter) {
+    getter = getterOrOptions;
+    setter = __DEV__
+      ? () => {
+          console.warn("Write operation failed: computed value is readonly");
+        }
+      : NOOP;
+  } else {
+    getter = getterOrOptions.get;
+    setter = getterOrOptions.set;
+  }
+  const cRef = new ComputedRefImpl(
+    getter,
+    setter,
+    onlyGetter || !setter,
+    isSSR
+  );
+  return cRef as any;
+}
+export class ComputedRefImpl<T> {
+  public dep?: Dep = undefined;
+  public readonly effect: ReactiveEffect<T>;
+  public readonly __v_isRef = true;
+  public _dirty = true;
+  constructor(getter, _setter, isReadonly, isSSR) {
+    this.effect = new ReactiveEffect(getter, () => {
+      if (!this._dirty) {
+        this._dirty = true;
+        triggerRefValue(this);
+      }
+    });
+    this.effect.computed = this;
+    this.effect.active = this._cacheable = !isSSR;
+  }
+  get value() {
+    const self = toRaw(this);
+    trackRefValue(self);
+    if (self._dirty || !self._cacheable) {
+      self._dirty = false;
+      self._value = self.effect.run()!;
+    }
+    return self._value;
+  }
+
+  set value(newValue: T) {
+    this._setter(newValue);
+  }
+}
+export function triggerRefValue(ref: RefBase<any>, newVal?: any) {
+  ref = toRaw(ref);
+  const dep = ref.dep;
+  if (dep) triggerEffects(dep);
+}
+```
+
 ## 辅助信息集锦
 
 ```ts
@@ -215,5 +281,28 @@ export const enum TriggerOpTypes {
   ADD = "add",
   DELETE = "delete",
   CLEAR = "clear",
+}
+export let activeEffect: ReactiveEffect | undefined;
+export class ReactiveEffect<T = any> {
+  active = true;
+  deps: Dep[] = [];
+  constructor(
+    public fn: () => T,
+    public scheduler: EffectScheduler | null = null,
+    scope?: EffectScope
+  ) {
+    recordEffectScope(this, scope);
+  }
+  run() {
+    if (!this.active) return this.fn();
+    let parent: ReactiveEffect | undefined = activeEffect;
+    try {
+      this.parent = activeEffect;
+      activeEffect = this;
+      shouldTrack = true;
+      return this.fn();
+    } finally {
+    }
+  }
 }
 ```
