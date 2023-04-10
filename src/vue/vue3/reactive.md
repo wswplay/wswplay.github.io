@@ -266,6 +266,114 @@ export function triggerRefValue(ref: RefBase<any>, newVal?: any) {
   const dep = ref.dep;
   if (dep) triggerEffects(dep);
 }
+export function trackRefValue(ref: RefBase<any>) {
+  if (shouldTrack && activeEffect) {
+    ref = toRaw(ref);
+    trackEffects(ref.dep || (ref.dep = createDep()));
+  }
+}
+```
+
+## shallowReactive 浅响应式
+
+```ts
+export function shallowReactive<T extends object>(
+  target: T
+): ShallowReactive<T> {
+  return createReactiveObject(
+    target,
+    false,
+    shallowReactiveHandlers,
+    shallowCollectionHandlers,
+    shallowReactiveMap
+  );
+}
+const shallowGet = /*#__PURE__*/ createGetter(false, true);
+const shallowSet = /*#__PURE__*/ createSetter(true);
+export const shallowReactiveHandlers = /*#__PURE__*/ extend(
+  {},
+  mutableHandlers,
+  {
+    get: shallowGet,
+    set: shallowSet,
+  }
+);
+```
+
+## readonly 只读属性
+
+```ts
+export function readonly<T extends object>(
+  target: T
+): DeepReadonly<UnwrapNestedRefs<T>> {
+  return createReactiveObject(
+    target,
+    true,
+    readonlyHandlers,
+    readonlyCollectionHandlers,
+    readonlyMap
+  );
+}
+const readonlyGet = /*#__PURE__*/ createGetter(true);
+export const readonlyHandlers: ProxyHandler<object> = {
+  get: readonlyGet,
+  set(target, key) {
+    if (__DEV__) {
+      warn(
+        `Set operation on key "${String(key)}" failed: target is readonly.`,
+        target
+      );
+    }
+    return true;
+  },
+  deleteProperty(target, key) {
+    if (__DEV__) {
+      warn(
+        `Delete operation on key "${String(key)}" failed: target is readonly.`,
+        target
+      );
+    }
+    return true;
+  },
+};
+```
+
+## ref 基础类型值响应式
+
+```ts
+export function ref(value?: unknown) {
+  return createRef(value, false);
+}
+function createRef(rawValue: unknown, shallow: boolean) {
+  if (isRef(rawValue)) {
+    return rawValue;
+  }
+  return new RefImpl(rawValue, shallow);
+}
+class RefImpl<T> {
+  private _value: T;
+  private _rawValue: T;
+  public dep?: Dep = undefined;
+  public readonly __v_isRef = true;
+  constructor(value: T, public readonly __v_isShallow: boolean) {
+    this._rawValue = __v_isShallow ? value : toRaw(value);
+    this._value = __v_isShallow ? value : toReactive(value);
+  }
+  get value() {
+    trackRefValue(this);
+    return this._value;
+  }
+  set value(newVal) {
+    const useDirectValue =
+      this.__v_isShallow || isShallow(newVal) || isReadonly(newVal);
+    newVal = useDirectValue ? newVal : toRaw(newVal);
+    if (hasChanged(newVal, this._rawValue)) {
+      this._rawValue = newVal;
+      this._value = useDirectValue ? newVal : toReactive(newVal);
+      triggerRefValue(this, newVal);
+    }
+  }
+}
 ```
 
 ## 辅助信息集锦
@@ -282,6 +390,12 @@ export const enum TriggerOpTypes {
   DELETE = "delete",
   CLEAR = "clear",
 }
+export const createDep = (effects?: ReactiveEffect[]): Dep => {
+  const dep = new Set<ReactiveEffect>(effects) as Dep;
+  dep.w = 0;
+  dep.n = 0;
+  return dep;
+};
 export let activeEffect: ReactiveEffect | undefined;
 export class ReactiveEffect<T = any> {
   active = true;

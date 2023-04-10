@@ -261,7 +261,7 @@ patch(container._vnode || null, vnode, container, ...) {
 }
 ```
 
-### 响应式效应 class ReactiveEffect
+### 响应式机制 class ReactiveEffect
 
 ```ts
 export let activeEffect: ReactiveEffect | undefined;
