@@ -340,6 +340,8 @@ export const readonlyHandlers: ProxyHandler<object> = {
 
 ## ref 基础类型值响应式
 
+将`目标值`存储在`RefImpl`类型对象的`value`key 上，用`get/set`(取/设)`value`key 值。
+
 ```ts
 export function ref(value?: unknown) {
   return createRef(value, false);

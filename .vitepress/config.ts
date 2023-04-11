@@ -161,7 +161,10 @@ function geneSidebar(): ThemeConfig["sidebar"] {
       },
       {
         text: "周边及工具",
-        items: [{ text: "Markdown及生成目录", link: "/basic/tools/markdown" }],
+        items: [
+          { text: "Markdown及生成目录", link: "/basic/tools/markdown" },
+          { text: "冷知识-酷代码", link: "/basic/tools/cold-code" },
+        ],
       },
     ],
   };
