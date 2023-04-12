@@ -104,7 +104,7 @@ createApp(...args) {
 
 ### 渲染 or 更新：patch()
 
-```ts
+```ts {103}
 patch(container._vnode || null, vnode, container, ...) {
   // patch(n1, n2, container)
   const { type, ref, shapeFlag } = n2
@@ -184,10 +184,43 @@ patch(container._vnode || null, vnode, container, ...) {
                   const Component = instance.type as ComponentOptions
                   const { setup } = Component
                   if (setup) {
-                    createSetupContext(instance)
+                    const setupContext = createSetupContext(instance)
                     setCurrentInstance(instance)
+                    const setupResult = callWithErrorHandling(...)
+                    if (isPromise(setupResult)) {
+                      // sth
+                    } else {
+                      handleSetupResult(instance, setupResult, isSSR) {
+                        if (isFunction(setupResult)) {
+                          // sth
+                        } else if(isObject(setupResult)) {
+                          // sth
+                        } else if() {}
+                        finishComponentSetup(instance, isSSR)
+                      }
+                    }
                   } else {
-                    finishComponentSetup(instance, isSSR)
+                    finishComponentSetup(instance, isSSR) {
+                      const Component = instance.type as ComponentOptions
+                      if (!instance.render) {
+                        if (!isSSR && compile && !Component.render) {
+                          const template = xxx
+                          const finalCompilerOption = xxx
+                          // 将模板编译生成render函数，即 compileToFunction
+                          Component.render = compile(template, finalCompilerOptions)
+                        }
+                        instance.render = (Component.render || NOOP) as InternalRenderFunction
+                      }
+                      // support for 2.x options 设置vue2选项式api
+                      if (__FEATURE_OPTIONS_API__ && !(__COMPAT__ && skipOptions)) {
+                        setCurrentInstance(instance)
+                        pauseTracking()
+                        // 详见 applyOptions 章节
+                        applyOptions(instance)
+                        resetTracking()
+                        unsetCurrentInstance()
+                      }
+                    }
                   }
                 }
                 return setupResult
@@ -257,6 +290,102 @@ patch(container._vnode || null, vnode, container, ...) {
           }
         }
       }
+  }
+}
+```
+
+### 模板编译 compile
+
+```ts
+const compileCache: Record<string, RenderFunction> = Object.create(null)
+function compileToFunction(
+  template: string | HTMLElement,
+  options?: CompilerOptions
+): RenderFunction {
+  const key = template
+  const cached = compileCache[key]
+  if (cached) return cached
+  const opts = extend(...)
+  const { code } = compile(template, opts) {
+    return baseCompile(template, extend(opts, ...)) {
+      // 解析模板，生成字符串 ast
+      const ast = isString(template) ? baseParse(template, options) : template
+      baseParse(template, options) {
+        const context = createParserContext(content, options)
+        const start = getCursor(context)
+        return createRoot(
+          parseChildren(context, TextModes.DATA, []),
+          getSelection(context, start)
+        ) {
+          // createRoot(children, loc)
+          return { type: NodeTypes.ROOT, children, loc }
+        }
+      }
+      // 将字符串ast 转换为 JavaScript ast
+      transform(ast, extend(...)) {
+        // transform(root, options)
+        const context = createTransformContext(root, options)
+        traverseNode(root, context)
+      }
+      // 生成render函数字符串
+      return generate(ast, extend(...)) {
+        const context = createCodegenContext(ast, options)
+        return { ast, code, ... }
+      }
+    }
+  }
+  const render = (
+    __GLOBAL__ ? new Function(code)() : new Function('Vue', code)(runtimeDom)
+  ) as RenderFunction
+  return (compileCache[key] = render)
+}
+```
+
+### Vue2.0 选项式设置 applyOptions
+
+```ts
+applyOptions(instance) {
+  const options = resolveMergedOptions(instance)
+  const ctx = instance.ctx
+  // 执行beforeCreate钩子
+  if (options.beforeCreate) {
+    callHook(options.beforeCreate, instance, ...)
+  }
+  const { created } = options
+  if (injectOptions) { /* 解析、设置inject */ }
+  if (methods) { /* 方法 */ }
+  if (dataOptions) { // 解析、设置data
+    const data = dataOptions.call(publicThis, publicThis)
+    if (!isObject(data)) {
+      __DEV__ && warn(`data() should return an object.`)
+    } else {
+      instance.data = reactive(data)
+    }
+  }
+  if (computedOptions) { /* 解析、设置computed */ }
+  if (watchOptions) { /* 解析、设置watch */ }
+  if (provideOptions) { /* 解析、设置provide */ }
+  // 执行created钩子
+  if (created) {
+    callHook(created, instance, LifecycleHooks.CREATED)
+  }
+  // 注册剩余钩子们
+  registerLifecycleHook(..., ...)
+  // 其他各种特性设置
+  if (render && instance.render === NOOP) {
+    instance.render = render as InternalRenderFunction
+  }
+  if (inheritAttrs != null) {
+    instance.inheritAttrs = inheritAttrs
+  }
+  if (components) instance.components = components as any
+  if (directives) instance.directives = directives
+  if (
+    __COMPAT__ &&
+    filters &&
+    isCompatEnabled(DeprecationTypes.FILTERS, instance)
+  ) {
+    instance.filters = filters
   }
 }
 ```
