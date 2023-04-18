@@ -104,6 +104,12 @@ createApp(...args) {
 
 ### 渲染 or 更新：patch()
 
+`mountComponent` 挂载组件 3 件事：
+
+1. 创建组件实例；
+2. 执行、设置组件配置；
+3. 创建响应式更新机制；
+
 ```ts {103}
 patch(container._vnode || null, vnode, container, ...) {
   // patch(n1, n2, container)
@@ -174,7 +180,7 @@ patch(container._vnode || null, vnode, container, ...) {
                 instance.emit = emit.bind(null, instance)
                 return instance
               }
-              // 执行、设置setup
+              // 执行组件配置
               setupComponent(instance) {
                 const { props, children } = instance.vnode
                 const isStateful = isStatefulComponent(instance)
@@ -296,6 +302,8 @@ patch(container._vnode || null, vnode, container, ...) {
 
 ### 模板编译 compile
 
+`compile` 即 `compileToFunction`。
+
 ```ts
 const compileCache: Record<string, RenderFunction> = Object.create(null)
 function compileToFunction(
@@ -321,11 +329,17 @@ function compileToFunction(
           return { type: NodeTypes.ROOT, children, loc }
         }
       }
-      // 将字符串ast 转换为 JavaScript ast
+      // 将通用ast 转换(添加一些属性)为 vue-ast
       transform(ast, extend(...)) {
         // transform(root, options)
         const context = createTransformContext(root, options)
         traverseNode(root, context)
+        // 静态提升
+        if (options.hoistStatic) {
+          hoistStatic(root, context) {
+            walk(root, context)
+          }
+        }
       }
       // 生成render函数字符串
       return generate(ast, extend(...)) {
@@ -341,7 +355,7 @@ function compileToFunction(
 }
 ```
 
-### Vue2.0 选项式设置 applyOptions
+### 处理选项式(Vue2.0)配置 applyOptions
 
 ```ts
 applyOptions(instance) {
