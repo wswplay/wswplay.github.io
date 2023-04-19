@@ -302,7 +302,12 @@ patch(container._vnode || null, vnode, container, ...) {
 
 ### 模板编译 compile
 
-`compile` 即 `compileToFunction`。
+`compile` 即 `compileToFunction`。就是将字符串模板，编译转化成 render 函数。
+
+1. 将模板解析成 ast。
+2. 将通用 ast 转换成 vue 版 ast。标注静态提升。
+3. 生成 render 函数字符串。
+4. 调用 new Function 生成 render 函数。
 
 ```ts
 const compileCache: Record<string, RenderFunction> = Object.create(null)
@@ -356,6 +361,8 @@ function compileToFunction(
 ```
 
 ### 处理选项式(Vue2.0)配置 applyOptions
+
+就是把各种配置，挂到 instance 实例上。
 
 ```ts
 applyOptions(instance) {
