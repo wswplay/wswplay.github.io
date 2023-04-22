@@ -26,12 +26,23 @@ title: Vue-Router源码分析
   const currentRoute = shallowRef<RouteLocationNormalizedLoaded>(
     START_LOCATION_NORMALIZED
   )
+  // 改变路由
+  function push(to: RouteLocationRaw) {
+    return pushWithRedirect(to)
+  }
+  function pushWithRedirect(to, redirectedFrom) {
+    const targetLocation: RouteLocation = (pendingLocation = resolve(to))
+    const shouldRedirect = handleRedirectRecord(targetLocation)
+    if (shouldRedirect) pushWithRedirect(...)
+    return (failure ? Promise.resolve(failure) : navigate(toLocation, from)).then(...)
+  }
   const go = (delta: number) => routerHistory.go(delta)
 
+  const installedApps = new Set<App>()
   const router: Router = {
     currentRoute,
     addRoute,
-    install(app: App) {}
+    install(app: App) { /* 如下 */}
   }
   return router
 }
@@ -93,6 +104,52 @@ function addRoute(
       }
     }
   }
+}
+```
+
+## 初始化安装 install
+
+```ts
+install(app: App) {
+  const router = this
+  // 注册全局组件
+  app.component('RouterLink', RouterLink)
+  app.component('RouterView', RouterView)
+  app.config.globalProperties.$router = router
+  Object.defineProperty(app.config.globalProperties, '$route', {
+    enumerable: true,
+    get: () => unref(currentRoute),
+  })
+  const reactiveRoute = {}
+  for (const key in START_LOCATION_NORMALIZED) {
+    reactiveRoute[key] = computed(() => currentRoute.value[key])
+  }
+  // 数据注入
+  app.provide(..., ...)
+  // 卸载
+  const unmountApp = app.unmount
+  installedApps.add(app)
+  app.unmount = function () {
+    installedApps.delete(app)
+    unmountApp()
+  }
+}
+```
+
+## 导航 navigate
+
+```ts
+function navigate(to, from) {
+  let guards: Lazy<any>[];
+  const [leavingRecords, updatingRecords, enteringRecords] =
+    extractChangingRecords(to, from);
+  return runGuardQueue(guards).then(() => {});
+}
+function runGuardQueue(guards: Lazy<any>[]): Promise<void> {
+  return guards.reduce(
+    (promise, guard) => promise.then(() => guard()),
+    Promise.resolve()
+  );
 }
 ```
 
