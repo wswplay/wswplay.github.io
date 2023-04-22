@@ -5,7 +5,7 @@ outline: deep
 
 # Vue3.0 流程源码摘要
 
-## 流程函数谱系集锦
+## 主流程函数谱系集锦
 
 ### 创建 app：createApp()
 
@@ -23,6 +23,7 @@ createApp(...args) {
               const context = createAppContext() {
                 return { app, config: {}, mixins = [], components: {}, ...}
               }
+              const installedPlugins = new Set()
               let isMounted = false
               const app = context.app = {
                 _uid: uid++,
@@ -437,6 +438,52 @@ export class ReactiveEffect<T = any> {
     }
   }
 }
+```
+
+## 插件安装 app.use
+
+```ts
+const app: App = (context.app = {
+  _uid: uid++,
+  use(plugin: Plugin, ...options: any[]) {
+    if (installedPlugins.has(plugin)) {
+      __DEV__ && warn(`Plugin has already been applied to target app.`);
+    } else if (plugin && isFunction(plugin.install)) {
+      installedPlugins.add(plugin);
+      plugin.install(app, ...options);
+    } else if (isFunction(plugin)) {
+      installedPlugins.add(plugin);
+      plugin(app, ...options);
+    } else if (__DEV__) {
+      warn(
+        `A plugin must either be a function or an object with an "install" ` +
+          `function.`
+      );
+    }
+    return app;
+  },
+});
+```
+
+## 组件全局注册 app.component
+
+```ts
+const app: App = (context.app = {
+  _uid: uid++,
+  component(name: string, component?: Component): any {
+    if (__DEV__) {
+      validateComponentName(name, context.config);
+    }
+    if (!component) {
+      return context.components[name];
+    }
+    if (__DEV__ && context.components[name]) {
+      warn(`Component "${name}" has already been registered in target app.`);
+    }
+    context.components[name] = component;
+    return app;
+  },
+});
 ```
 
 ## 辅助信息集锦
