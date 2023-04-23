@@ -5,6 +5,12 @@ outline: deep
 
 # Vue3.0 流程源码摘要
 
+`初次渲染`函数名称接龙：
+
+> `createApp` => `app.mount` => `mount` => `render` => `patch` => `processComponent` => `mountComponent` => `createComponentInstance` => `setupComponent` => `setupRenderEffect` => `instance.update` => `run` => `componentUpdateFn` => `renderComponentRoot` => `patch` => `processElement` => `mountElement` => `hostCreateElement` => `hostInsert` => **完成**
+
+`再次更新` 函数名称接龙：待续
+
 ## 主流程函数谱系集锦
 
 ### 创建 app：createApp()
@@ -301,7 +307,7 @@ patch(container._vnode || null, vnode, container, ...) {
 }
 ```
 
-### 模板编译 compile
+### 模板编译 compile 静态提升
 
 `compile` 即 `compileToFunction`。就是将字符串模板，编译转化成 render 函数。
 

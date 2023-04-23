@@ -150,7 +150,7 @@ function addRoute(
 
 ## 触发导航、执行守卫钩子 navigate
 
-`push` => `pushWithRedirect` => `navigate`
+[官网文档：守卫钩子](https://router.vuejs.org/zh/guide/advanced/navigation-guards.html)
 
 ::: tip 钩子分为 3 种：
 
@@ -159,7 +159,10 @@ function addRoute(
 3. 组件内钩子：beforeRouteEnter、beforeRouteUpdate、beforeRouteLeave
 
 :::
-[官网：守卫钩子](https://router.vuejs.org/zh/guide/advanced/navigation-guards.html)
+
+钩子执行顺序示意图：
+
+> `导航push` => `pushWithRedirect` => `navigate` => `失活组件beforeRouteLeave` => `全局beforeEach` => `重用组件beforeRouteUpdate` => `路由文件beforeEnter` => `解析异步路由组件` => `激活组件beforeRouteEnter` => `全局beforeResolve` => `导航被确认` => `全局afterEach` => `触发DOM更新` => `beforeRouteEnter中回调函数 next(vm)`
 
 ```ts
 function navigate(to, from) {
@@ -228,6 +231,52 @@ function runGuardQueue(guards: Lazy<any>[]): Promise<void> {
     Promise.resolve()
   );
 }
+```
+
+## 路由视图 RouterView
+
+```ts
+export const RouterView = RouterViewImpl;
+export const RouterViewImpl = /*#__PURE__*/ defineComponent({
+  name: "RouterView",
+  props: {
+    name: {
+      type: String as PropType<string>,
+      default: "default",
+    },
+    route: Object as PropType<RouteLocationNormalizedLoaded>,
+  },
+  setup(props, { attrs, slots }) {
+    // 获取当前路由及匹配项
+    const injectedRoute = inject(routerViewLocationKey)!;
+    const routeToDisplay = computed<RouteLocationNormalizedLoaded>(
+      () => props.route || injectedRoute.value
+    );
+    const injectedDepth = inject(viewDepthKey, 0);
+    const matchedRouteRef = computed<RouteLocationMatched | undefined>(
+      () => routeToDisplay.value.matched[depth.value]
+    );
+    // 返回值 为RouterView组件 render 函数
+    return () => {
+      // 当前路由
+      const route = routeToDisplay.value;
+      // 提取 命中路由记录中对应名字视图里的 对应组件
+      const currentName = props.name;
+      const matchedRoute = matchedRouteRef.value;
+      const ViewComponent =
+        matchedRoute && matchedRoute.components![currentName];
+      // 创建 vnode
+      const component = h(
+        ViewComponent,
+        assign({}, routeProps, attrs, {
+          onVnodeUnmounted,
+          ref: viewRef,
+        })
+      );
+      return component;
+    };
+  },
+});
 ```
 
 ## 辅助信息集锦
