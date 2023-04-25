@@ -51,7 +51,7 @@ const toNumber = (val: any): any => {
 };
 ```
 
-## 是否相同 `Object.is()`
+## 值是否相同 `Object.is()`
 
 `Object.is()` 方法判断两个值是否为同一个值。
 
@@ -63,3 +63,39 @@ const toNumber = (val: any): any => {
 Object.is(0, -0); // false
 Object.is(+0, -0); // false
 ```
+
+## with 扩展作用域链
+
+`JavaScript` 查找某个未使用命名空间的变量时，会通过作用域链来查找，作用域链是跟执行代码的 `context` 或者包含这个变量的函数有关。
+
+```ts
+with (expression) {
+  statement;
+}
+```
+
+`with` 语句，**将 expression 添加到作用域链顶部**，如 `statement` 中有某个未使用命名空间的变量，跟作用域链中的某个属性同名，则这个变量将指向这个属性值。如没有同名属性，则将拋出 `ReferenceError` 异常。
+
+```ts {6}
+// 模板字符串为：<p>{{ count }}</p>
+(function anonymous(Vue) {
+  const _Vue = Vue;
+
+  return function render(_ctx, _cache) {
+    with (_ctx) {
+      const {
+        toDisplayString: _toDisplayString,
+        openBlock: _openBlock,
+        createElementBlock: _createElementBlock,
+      } = _Vue;
+
+      return (
+        _openBlock(),
+        _createElementBlock("p", null, _toDisplayString(count), 1 /* TEXT */)
+      );
+    }
+  };
+});
+```
+
+如上`Vue`将模板编译为 `render` 函数，在 `with` 语句下的`_toDisplayString(count)`中`count`，就是取值 `_ctx.count`。

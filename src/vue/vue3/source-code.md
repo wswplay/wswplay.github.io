@@ -9,7 +9,7 @@ outline: deep
 
 > `createApp` => `app.mount` => `mount` => `render` => `patch` => `processComponent` => `mountComponent` => `createComponentInstance` => `setupComponent` => `setupRenderEffect` => `instance.update` => `run` => `componentUpdateFn` => `renderComponentRoot` => `patch` => `processElement` => `mountElement` => `hostCreateElement` => `hostInsert` => **完成**
 
-`再次更新` 函数名称接龙：待续
+`diff更新` 函数名称接龙：待续
 
 ## 主流程函数谱系集锦
 
