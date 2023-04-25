@@ -5,11 +5,16 @@ outline: deep
 
 # Vue3.0 流程源码摘要
 
-`初次渲染`函数名称接龙：
+`初次渲染`流程函数名：
 
-> `createApp` => `app.mount` => `mount` => `render` => `patch` => `processComponent` => `mountComponent` => `createComponentInstance` => `setupComponent` => `setupRenderEffect` => `instance.update` => `run` => `componentUpdateFn` => `renderComponentRoot` => `patch` => `processElement` => `mountElement` => `hostCreateElement` => `hostInsert` => **完成**
+> `createApp` => `app.mount` => `mount` => `render` => `patch` => `processComponent` => `mountComponent` => `createComponentInstance` => `setupComponent` => `setupRenderEffect` => `instance.update` => 【**run**】 => `componentUpdateFn` => `renderComponentRoot` => `render` => `createGetter`【**收集依赖** `track` => `trackEffects`】 => `patch` => `processElement` => `mountElement` => `hostCreateElement` => `hostSetElementText/mountChildren` => `setElementText/patch` => `hostInsert` => **Done**
 
-`diff更新` 函数名称接龙：待续
+`更新(diff)`流程函数名：如在 `mounted` 中改变数据
+
+> **mounted** => `createSetter`【**触发更新** `trigger` => `triggerEffects` => `triggerEffect`】 => `effect.scheduler/effect.run` => 【**run**】 => `componentUpdateFn` => `renderComponentRoot` => `render` => `patch` => `processElement` => `patchElement` => `patchBlockChildren` => `patch` => `processComponent` => `updateComponent` => `shouldUpdateComponent` => `instance.update` => 渲染。。。
+
+<!-- 异步事件流程：
+> `componentUpdateFn` => `queuePostRenderEffect` => `queueEffectWithSuspense` => `queuePostFlushCb` => `queueFlush` => `resolvedPromise.then(flushJobs)` => `flushJobs` => `callWithErrorHandling` -->
 
 ## 主流程函数谱系集锦
 
