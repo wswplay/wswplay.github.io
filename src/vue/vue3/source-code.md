@@ -5,13 +5,13 @@ outline: deep
 
 # Vue3.0 流程源码摘要
 
-`初次渲染`流程函数名：
+**mount**: `初次渲染`流程函数名：
 
-> `createApp` => `app.mount` => `mount` => `render` => `patch` => `processComponent` => `mountComponent` => `createComponentInstance` => `setupComponent` => `setupRenderEffect` => `instance.update` => 【**run**】 => `componentUpdateFn` => `renderComponentRoot` => `render` => `createGetter`【**收集依赖** `track` => `trackEffects`】 => `patch` => `processElement` => `mountElement` => `hostCreateElement` => `hostSetElementText/mountChildren` => `setElementText/patch` => `hostInsert` => **Done**
+> `createApp` => `app.mount` => `mount` => `render` => `patch` => `processComponent` => `mountComponent` => `createComponentInstance` => `setupComponent` => `setupRenderEffect` => `instance.update` => 【**run**】 => `componentUpdateFn` => (**subTree** = `renderComponentRoot`) => `render` => `createGetter`【**收集依赖** `track` => `trackEffects`】 => `patch` => `processElement` => `mountElement` => `hostCreateElement` => `hostSetElementText/mountChildren` => `setElementText/patch` => `hostInsert` => **Done**
 
-`更新(diff)`流程函数名：如在 `mounted` 中改变数据
+**patch**: `更新(diff)`流程函数名：例在 `mounted` 中改变数据
 
-> **mounted** => `createSetter`【**触发更新** `trigger` => `triggerEffects` => `triggerEffect`】 => `effect.scheduler/effect.run` => 【**run**】 => `componentUpdateFn` => `renderComponentRoot` => `render` => `patch` => `processElement` => `patchElement` => `patchBlockChildren` => `patch` => `processComponent` => `updateComponent` => `shouldUpdateComponent` => `instance.update` => 渲染。。。
+> **mounted** => `createSetter`【**触发更新** `trigger` => `triggerEffects` => `triggerEffect`】 => `effect.scheduler/effect.run` => 【**run**】 => `componentUpdateFn` => (**nextTree** = ` renderComponentRoot`) => `render` => `patch` => `processElement` => `patchElement` => `patchBlockChildren` => `patch` => `processComponent` => `updateComponent` => `shouldUpdateComponent` => `instance.update` => 渲染。。。
 
 <!-- 异步事件流程：
 > `componentUpdateFn` => `queuePostRenderEffect` => `queueEffectWithSuspense` => `queuePostFlushCb` => `queueFlush` => `resolvedPromise.then(flushJobs)` => `flushJobs` => `callWithErrorHandling` -->
