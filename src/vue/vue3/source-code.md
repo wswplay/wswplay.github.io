@@ -143,6 +143,7 @@ patch(container._vnode || null, vnode, container, ...) {
     default:
       if (shapeFlag & ShapeFlags.ELEMENT) {
         processElement(n1, n2, container) {
+          // 挂载元素
           if (n1 == null) {
             mountElement(n2, container) {
               // mountElement(vnode, container)
@@ -164,12 +165,31 @@ patch(container._vnode || null, vnode, container, ...) {
               hostInsert(el, container)
             }
           } else {
-            patchElement(n1, n2)
+            // 更新元素
+            patchElement(n1, n2) {
+              const el = (n2.el = n1.el!)
+              let { patchFlag, dynamicChildren, dirs } = n2
+              if (dynamicChildren) {
+                patchBlockChildren(n1.dynamicChildren!, dynamicChildren, el) {
+                  // n1.dynamicChildren!,dynamicChildren => oldChildren,newChildren
+                  for (let i = 0; i < newChildren.length; i++) {
+                    const oldVNode = oldChildren[i]
+                    const newVNode = newChildren[i]
+                    ...
+                  }
+                  patch(oldVNode, newVNode, container)
+                }
+              } else if (!optimized) {
+                // 全量 diff
+                patchChildren(n1, n2, el)
+              }
+            }
           }
         }
       } else if(shapeFlag & ShapeFlags.COMPONENT) {
         processComponent(n1, n2, container) {
           if (n1 == null) {
+            // 初次-挂载组件
             mountComponent(n2, container) {
               // mountComponent(initialVNode, container)
               // 创建组件实例
@@ -303,6 +323,24 @@ patch(container._vnode || null, vnode, container, ...) {
                 const update: SchedulerJob = (instance.update = () => effect.run())
                 update.id = instance.uid
                 update()
+              }
+            }
+          } else {
+            // 再次-更新组件
+            updateComponent(n1, n2, optimized) {
+              const instance = (n2.component = n1.component)!
+              // 如果应该更新组件(如 props 有改变等)
+              if (shouldUpdateComponent(n1, n2, optimized)) {
+                if(xxx) {
+                  // 异步组件
+                } else {
+                  instance.next = n2
+                  invalidateJob(instance.update)
+                  instance.update()
+                }
+              } else {
+                n2.el = n1.el
+                instance.vnode = n2
               }
             }
           }
