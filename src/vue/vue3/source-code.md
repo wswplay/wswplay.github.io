@@ -224,15 +224,21 @@ patch(container._vnode || null, vnode, container, ...) {
                   if (setup) {
                     const setupContext = createSetupContext(instance)
                     setCurrentInstance(instance)
-                    const setupResult = callWithErrorHandling(...)
+                    const setupResult = callWithErrorHandling(setup, ...)
                     if (isPromise(setupResult)) {
                       // sth
                     } else {
                       handleSetupResult(instance, setupResult, isSSR) {
+                        // 如果setup返回值为函数，它就是组件render函数
                         if (isFunction(setupResult)) {
-                          // sth
+                          if (__SSR__ && ...) {
+                            instance.ssrRender = setupResult
+                          } else {
+                            instance.render = setupResult as InternalRenderFunction
+                          }
                         } else if(isObject(setupResult)) {
-                          // sth
+                          // 将setup返回值结果添加到组件实例上
+                          instance.setupState = proxyRefs(setupResult)
                         } else if() {}
                         finishComponentSetup(instance, isSSR)
                       }
