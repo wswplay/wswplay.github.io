@@ -71,6 +71,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "Core流程源码摘要", link: "/vue/vue3/source-code" },
           { text: "Reactive响应式系统", link: "/vue/vue3/reactive" },
           { text: "Router源码摘要", link: "/vue/vue3/router-code" },
+          { text: "Pinia源码摘要", link: "/vue/vue3/pinia-code" },
         ],
       },
       {
