@@ -12,15 +12,14 @@ title: Pinia源码分析
 
 ```ts
 export let activePinia: Pinia | undefined
+export const setActivePinia: _SetActivePinia = (pinia) => (activePinia = pinia)
 createPinia() {
   let _p: Pinia['_p'] = []
   let toBeInstalled: PiniaPlugin[] = []
   const pinia: Pinia = markRaw({
     // 将pinia安装到Vue实例
     install(app: App) {
-      setActivePinia(pinia) {
-        (pinia) => (activePinia = pinia)
-      }
+      setActivePinia(pinia)
       if (!isVue2) {
         pinia._a = app
         app.provide(piniaSymbol, pinia)
@@ -42,5 +41,65 @@ createPinia() {
     state,
   })
   return pinia
+}
+```
+
+## 定义 store
+
+```ts
+export function defineStore(
+  // TODO: add proper types from above
+  idOrOptions: any,
+  setup?: any,
+  setupOptions?: any
+): StoreDefinition {
+  let id: string;
+  const isSetupStore = typeof setup === "function";
+  if (typeof idOrOptions === "string") {
+    id = idOrOptions;
+    options = isSetupStore ? setupOptions : setup;
+  } else {
+    options = idOrOptions;
+    id = idOrOptions.id;
+  }
+  function useStore(pinia?: Pinia | null, hot?: StoreGeneric): StoreGeneric {
+    const currentInstance = getCurrentInstance();
+    if (pinia) setActivePinia(pinia);
+    pinia = activePinia!;
+    if (!pinia._s.has(id)) {
+      if (isSetupStore) {
+        createSetupStore(id, setup, options, pinia) {
+          // $id, setup, options, pinia, hot, isOptionsStore
+          const initialState = pinia.state.value[$id] as UnwrapRef<S> | undefined
+          const hotState = ref({} as S)
+          const partialStore = {
+            _p: pinia,
+            $id,
+          }
+          const store: Store<Id, S, G, A> = reactive(partialStore)
+          pinia._s.set($id, store)
+          const setupStore = pinia._e.run(() => {
+            scope = effectScope()
+            return scope.run(() => setup())
+          })!
+          for (const key in setupStore) {}
+          Object.defineProperty(store, '$state', {})
+          pinia._p.forEach()
+        }
+      } else {
+        createOptionsStore(id, options as any, pinia) {
+          const { state, actions, getters } = options
+          const initialState: StateTree | undefined = pinia.state.value[id]
+          let store: Store<Id, S, G, A>
+          function setup() {}
+          store = createSetupStore(id, setup, options, pinia, hot, true)
+          return store as any
+        }
+      }
+    }
+    const store: StoreGeneric = pinia._s.get(id)!;
+  }
+  useStore.$id = id;
+  return useStore;
 }
 ```
