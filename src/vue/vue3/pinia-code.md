@@ -14,6 +14,7 @@ title: Pinia源码分析
 export let activePinia: Pinia | undefined
 export const setActivePinia: _SetActivePinia = (pinia) => (activePinia = pinia)
 createPinia() {
+  // 声明插件列表
   let _p: Pinia['_p'] = []
   let toBeInstalled: PiniaPlugin[] = []
   const pinia: Pinia = markRaw({
@@ -75,6 +76,10 @@ export function defineStore(
           const partialStore = {
             _p: pinia,
             $id,
+            $patch,
+            $reset,
+            $subscribe,
+            ...
           }
           const store: Store<Id, S, G, A> = reactive(partialStore)
           pinia._s.set($id, store)
@@ -83,23 +88,49 @@ export function defineStore(
             return scope.run(() => setup())
           })!
           for (const key in setupStore) {}
-          Object.defineProperty(store, '$state', {})
+          if (isVue2) {
+            Object.keys(setupStore).forEach((key) => {
+              set(store, key, setupStore[key])
+            })
+          } else {
+            assign(store, setupStore)
+            assign(toRaw(store), setupStore)
+          }
+          Object.defineProperty(store, '$state', {...})
           pinia._p.forEach()
+          return store
         }
       } else {
         createOptionsStore(id, options as any, pinia) {
           const { state, actions, getters } = options
           const initialState: StateTree | undefined = pinia.state.value[id]
           let store: Store<Id, S, G, A>
-          function setup() {}
+          function setup() {
+            if (!initialState && (!__DEV__ || !hot)) {
+              if (isVue2) {
+                set(pinia.state.value, id, state ? state() : {})
+              } else {
+                pinia.state.value[id] = state ? state() : {}
+              }
+            }
+            const localState = toRefs(pinia.state.value[id])
+            return assign(localState, actions, Object.keys(getters || {}).reduce(...))
+          }
           store = createSetupStore(id, setup, options, pinia, hot, true)
           return store as any
         }
       }
     }
     const store: StoreGeneric = pinia._s.get(id)!;
+    return store as any
   }
   useStore.$id = id;
   return useStore;
 }
+```
+
+## 辅助信息集锦
+
+```ts
+const { assign } = Object;
 ```
