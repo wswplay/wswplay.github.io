@@ -378,7 +378,7 @@ class RefImpl<T> {
 }
 ```
 
-### toRef
+### toRef 响应式数据某个属性 ref 化
 
 ```ts
 export function toRef(
@@ -423,6 +423,23 @@ class ObjectRefImpl<T extends object, K extends keyof T> {
   get dep(): Dep | undefined {
     return getDepFromReactive(toRaw(this._object), this._key);
   }
+}
+```
+
+### toRefs 响应式数据所有属性 ref 化
+
+```ts
+export function toRefs<T extends object>(object: T): ToRefs<T> {
+  if (__DEV__ && !isProxy(object)) {
+    console.warn(
+      `toRefs() expects a reactive object but received a plain one.`
+    );
+  }
+  const ret: any = isArray(object) ? new Array(object.length) : {};
+  for (const key in object) {
+    ret[key] = propertyToRef(object, key);
+  }
+  return ret;
 }
 ```
 
