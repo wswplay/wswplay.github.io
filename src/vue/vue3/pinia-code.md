@@ -14,7 +14,7 @@ title: Pinia源码分析
 export let activePinia: Pinia | undefined
 export const setActivePinia: _SetActivePinia = (pinia) => (activePinia = pinia)
 createPinia() {
-  // 声明插件列表
+  // 声明pinia插件列表
   let _p: Pinia['_p'] = []
   let toBeInstalled: PiniaPlugin[] = []
   const pinia: Pinia = markRaw({

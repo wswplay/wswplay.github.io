@@ -378,7 +378,7 @@ class RefImpl<T> {
 }
 ```
 
-### toRef 响应式数据某个属性 ref 化
+### toRef 响应式数据单个属性 ref 化
 
 ```ts
 export function toRef(
