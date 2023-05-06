@@ -378,6 +378,54 @@ class RefImpl<T> {
 }
 ```
 
+### toRef
+
+```ts
+export function toRef(
+  source: Record<string, any> | MaybeRef,
+  key?: string,
+  defaultValue?: unknown
+): Ref {
+  if (isRef(source)) {
+    return source;
+  } else if (isFunction(source)) {
+    return new GetterRefImpl(source) as any;
+  } else if (isObject(source) && arguments.length > 1) {
+    return propertyToRef(source, key!, defaultValue);
+  } else {
+    return ref(source);
+  }
+}
+function propertyToRef(source: object, key: string, defaultValue?: unknown) {
+  const val = (source as any)[key];
+  return isRef(val)
+    ? val
+    : (new ObjectRefImpl(
+        source as Record<string, any>,
+        key,
+        defaultValue
+      ) as any);
+}
+class ObjectRefImpl<T extends object, K extends keyof T> {
+  public readonly __v_isRef = true;
+  constructor(
+    private readonly _object: T,
+    private readonly _key: K,
+    private readonly _defaultValue?: T[K]
+  ) {}
+  get value() {
+    const val = this._object[this._key];
+    return val === undefined ? (this._defaultValue as T[K]) : val;
+  }
+  set value(newVal) {
+    this._object[this._key] = newVal;
+  }
+  get dep(): Dep | undefined {
+    return getDepFromReactive(toRaw(this._object), this._key);
+  }
+}
+```
+
 ## 辅助信息集锦
 
 ```ts
