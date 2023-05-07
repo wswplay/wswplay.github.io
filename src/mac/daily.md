@@ -1,24 +1,27 @@
 ---
 title: 日常操作
+outline: deep
 ---
 
-# Daily
+# Day Day Up!
 
-## 快捷键-唯快不破
+## 快捷键系列
 
-:::tip
+### OS 快捷键
 
-- 刷新网页：Command+R
-- 切换窗口：command + tab (类似 Windows 窗口的切换方式)
-- 显示隐藏文件夹：`Command + Shift + .` 可以显示隐藏文件、文件夹，再按一次，恢复隐藏
+- 刷新网页：`Command+R`
+- 切换窗口：`command + tab` (类似 Windows 窗口的切换方式)
+- 显示/隐藏 `点文件(夹)`：`Command + Shift + .`，再按一次恢复隐藏
 
-:::
+### Chrome 快捷键
 
-## 打开 chrome 开发者工具
+- 开发者工具：option ＋ command ＋ i
+- javascript 控制台：option ＋ command ＋ j
+- 或者按 option ＋ command ＋ c 也可以打开
 
-1. 开发者工具：option ＋ command ＋ i
-2. javascript 控制台：option ＋ command ＋ j
-3. 或者按 option ＋ command ＋ c 也可以打开
+### VSCode 快捷键
+
+- 唤起终端：^`(即：control + esc 下面 那个键)
 
 ## 删除/usr/bin 中的文件
 
