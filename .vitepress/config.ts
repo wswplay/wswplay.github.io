@@ -60,6 +60,11 @@ function geneNav(): ThemeConfig["nav"] {
       activeMatch: "^/basic",
       link: "/basic/javascript/",
     },
+    {
+      text: "Mac·周边",
+      activeMatch: "^/mac",
+      link: "/mac/setting",
+    },
   ];
 }
 function geneSidebar(): ThemeConfig["sidebar"] {
@@ -166,6 +171,15 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         items: [
           { text: "Markdown及生成目录", link: "/basic/tools/markdown" },
           { text: "工具函数-冷知识-酷代码", link: "/basic/tools/cold-code" },
+        ],
+      },
+    ],
+    "/mac/": [
+      {
+        text: "Mac那点事",
+        items: [
+          { text: "基本设置", link: "/mac/setting" },
+          { text: "日常操作", link: "/mac/daily" },
         ],
       },
     ],

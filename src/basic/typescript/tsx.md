@@ -51,6 +51,8 @@ npx tsx ...
 
 ### 2、命令行切换到 JavaScript 调试终端
 
+MAC 唤起 VSCode 终端快捷键：^`(即：control + esc 下面 那个键)
+
 ![An image](./img/switch.png)
 
 ### 3、输入调试命令，开调！

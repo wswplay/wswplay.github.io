@@ -102,7 +102,7 @@ first-node-cli
 
 ### process.argv
 
-`process.argv` 返回一个数组，前两位固定为 `node 程序的路径`和`脚本存放的位置`。  
+`process.argv` 返回一个数组，前两位固定为 `node 程序路径`和`当前运行脚本路径`。  
 从第 3 位开始才是我们输入的内容。
 
 ```js
