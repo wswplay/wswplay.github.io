@@ -170,12 +170,27 @@ export async function createServer(
     delete serverOptions.base;
   }
   dns.setDefaultResultOrder("verbatim");
-
+  // createViteServer来自vite
   return createViteServer({
     root: config.srcDir,
     base: config.site.base,
     cacheDir: config.cacheDir,
-    plugins: await createVitePressPlugin(config, false, {}, {}, recreateServer),
+    plugins: await createVitePressPlugin(config, false, {}, {}, recreateServer) {
+      const { vue: userVuePluginOptions } = siteConfig
+      let markdownToVue: Awaited<ReturnType<typeof createMarkdownToVueRenderFn>>
+      const vuePlugin = await import('@vitejs/plugin-vue').then((r) =>
+        r.default({
+          include: [/\.vue$/, /\.md$/],
+          ...userVuePluginOptions
+        })
+      )
+      // 插件
+      const vitePressPlugin: Plugin = {
+        name: 'vitepress',
+        ...
+      }
+      return { vitePressPlugin, vuePlugin }
+    },
     server: serverOptions,
     customLogger: config.logger,
   });
