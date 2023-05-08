@@ -17,7 +17,7 @@ title: Github Token设置及Pages自动部署
 
 #### Vitepress
 
-[Vitepress 集成自动化部署](/vite/vitepress.html#集成自动化部署)
+[Vitepress 集成自动化部署](/vite/press/vitepress.html#集成自动化部署)
 
 #### Travis CI
 
