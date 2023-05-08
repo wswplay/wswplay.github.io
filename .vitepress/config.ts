@@ -104,9 +104,10 @@ function geneSidebar(): ThemeConfig["sidebar"] {
       {
         text: "Vitepress",
         items: [
-          { text: "简介与功能", link: "/vite/vitepress" },
-          { text: "默认主题(default)", link: "/vite/theme-default" },
-          { text: "Vue官方主题(Vue3)", link: "/vite/theme-vue" },
+          { text: "简介与功能", link: "/vite/press/vitepress" },
+          { text: "vitepress命令源码摘要", link: "/vite/press/press-command" },
+          { text: "默认主题(default)", link: "/vite/press/theme-default" },
+          { text: "Vue官方主题(Vue3)", link: "/vite/press/theme-vue" },
         ],
       },
     ],
