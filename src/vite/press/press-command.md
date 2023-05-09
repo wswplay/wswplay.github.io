@@ -61,7 +61,10 @@ if (!command || command === "dev") {
 }
 ```
 
-### createServer 创建服务
+### dev-createServer 创建服务
+
+- 实际上，`vitepress` 最后用到的都是 `vite` 的 `api`。
+- 如 `createViteServer` 就是 [vite/createServer](/vite/command-cli.html#createserver)
 
 ```ts
 export async function createServer(
@@ -178,7 +181,7 @@ export async function createServer(
           ...userVuePluginOptions
         })
       )
-      // 插件
+      // 插件，详见markdown 转 html 插件
       const vitePressPlugin: Plugin = {
         name: 'vitepress',
         ...
@@ -189,6 +192,64 @@ export async function createServer(
     customLogger: config.logger,
   });
 }
+```
+
+## markdown 转 html 插件
+
+[markdown-it](https://github.com/markdown-it/markdown-it)插件将 markdown 转换成 html。
+
+```ts
+const vitePressPlugin: Plugin = {
+  name: "vitepress",
+  async configResolved(resolvedConfig) {
+    config = resolvedConfig;
+    markdownToVue = await createMarkdownToVueRenderFn(
+      srcDir,
+      markdown,
+      pages,
+      config.define,
+      config.command === "build",
+      config.base,
+      lastUpdated,
+      cleanUrls,
+      siteConfig
+    ) {
+      const md = await createMarkdownRenderer(srcDir,options,base,siteConfig?.logger) {
+        const theme = options.theme ?? 'material-theme-palenight'
+        const md = MarkdownIt({ html: true, linkify: true, ... })
+        md.linkify.set({ fuzzyLink: false })
+        md.use(xxxPlugin).use(xxxPlugin)
+      }
+      pages = pages.map((p) => slash(p.replace(/\.md$/, '')))
+      return async (
+        src: string,
+        file: string,
+        publicDir: string
+      ): Promise<MarkdownCompileResult> => {
+        const fileOrig = file
+        const html = md.render(src, env)
+        const result = {...}
+        return result
+      }
+    }
+  },
+  async transform(code, id) {
+    if (id.endsWith('.vue')) {
+      return processClientJS(code, id)
+    } else if (id.endsWith('.md')) {
+      // transform .md files into vueSrc so plugin-vue can handle it
+      const { vueSrc, deadLinks, includes } = await markdownToVue(
+        code, id, config.publicDir )
+      allDeadLinks.push(...deadLinks)
+      if (includes.length) {
+        includes.forEach((i) => {
+          this.addWatchFile(i)
+        })
+      }
+      return processClientJS(vueSrc, id)
+    }
+  },
+};
 ```
 
 ## 辅助信息集锦
