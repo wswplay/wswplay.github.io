@@ -164,12 +164,6 @@ export async function createServer(
     global.VITEPRESS_CONFIG = config
     return config
   }
-
-  if (serverOptions.base) {
-    config.site.base = serverOptions.base;
-    delete serverOptions.base;
-  }
-  dns.setDefaultResultOrder("verbatim");
   // createViteServer来自vite
   return createViteServer({
     root: config.srcDir,
