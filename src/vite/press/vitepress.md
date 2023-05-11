@@ -6,7 +6,7 @@ title: 用Vitepress重写你的博客
 
 ## 中文文档
 
-【[Vitepress 中文文档](https://process1024.github.io/vitepress/)】
+【[Vitepress 中文文档](https://vanchkong.github.io/VitePressCN/)】
 
 ## 集成自动化部署
 

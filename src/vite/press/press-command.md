@@ -194,9 +194,9 @@ export async function createServer(
 }
 ```
 
-## markdown 转 html 插件
+## markdown 内容转 vue 插件
 
-[markdown-it](https://github.com/markdown-it/markdown-it)插件将 markdown 转换成 html。
+[markdown-it](https://github.com/markdown-it/markdown-it)插件将 markdown 内容转换成 vue 类型信息。
 
 ```ts
 const vitePressPlugin: Plugin = {
