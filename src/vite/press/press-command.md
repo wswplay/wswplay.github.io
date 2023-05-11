@@ -194,6 +194,94 @@ export async function createServer(
 }
 ```
 
+### build-renderPage
+
+最终的 `build` 来自 vite。【[vite 的 build](/vite/command-cli.html#vite-build)】
+
+```ts
+export async function build(
+  root?: string,
+  buildOptions: BuildOptions & { base?: string; mpa?: string } = {}
+) {
+  process.env.NODE_ENV = "production";
+  const siteConfig = await resolveConfig(root, "build", "production");
+  try {
+    const { clientResult, serverResult, pageToHashMap } = await bundle(
+      siteConfig,
+      buildOptions
+    ) {
+      const input: Record<string, string> = {}
+      config.pages.forEach((file) => {
+        const alias = config.rewrites.map[file] || file
+        input[slash(alias).replace(/\//g, '_')] = path.resolve(config.srcDir, file)
+      }
+      const resolveViteConfig = async (ssr: boolean) => {
+        root: config.srcDir,
+        ...
+      }
+      try {
+        [clientResult, serverResult] = await (Promise.all([
+          // build来自vite
+          config.mpa ? null : build(await resolveViteConfig(false)),
+          build(await resolveViteConfig(true))
+        ]) as Promise<[RollupOutput, RollupOutput]>)
+      } catch (e) {}
+      return { clientResult, serverResult, pageToHashMap }
+    }
+    const { render } = await import(pathToFileURL(entryPath).toString());
+    try {
+      const appChunk = xxx;
+      const cssChunk = xxx;
+      const assets = xxx;
+      if (isDefaultTheme) {
+      }
+      await Promise.all(
+        ["404.md", ...siteConfig.pages]
+          .map((page) => siteConfig.rewrites.map[page] || page)
+          .map((page) =>
+            renderPage(render,siteConfig,page,clientResult,appChunk,
+              cssChunk,assets,pageToHashMap,hashMapString,
+              siteDataString,additionalHeadTags
+            ) {
+              // 提取title、head、link等html页面信息
+              const routePath = `/${page.replace(/\.md$/, '')}`
+              const siteData = resolveSiteDataByRoute(config.site, routePath)
+              const pageName = sanitizeFileName(page.replace(/\//g, '_'))
+              let pageData: PageData
+              try {
+                const { __pageData } = await import(
+                  pathToFileURL(path.join(config.tempDir, pageServerJsFileName)).toString()
+                )
+                pageData = __pageData
+              } catch (e) {}
+              const title: string = createTitle(siteData, pageData)
+              let preloadLinks = xxx
+              const head = mergeHead(...)
+              // 构建、填充 html 字符串
+              const html = `<!DOCTYPE html><html lang="${siteData.lang}"xxx</html>`.trim()
+              const htmlFileName = path.join(config.outDir, page.replace(/\.md$/, '.html'))
+              // 确认目录存在
+              await fs.ensureDir(path.dirname(htmlFileName))
+              // 文件写入
+              await fs.writeFile(htmlFileName, transformedHtml || html)
+            }
+          )
+      );
+    } catch (e) {}
+  } finally {
+    // 删除临时文件目录
+    if (!process.env.DEBUG) {
+      fs.rmSync(siteConfig.tempDir, { recursive: true, force: true });
+    }
+  }
+  // buildEnd 钩子
+  await siteConfig.buildEnd?.(siteConfig);
+  siteConfig.logger.info(
+    `build complete in ${((Date.now() - start) / 1000).toFixed(2)}s.`
+  );
+}
+```
+
 ## markdown 内容转 vue 插件
 
 [markdown-it](https://github.com/markdown-it/markdown-it)插件将 markdown 内容转换成 vue 类型信息。
