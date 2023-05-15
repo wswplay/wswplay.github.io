@@ -152,7 +152,8 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "Promise", link: "/basic/javascript/promise" },
           { text: "Proxy", link: "/basic/javascript/proxy" },
           { text: "Reflect", link: "/basic/javascript/reflect" },
-          { text: "位运算", link: "/basic/javascript/operators" },
+          { text: "表达式与运算符", link: "/basic/javascript/operators" },
+          { text: "位运算", link: "/basic/javascript/bitwise-operators" },
         ],
       },
       {

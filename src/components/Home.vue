@@ -41,7 +41,8 @@ const homeInfo = {
   action: "Solve",
   tool: "Three Problems",
   target: "For Civilization",
-  desc: "解决3个问题，给岁月以文明。我看过许多地方的云。——边城执剑人",
+  desc: "解决3个问题，给岁月以文明。——边城执键人",
+  // desc: "解决3个问题，给岁月以文明。我看过许多地方的云。——边城执剑人",
   // mainBtnText: "开启「三体」Vitepress-> Vue/core -> Vite(Rollup) -> About",
   mainBtnText: "开释「三题」",
   details: [
