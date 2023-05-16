@@ -217,6 +217,17 @@ export async function build(
       }
       const resolveViteConfig = async (ssr: boolean) => {
         root: config.srcDir,
+        build: {
+          rollupOptions: {
+            input: {
+              ...input,
+              app: path.resolve(APP_PATH, ssr ? 'ssr.js' : 'index.js')
+            },
+            output: {
+              assetFileNames: 'assets/[name].[hash].[ext]',
+            }
+          }
+        }
         ...
       }
       try {
@@ -228,13 +239,15 @@ export async function build(
       } catch (e) {}
       return { clientResult, serverResult, pageToHashMap }
     }
+    const entryPath = path.join(siteConfig.tempDir, 'app.js')
     const { render } = await import(pathToFileURL(entryPath).toString());
     try {
-      const appChunk = xxx;
-      const cssChunk = xxx;
-      const assets = xxx;
-      if (isDefaultTheme) {
-      }
+      const appChunk = xxx
+      const cssChunk = (siteConfig.mpa ? serverResult : clientResult).output.find(...)
+      const assets = (siteConfig.mpa ? serverResult : clientResult).output.filter(...)
+      if (isDefaultTheme) {...}
+      const hashMapString = JSON.stringify(JSON.stringify(pageToHashMap))
+      const siteDataString = xxx
       await Promise.all(
         ["404.md", ...siteConfig.pages]
           .map((page) => siteConfig.rewrites.map[page] || page)
