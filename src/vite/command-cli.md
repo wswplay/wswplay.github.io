@@ -548,9 +548,15 @@ export async function build(
 
 [Rollup 打包核心函数](/vite/rollup-source.html#打包核心函数)
 
+## hmr：热更新 or 热替换
+
+`hmr`: `hot module refresh` or `hot module replacement`。
+
 ## PS：第三方库名录
+
 - 命令行参数处理: [cac](https://github.com/cacjs/cac)
 - 命令行样式(颜色): [picocolors](https://github.com/alexeyraspopov/picocolors)
-- 打包器(认准ESM): [esbuild](https://github.com/evanw/esbuild) 
-- Node.js中间件层(插件层): [connect](https://github.com/senchalabs/connect) 
-- 跨平台文件watching库: [chokidar](https://github.com/paulmillr/chokidar) 
+- 打包器(认准 ESM): [esbuild](https://github.com/evanw/esbuild)
+- Node.js 中间件层(插件层): [connect](https://github.com/senchalabs/connect)
+- 跨平台文件 watching 库: [chokidar](https://github.com/paulmillr/chokidar)
+- Node 环境 WebSocket 库：[ws](https://github.com/websockets/ws)
