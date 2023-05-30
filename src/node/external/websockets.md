@@ -37,11 +37,41 @@ title: WebSockets
 
 ## WebSocket
 
-`WebSocket protocol` 是 `HTML5` 新协议。它实现了浏览器与服务器全双工通信(full-duplex)。首次握手需借助 `HTTP请求`完成数据传输，但连接建立后，真正传输时不需要 HTTP 协议。
+TCP/IP 协议 TCP Socket，实际上是一种功能接口，通过这些接口就可以使用 TCP/IP 协议栈在传输层收发数据。
 
-它的目的是，用`即时通讯`替代`轮询`。常见的即时通讯有网页的 QQ，聊天系统等。
+而 WebSocket 中，“Web”指的就是 HTTP，“Socket”是在套接字调用，WebSocket 就是运行在 Web，也就是 HTTP 上的 Socket 通信规范，提供与 TCP Socket 类似的功能，使用它可以像 TCP Socket 一样调用下层协议栈，任意的收发数据。
 
-### WebSocket 原理
+**WebSocket 是一种基于 TCP 的轻量级网络通信协议，在地位上与 HTTP 是平级**。它的目的是，用`即时通讯`替代`轮询`。常见的即时通讯有网页的 QQ，聊天系统等。
+
+`WebSocket protocol` 是 `HTML5` 新协议。它实现了浏览器与服务器全双工通信(full-duplex)。首次握手需借助 `HTTP请求`，当连接建立后，真正传输时走 TCP，此时就无需 HTTP 协议了。
+
+这是搭上 HTTP 的“便车”，利用 HTTP 本身的“协议升级”特性，“伪装”成 HTTP，这样就能绕过浏览器沙盒、网络防火墙等限制，这也是 WebSocket 与 HTTP 的另一个重要关联点。
+
+WebSocket 握手是一个标准 HTTP GET 请求，但需带上两个**协议升级专用头字段**：
+
+```ts
+{
+  Connection: Upgrade, // 表示要求协议“升级”
+  Upgrade: websocket, // 表示要“升级”成 WebSocket 协议
+}
+```
+
+为防止普通 HTTP 被“意外”识别成 WebSocket，握手还增加两个**额外认证用头字段**(所谓的“挑战”，Challenge)：
+
+```ts
+{
+  Sec-WebSocket-Key："Base64编码的16字节随机数，作为认证密钥", // 表示“是的，我真的想打开一个 WebSocket 连接。”
+  Sec-WebSocket-Version：'协议的版本号，当前必须是13',
+}
+```
+
+服务器收到 HTTP 请求报文，看到上面的四个字段，就知道这不是一个普通的 GET 请求，而是 WebSocket 的升级请求，于是就不走普通的 HTTP 处理流程，而是构造一个特殊的 `101 Switching Protocols` 响应报文，通知客户端，接下来就不用 HTTP 了，全改用 WebSocket 协议通信。
+
+WebSocket 的握手响应报文也是有特殊格式的，要用字段 `Sec-WebSocket-Accept` 验证客户端请求报文，同样也是为了防止误连接。
+
+握手完成，后续传输的数据就不再是 HTTP 报文，而是 WebSocket 格式的二进制帧了。
+
+### WebSocket 握手
 
 WebSocket 同 HTTP 一样也是应用层协议，但它是一种双向通信协议，建立在 TCP 之上，允许服务端主动向客户端推送数据。在 WebSocket API 中，浏览器和服务器只需要完成一次握手， 两者之间就直接可以创建持久性的连接，并进行双向数据传输。
 
