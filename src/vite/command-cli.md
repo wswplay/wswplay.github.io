@@ -548,9 +548,9 @@ export async function build(
 
 [Rollup 打包核心函数](/vite/rollup-source.html#打包核心函数)
 
-## hmr：热更新 or 热替换
+## hmr：热更新/热替换
 
-`hmr`: `hot module refresh` or `hot module replacement`。
+`hmr`: `hot module refresh`/`hot module replacement`。
 
 ## PS：第三方库名录
 

@@ -43,7 +43,7 @@ TCP/IP 协议 TCP Socket，实际上是一种功能接口，通过这些接口�
 
 **WebSocket 是一种基于 TCP 的轻量级网络通信协议，在地位上与 HTTP 是平级**。它的目的是，用`即时通讯`替代`轮询`。常见的即时通讯有网页的 QQ，聊天系统等。
 
-`WebSocket protocol` 是 `HTML5` 新协议。它实现了浏览器与服务器全双工通信(full-duplex)。首次握手需借助 `HTTP请求`，当连接建立后，真正传输时走 TCP，此时就无需 HTTP 协议了。
+`WebSocket protocol` 是 `HTML5` 新协议。它实现了浏览器与服务器全双工通信(full-duplex)。首次握手需借助 `HTTP请求`，当连接建立后，真正传输时走 TCP，此时就无需 HTTP。
 
 这是搭上 HTTP 的“便车”，利用 HTTP 本身的“协议升级”特性，“伪装”成 HTTP，这样就能绕过浏览器沙盒、网络防火墙等限制，这也是 WebSocket 与 HTTP 的另一个重要关联点。
 
@@ -72,6 +72,8 @@ WebSocket 的握手响应报文也是有特殊格式的，要用字段 `Sec-WebS
 握手完成，后续传输的数据就不再是 HTTP 报文，而是 WebSocket 格式的二进制帧了。
 
 ### WebSocket 握手
+
+握手是 WebSockets 中的“Web”。这是从 HTTP 到 WS 的桥梁。
 
 WebSocket 同 HTTP 一样也是应用层协议，但它是一种双向通信协议，建立在 TCP 之上，允许服务端主动向客户端推送数据。在 WebSocket API 中，浏览器和服务器只需要完成一次握手， 两者之间就直接可以创建持久性的连接，并进行双向数据传输。
 
