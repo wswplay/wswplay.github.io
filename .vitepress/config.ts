@@ -174,6 +174,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         items: [
           { text: "Markdown及生成目录", link: "/basic/tools/markdown" },
           { text: "工具函数-冷知识-酷代码", link: "/basic/tools/cold-code" },
+          { text: "Web Worker", link: "/basic/tools/worker" },
         ],
       },
     ],
