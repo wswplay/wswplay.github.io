@@ -25,7 +25,9 @@ title: WebSockets
 
 ### 建立 socket 连接
 
-建立 Socket 连接至少需要一对套接字，其中一个运行于客户端，称为 ClientSocket ，另一个运行于服务器端，称为 ServerSocket 。
+建立 Socket 连接至少需要一对套接字：  
+其中一个运行于**客户端**，称为 `ClientSocket` ，  
+另一个运行于**服务器端**，称为 `ServerSocket` 。
 
 套接字之间的连接过程分为 3 个步骤：**服务器监听、客户端请求、连接确认**。
 
@@ -137,3 +139,7 @@ UDP 是一个简单的面向数据报的传输层协议。提供的是**无连�
 HTTP 协议即超文本传送协议(`Hypertext Transfer Protocol`)，是 Web 联网的基础，也是手机联网常用的协议之一，HTTP 协议是建立在 TCP 协议之上的一种应用。
 
 HTTP 在每次请求结束后都会主动释放连接，因此 HTTP 连接是一种`短连接`，要保持客户端程序的在线状态，需要不断地向服务器发起连接请求，即`轮询`。
+
+## Vite 中怎么用
+
+[Vite hmr(热更新)](/vite/command-cli.html#hmr-热更新-热替换)中，**文件更新**信息的传输，就是借助 WebSocket，保持客户端与服务端通信来实现的。
