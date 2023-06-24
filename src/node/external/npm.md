@@ -93,7 +93,7 @@ npm i xxx@latest -D
 
 ## 禁用 lock 文件锁定版本
 
-在 `.npmrc` 文件中，`package-lock=false` 是一条配置项，用于禁用 `npm` 的包锁文件 (`package-lock.json`) 的生成和使用。
+在 `.npmrc` 文件配置 `package-lock=false`，可禁用 `package-lock.json` 生成和使用。
 
 `package-lock.json` 是 `npm 5` 之后引入的文件，用于记录当前安装的每个软件包的精确版本和依赖关系。它的存在旨在确保在不同环境中重复安装时，使用相同的依赖版本，从而提供可预测性和一致性。
 
