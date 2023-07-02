@@ -93,6 +93,17 @@ WebSocket 的握手响应报文也是有特殊格式的，要用字段 `Sec-WebS
 > Websocket 默认请求协议为`ws://`，默认端口`80`  
 > 对 TLS 加密请求协议为`wss://`，默认端口`443`
 
+### 构造函数
+
+`WebSocket()` 构造器会返回一个 WebSocket 对象。
+
+```ts
+var aWebSocket = new WebSocket(url [, protocols]);
+```
+
+- `url`：要连接的 URL，服务器将响应的 URL。
+- `protocols`(可选)：一个协议字符串或者一个包含协议字符串的数组。这些字符串用于指定子协议，这样单个服务器可以实现多个 WebSocket 子协议（例如，您可能希望一台服务器能够根据指定的协议（protocol）处理不同类型的交互）。如果不指定协议字符串，则假定为空字符串。
+
 ## TCP/IP 协议簇
 
 TCP/IP（`Transmission Control Protocol/Internet Protocol`，传输控制协议/网际协议）是指能够在多个不同网络间实现信息传输的协议簇。TCP/IP 协议不仅仅指的是 TCP 和 IP 两个协议，而是指一个由 `FTP、SMTP、TCP、UDP、IP` 等协议构成的`协议簇`， 只是因为在 TCP/IP 协议中 TCP 协议和 IP 协议`最具代表性`，所以被称为 TCP/IP 协议。
