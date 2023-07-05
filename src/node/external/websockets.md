@@ -6,6 +6,7 @@ title: WebSockets
 
 - `WebSockets` 是一种先进技术。它可以在用户`浏览器和服务器`之间打开`交互式通信会话`。
 - 使用此 API，您可以向服务器`发送消息`并`接收`事件驱动的`响应`，而`无需通过轮询`服务器的方式以获得响应。
+- [参考 MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket)
 
 ## Socket 原理
 
@@ -103,6 +104,12 @@ var aWebSocket = new WebSocket(url [, protocols]);
 
 - `url`：要连接的 URL，服务器将响应的 URL。
 - `protocols`(可选)：一个协议字符串或者一个包含协议字符串的数组。这些字符串用于指定子协议，这样单个服务器可以实现多个 WebSocket 子协议（例如，您可能希望一台服务器能够根据指定的协议（protocol）处理不同类型的交互）。如果不指定协议字符串，则假定为空字符串。
+
+### 属性、方法、事件
+
+- 属性：`WebSocket.readyState`、`WebSocket.onopen`、`WebSocket.onmessage`、`WebSocket.onerror`、`WebSocket.onclose`
+- 方法：`WebSocket.close([code[, reason]])`、`WebSocket.send(data)`
+- 事件：`open`、`message`、`error`、`close`
 
 ## TCP/IP 协议簇
 
