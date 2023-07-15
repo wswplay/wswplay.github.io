@@ -552,6 +552,127 @@ export async function build(
 
 `hmr`: `hot module refresh`/`hot module replacement`。
 
+1. 用[chokidar 库](https://github.com/paulmillr/chokidar)，观察文件，执行回调函数返回文件变动结果。
+2. 用[ws 库](https://github.com/websockets/ws)创建 `websocket` 连接，`服务端`以`websocket`方式与客户端保持即时通信，将变动结果消息发送给`客户端`。
+3. `客户端`根据消息类型，执行相应更新级别、动作。
+
+### 观察文件，获取变动结果
+
+```ts
+// 创建观察实例
+const watcher = chokidar.watch(
+  [root, ...config.configFileDependencies, config.envDir],
+  resolvedWatchOptions
+) as FSWatcher;
+// 监听观察事件
+watcher.on("change", async (file) => {
+  file = normalizePath(file);
+  moduleGraph.onFileChange(file);
+  await onHMRUpdate(file, false);
+});
+const onHMRUpdate = async (file: string, configOnly: boolean) => {
+  if (serverConfig.hmr !== false) {
+    try {
+      await handleHMRUpdate(file, server, configOnly) {
+        // 如果是配置相关更新，则重启服务器
+        if(isConfig || isConfigDependency || isEnv) {
+          try {
+            await server.restart()
+          }
+        }
+        // 如果是客户端变动，就重载页面
+        if (file.startsWith(normalizedClientDir)) {
+          ws.send({
+            type: 'full-reload',
+            path: '*',
+          })
+        }
+        // 执行 vite 特色钩子 handleHotUpdate
+        for (const hook of config.getSortedPluginHooks('handleHotUpdate')) {
+          ...
+        }
+        ...
+        updateModules(shortFile, hmrContext.modules, timestamp, server) {
+          ...
+          if (needFullReload) {
+            ws.send({ type: 'full-reload' })
+            return
+          }
+          ...
+          ws.send({ type: 'update', updates })
+        }
+      };
+    } catch (err) {
+      ws.send({
+        type: "error",
+        err: prepareError(err),
+      });
+    }
+  }
+};
+watcher.on("add", onFileAddUnlink);
+watcher.on("unlink", onFileAddUnlink);
+```
+
+### 创建 websocket node 服务端
+
+```ts
+// vite/src/node/server/index.ts
+const ws = createWebSocketServer(httpServer, config, httpsOptions) {
+  if (wsServer) {
+    // ws库创建websocket node服务端
+    wss = new WebSocketServerRaw({ noServer: true })
+    wsServer.on('upgrade', (req, socket, head) => {...})
+  }
+  // 服务端监听事件
+  wss.on('connection', (socket) => {
+    socket.on('message', (raw) => {...})
+    socket.on('error', (err) => {})
+    socket.send(JSON.stringify({ type: 'connected' }))
+  })
+  return {
+    listen: () => {
+      wsHttpServer?.listen(port, host)
+    },
+    on: ((event: string, fn: () => void) => {...})
+    get clients() {
+      return new Set(Array.from(wss.clients).map(getSocketClient))
+    },
+    send(...args: any[]) {}
+    close() {}
+  }
+}
+```
+
+### 创建 websocket 客户端
+
+```ts
+// vite/src/client/client.ts
+socket = setupWebSocket(socketProtocol, socketHost, fallback) {
+  // 创建实例
+  const socket = new WebSocket(`${protocol}://${hostAndPath}`, 'vite-hmr')
+  // 监听事件
+  socket.addEventListener('open', () => {}, { once: true })
+  socket.addEventListener('message', async ({ data }) => {
+    // 根据消息类型，分别处理
+    handleMessage(JSON.parse(data)) {
+      // data -> payload
+      switch (payload.type) {
+        case 'connected': ...,
+        case 'update': ...,
+        case 'custom': ...,
+        case 'full-reload': ...,
+        case 'prune': ...,
+        case 'error': ...,
+        default: ...
+      }
+    }
+  })
+  socket.addEventListener('close', async ({ wasClean }) => {...})
+  return socket
+}
+```
+
 ## PS：第三方库名录
 
 - 命令行参数处理: [cac](https://github.com/cacjs/cac)
