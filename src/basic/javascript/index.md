@@ -48,3 +48,17 @@ CommonJS 和 AMD 都是在运行时确定依赖关系，也就是运行时加载
 - ES6 Module 可以单独加载某个方法；CommonJS 是加载整个模块
 - ES6 Module 不能被重新赋值，会报错；CommonJS 可以重新赋值(改变 this 指向)
   :::
+
+## 浏览器和 node 中使用 esm
+
+### 浏览器(客户端)
+
+添加 `type="module"` 标识。
+
+```html
+<script type="module" src="./xiao.js"></script>
+```
+
+### node(服务端)
+
+文件后缀改成 `.mjs` 即可。
