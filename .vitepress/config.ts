@@ -66,9 +66,9 @@ function geneNav(): ThemeConfig["nav"] {
       link: "/mac/setting",
     },
     {
-      text: "文学·艺术",
-      activeMatch: "^/art",
-      link: "/art/sunzi-war-art",
+      text: "AI·文艺",
+      activeMatch: "^/aiart",
+      link: "/aiart/sunzi-war-art",
     },
   ];
 }
@@ -192,11 +192,11 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         ],
       },
     ],
-    "/art/": [
+    "/aiart/": [
       {
         text: "文学",
         items: [
-          { text: "孙子兵法", link: "/art/sunzi-war-art" },
+          { text: "孙子兵法", link: "/aiart/sunzi-war-art" },
         ],
       },
     ],
