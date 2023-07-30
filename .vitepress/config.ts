@@ -65,6 +65,11 @@ function geneNav(): ThemeConfig["nav"] {
       activeMatch: "^/mac",
       link: "/mac/setting",
     },
+    {
+      text: "文学·艺术",
+      activeMatch: "^/art",
+      link: "/art/sunzi-war-art",
+    },
   ];
 }
 function geneSidebar(): ThemeConfig["sidebar"] {
@@ -184,6 +189,14 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         items: [
           { text: "基本设置", link: "/mac/setting" },
           { text: "日常操作", link: "/mac/daily" },
+        ],
+      },
+    ],
+    "/art/": [
+      {
+        text: "文学",
+        items: [
+          { text: "孙子兵法", link: "/art/sunzi-war-art" },
         ],
       },
     ],
