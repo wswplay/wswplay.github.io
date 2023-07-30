@@ -68,7 +68,7 @@ function geneNav(): ThemeConfig["nav"] {
     {
       text: "AI·文艺",
       activeMatch: "^/aiart",
-      link: "/aiart/sunzi-war-art",
+      link: "/aiart/chat-gpt",
     },
   ];
 }
@@ -194,10 +194,12 @@ function geneSidebar(): ThemeConfig["sidebar"] {
     ],
     "/aiart/": [
       {
+        text: "AI",
+        items: [{ text: "ChatGPT问答集锦", link: "/aiart/chat-gpt" }],
+      },
+      {
         text: "文学",
-        items: [
-          { text: "孙子兵法", link: "/aiart/sunzi-war-art" },
-        ],
+        items: [{ text: "孙子兵法", link: "/aiart/sunzi-war-art" }],
       },
     ],
   };
