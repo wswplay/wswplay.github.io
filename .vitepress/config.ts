@@ -198,7 +198,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         items: [{ text: "ChatGPT问答集锦", link: "/aiart/chat-gpt" }],
       },
       {
-        text: "文学",
+        text: "文艺",
         items: [{ text: "孙子兵法", link: "/aiart/sunzi-war-art" }],
       },
     ],
