@@ -53,5 +53,7 @@ du -sh *
 cd ~/Library
 # 查看当前目录各个文件大小
 du -d 1 -h
+# 或逆序排列
+du -d 1 -h | sort -hr
 # 该删就删，Over！
 ```

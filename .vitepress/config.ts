@@ -191,6 +191,12 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "日常操作", link: "/mac/daily" },
         ],
       },
+      {
+        text: "Linux",
+        items: [
+          { text: "基础命令", link: "/mac/linux/os-command" },
+        ],
+      },
     ],
     "/aiart/": [
       {
