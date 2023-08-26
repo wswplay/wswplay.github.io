@@ -44,7 +44,7 @@ csrutil status # System Integrity Protection status: enabled.
 
 ## mac 系统占 80G，怎么办？
 
-通常安装 Xcode 之后，会占用很多空间。
+通常安装 Xcode 之后，会占用很多空间。【[Linux命令参考](/mac/linux/os-command.html)】
 
 ```bash
 # 打开终端，输入如下命令，查看根目录所有文件的大小

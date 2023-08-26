@@ -18,6 +18,11 @@ missing xcrun at: /Library/Developer/CommandLineTools/usr/bin/xcrun
 Mac 个傻逼，git 还要安装 CommandLineTools，那下载安装命令行工具吧[CommandLineTools](https://developer.apple.com/download/all/)。  
 安装完成，就大功告成！:dart:
 
+```bash
+git -v
+# git version 2.39.2 (Apple Git-143)
+```
+
 ## 初始化
 
 ```bash
