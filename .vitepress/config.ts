@@ -189,6 +189,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         items: [
           { text: "基本设置", link: "/mac/setting" },
           { text: "日常操作", link: "/mac/daily" },
+          { text: "工具:brew", link: "/mac/dev-tools" },
         ],
       },
       {
@@ -202,6 +203,10 @@ function geneSidebar(): ThemeConfig["sidebar"] {
       {
         text: "AI",
         items: [{ text: "ChatGPT问答集锦", link: "/aiart/chat-gpt" }],
+      },
+      {
+        text: "Python",
+        items: [{ text: "基本信息", link: "/aiart/python/basic-info" }],
       },
       {
         text: "文艺",

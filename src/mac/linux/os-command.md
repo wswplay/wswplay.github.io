@@ -7,7 +7,7 @@ outline: deep
 
 man xxx 查看帮助手册(如查看 du：man du)。
 
-## du：disk usage
+## du：disk usage 目录/文件大小
 
 用于显示目录或文件的大小。
 
@@ -28,3 +28,10 @@ man xxx 查看帮助手册(如查看 du：man du)。
 - 选取命令：`cut、grep`
 - 排序命令：`sort、wc、uniq`  
   `-r 将排序结果逆序`
+
+## echo 打印信息
+
+```bash
+echo $SHELL # 查看当前shell
+# /bin/zsh
+```
