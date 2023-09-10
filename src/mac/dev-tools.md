@@ -5,9 +5,9 @@ outline: deep
 
 # MacOS Dev-Tools-Set
 
-## brew 安装
+## brew：Mac 包管理の爱酱
 
-Homebrew——**The Missing Package Manager for macOS (or Linux)**。   
+Homebrew——**The Missing Package Manager for macOS (or Linux)**。  
 牛逼哄哄 inux 包管理器。[官网](https://brew.sh/)告诉我们，用这个：
 
 ```bash
@@ -83,3 +83,7 @@ brew -v
 
 - Formulae：**软件包**。包括了这个软件的依赖、源码位置及编译方法等。
 - Casks：**应用包**。已经编译好的应用包，如图形界面程序等。
+
+## iTerm2：Mac 命令行终端绝命替身
+
+[iTerm2](https://iterm2.com/) is a terminal emulator for macOS that dose amazing things。

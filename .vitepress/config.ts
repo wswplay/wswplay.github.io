@@ -196,6 +196,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         text: "Linux",
         items: [
           { text: "基础命令", link: "/mac/linux/os-command" },
+          { text: "vim", link: "/mac/linux/vim" },
         ],
       },
     ],
