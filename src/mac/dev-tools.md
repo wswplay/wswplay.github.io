@@ -7,7 +7,8 @@ outline: deep
 
 ## brew 安装
 
-Homebrew——The Missing Package Manager for macOS (or Linux)。牛逼哄哄 inux 包管理器。[官网](https://brew.sh/)告诉我们，用这个：
+Homebrew——**The Missing Package Manager for macOS (or Linux)**。   
+牛逼哄哄 inux 包管理器。[官网](https://brew.sh/)告诉我们，用这个：
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -27,7 +28,7 @@ Password:
 /opt/homebrew
 
 Press RETURN/ENTER to continue or any other key to abort:
-==> /usr/bin/sudo /usr/sbin/chown -R xiaozhijie:admin /opt/homebrew
+==> /usr/bin/sudo /usr/sbin/chown -R youraccount:admin /opt/homebrew
 ==> Downloading and installing Homebrew...
 HEAD is now at 12c8778af9 Merge pull request #15975 from iMichka/tf
 Warning: /opt/homebrew/bin is not in your PATH.
@@ -45,7 +46,7 @@ No analytics data has been sent yet (nor will any be during this install run).
 
 ==> Next steps:
 - Run these two commands in your terminal to add Homebrew to your PATH:
-    (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/xiaozhijie/.zprofile
+    (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/youraccount/.zprofile
     eval "$(/opt/homebrew/bin/brew shellenv)"
 - Run brew help to get started
 - Further documentation:
@@ -58,7 +59,7 @@ No analytics data has been sent yet (nor will any be during this install run).
 /bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"
 ```
 
-**设置环境变量**
+### 环境变量设置
 
 ```bash
 Warning: /opt/homebrew/bin is not in your PATH.
@@ -77,3 +78,8 @@ source .zshrc
 brew -v
 # Homebrew 4.1.9
 ```
+
+### 术语解释
+
+- Formulae：**软件包**。包括了这个软件的依赖、源码位置及编译方法等。
+- Casks：**应用包**。已经编译好的应用包，如图形界面程序等。

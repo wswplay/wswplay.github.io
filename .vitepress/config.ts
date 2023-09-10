@@ -206,7 +206,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
       },
       {
         text: "Python",
-        items: [{ text: "基本信息", link: "/aiart/python/basic-info" }],
+        items: [{ text: "安装与设置", link: "/aiart/python/basic-info" }],
       },
       {
         text: "文艺",
