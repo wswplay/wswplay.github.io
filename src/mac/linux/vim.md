@@ -3,7 +3,7 @@ title: vim Linux编辑器
 outline: deep
 ---
 
-# Vim：每个人的倚天剑
+# Vim：每个开发者的倚天剑
 
 **[Vim](https://www.vim.org)——The power tool for everyone!**
 
@@ -16,6 +16,10 @@ outline: deep
 - :w -- 保存文件。
 - :q -- 退出 Vim 编辑器。
 - :q! -- 强制退出 Vim 编辑器，不保存修改。
+- G -- 移动到这个档案的最后一行。
+- gg -- 移动到这个档案的第一行。
+- ^ -- 移动到光标所在行的行首。
+- $ -- 移动到光标所在行的行尾。
 
 ## 配置文件
 
