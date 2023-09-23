@@ -40,7 +40,7 @@ global regular expression
 
 ```bash
 grep -i -n 'python' .zshrc
-# 忽略大小写 显示行号 目标内容 目标文件
+# -i:忽略大小写 -n:显示行号 目标内容 目标文件
 # 104:alias python="/usr/local/bin/python3"
 ```
 

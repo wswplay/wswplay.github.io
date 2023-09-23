@@ -189,7 +189,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         items: [
           { text: "基本设置", link: "/mac/setting" },
           { text: "日常操作", link: "/mac/daily" },
-          { text: "工具:brew", link: "/mac/dev-tools" },
+          { text: "工具:brew/iTerm2", link: "/mac/dev-tools" },
         ],
       },
       {
