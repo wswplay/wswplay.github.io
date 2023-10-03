@@ -15,12 +15,18 @@ xcrun: error: invalid active developer path (/Library/Developer/CommandLineTools
 missing xcrun at: /Library/Developer/CommandLineTools/usr/bin/xcrun
 ```
 
-Mac 个傻逼，git 还要安装 CommandLineTools，那下载安装命令行工具吧[CommandLineTools](https://developer.apple.com/download/all/)。  
-安装完成，就大功告成！:dart:
+Mac 傻逼，git 还要装 CommandLineTools，苹果官网下载[Command Line Tools](https://developer.apple.com/download/all/?q=Command)。安装完成，就大功告成！:dart:
+
+> 查看 Command Line Tools 版本：`llvm-gcc --version`
 
 ```bash
+llvm-gcc --version
+# Apple clang version 15.0.0 (clang-1500.0.40.1)
+# Target: arm64-apple-darwin23.0.0
+# Thread model: posix
+# InstalledDir: /Library/Developer/CommandLineTools/usr/bin
 git -v
-# git version 2.39.2 (Apple Git-143)
+# git version 2.39.3 (Apple Git-145)
 ```
 
 ## 初始化
