@@ -7,7 +7,7 @@ title: git命令(如Mac中)的安装和使用
 ## Mac 安装 Git
 
 [官网](https://git-scm.com/downloads)。又是 brew，又是 Xcode，巴拉巴拉。。。  
-[直接文件安装](https://sourceforge.net/projects/git-osx-installer/)，不香吗？  
+~~[直接文件安装](https://sourceforge.net/projects/git-osx-installer/)，不香吗？~~  
 安装完成，git 一下，你就知道：会报错。
 
 ```bash
