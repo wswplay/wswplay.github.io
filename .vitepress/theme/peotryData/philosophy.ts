@@ -23,4 +23,6 @@ export default [
   "战者，以正合，以奇胜。",
   "故善战者，求之于势，不责于人，故能择人而任势。",
   "先为不可胜，以待敌之可胜。",
+  "If you are going through hell，keep going。",
+  "Never waste a great crisis。"
 ];
