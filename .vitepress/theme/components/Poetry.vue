@@ -16,6 +16,7 @@ const { curPoe, changePoe } = useRandomPeotry();
   border-radius: 5px;
   cursor: pointer;
   opacity: 0.6;
+  user-select: none;
   transition: all 0.6s;
   &:hover {
     opacity: 0.8;

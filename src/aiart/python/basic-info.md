@@ -34,5 +34,5 @@ exit();
 quit();
 ```
 
-## IDE编辑器
-[PyCharm Mac](https://www.jetbrains.com/pycharm/download/?section=mac)
+<!-- ## IDE编辑器 -->
+<!-- [PyCharm Mac](https://www.jetbrains.com/pycharm/download/?section=mac) -->
