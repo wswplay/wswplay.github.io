@@ -70,6 +70,11 @@ function geneNav(): ThemeConfig["nav"] {
       activeMatch: "^/aiart",
       link: "/aiart/chat-gpt",
     },
+    {
+      text: "数学·统计",
+      activeMatch: "^/mathstat",
+      link: "/mathstat/math/number-theory",
+    },
   ];
 }
 function geneSidebar(): ThemeConfig["sidebar"] {
@@ -218,6 +223,25 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         items: [{ text: "孙子兵法", link: "/aiart/sunzi-war-art" }],
       },
     ],
+    "/mathstat": [
+      {
+        text: "理论",
+        items: [
+          { text: "数的概念", link: "/mathstat/math/number-theory" },
+          { text: "数学符号", link: "/mathstat/math/math-symbol" },
+        ]
+      },
+      {
+        text: "微积分",
+        items: [
+          { text: "基本定理", link: '/mathstat/math/calculus'}
+        ]
+      },
+      {
+        text: "统计学",
+        items: []
+      }
+    ]
   };
 }
 function geneI18n(): ThemeConfig["i18n"] {
