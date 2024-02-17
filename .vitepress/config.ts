@@ -211,11 +211,17 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         items: [{ text: "ChatGPT问答集锦", link: "/aiart/chat-gpt" }],
       },
       {
+        text: "机器学习",
+        items: [
+          { text: "深度学习", link: "/aiart/machine-learning/deep-learning" },
+        ],
+      },
+      {
         text: "Python",
         items: [
           { text: "安装与设置", link: "/aiart/python/basic-info" },
           { text: "面向对象编程(OOP)", link: "/aiart/python/oop" },
-          { text: "Pandas", link: "/aiart/python/pandas" }
+          { text: "Pandas", link: "/aiart/python/pandas" },
         ],
       },
       {
@@ -229,19 +235,17 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         items: [
           { text: "数的概念", link: "/mathstat/math/number-theory" },
           { text: "数学符号", link: "/mathstat/math/math-symbol" },
-        ]
+        ],
       },
       {
         text: "微积分",
-        items: [
-          { text: "基本定理", link: '/mathstat/math/calculus'}
-        ]
+        items: [{ text: "基本定理", link: "/mathstat/math/calculus" }],
       },
       {
         text: "统计学",
-        items: []
-      }
-    ]
+        items: [],
+      },
+    ],
   };
 }
 function geneI18n(): ThemeConfig["i18n"] {
