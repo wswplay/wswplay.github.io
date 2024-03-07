@@ -23,3 +23,13 @@ conda list
 # 查看某个包版本
 conda list xxx
 ```
+
+### 包安装
+
+有些工具包名字，在 `anaconda` 导航搜索不到。例如 `eli5`。那就如下安装：
+
+```bash
+conda install -c conda-forge eli5
+# 或pip安装
+pip install eli5
+```

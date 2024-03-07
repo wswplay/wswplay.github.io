@@ -61,3 +61,9 @@ du -d 1 -h
 du -d 1 -h | sort -hr
 # 该删就删，Over！
 ```
+
+## 使用 Finder 访问 Opt 文件夹
+
+- 1、打开 `Finder`。
+- 2、按 `Command+Shift+G` 打开对话框。
+- 3、搜索：`opt`，即会有下拉提示。
