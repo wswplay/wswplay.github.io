@@ -66,4 +66,4 @@ du -d 1 -h | sort -hr
 
 - 1、打开 `Finder`。
 - 2、按 `Command+Shift+G` 打开对话框。
-- 3、搜索：`opt`，即会有下拉提示。
+- 3、搜索 `/opt/`，即会有下拉提示。
