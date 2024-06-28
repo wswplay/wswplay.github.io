@@ -33,3 +33,11 @@ conda install -c conda-forge eli5
 # 或pip安装
 pip install eli5
 ```
+
+### 本地训练模型相关操作
+
+```bash
+# 创建和激活虚拟环境
+conda create -n lora-env python=3.9
+conda activate lora-env
+```
