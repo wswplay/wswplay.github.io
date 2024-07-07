@@ -20,6 +20,8 @@ Anaconda：Unleash AI innovation and value。(释放人工智能的创新和价�
 ```bash
 # 查看所有包版本
 conda list
+# 计算行数，得到包的总数量
+conda list | wc -l
 # 查看某个包版本
 conda list xxx
 ```
@@ -37,6 +39,9 @@ pip install eli5
 ### 本地训练模型相关操作
 
 ```bash
+# 列出所有虚拟环境
+conda env list
+
 # 创建和激活虚拟环境
 conda create -n lora-env python=3.9
 conda activate lora-env
