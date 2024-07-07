@@ -40,4 +40,8 @@ pip install eli5
 # 创建和激活虚拟环境
 conda create -n lora-env python=3.9
 conda activate lora-env
+
+# 包更新
+pip list --outdated
+pip install --upgrade package_name
 ```

@@ -61,7 +61,7 @@ function geneNav(): ThemeConfig["nav"] {
       link: "/basic/javascript/",
     },
     {
-      text: "Mac·周边",
+      text: "Mac·Linux",
       activeMatch: "^/mac",
       link: "/mac/setting",
     },
