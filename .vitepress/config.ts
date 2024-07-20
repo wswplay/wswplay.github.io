@@ -219,6 +219,12 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         ],
       },
       {
+        text: 'Huggingface',
+        items: [
+          { text: "不愿提起又怕忘记", link: "/aiart/huggingface/config"}
+        ]
+      },
+      {
         text: "Python",
         items: [
           { text: "安装与设置", link: "/aiart/python/basic-info" },
