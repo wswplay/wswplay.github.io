@@ -221,7 +221,10 @@ function geneSidebar(): ThemeConfig["sidebar"] {
       {
         text: 'Huggingface',
         items: [
-          { text: "不愿提起又怕忘记", link: "/aiart/huggingface/config"}
+          { text: "基础配置", link: "/aiart/huggingface/config"},
+          { text: "Diffusers", link: "/aiart/huggingface/diffusers"},
+          { text: "Accelerate", link: "/aiart/huggingface/accelerate"},
+          { text: "Pytorch", link: "/aiart/huggingface/pytorch"},
         ]
       },
       {
