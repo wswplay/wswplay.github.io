@@ -215,6 +215,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         text: "机器学习",
         items: [
           { text: "conda", link: "/aiart/machine-learning/conda" },
+          { text: "kaggle", link: "/aiart/machine-learning/kaggle" },
           { text: "深度学习", link: "/aiart/machine-learning/deep-learning" },
         ],
       },
