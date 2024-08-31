@@ -4,7 +4,7 @@ title: kaggle
 
 # Kaggle
 
-### 登录 Hiuggngface
+### 登录 Huggingface
 
 - 在 `notebook` 中加载 `Huggingface` 模型，有时需要 `token` 登录。
 - 在 `Google colab` 中也是如此登录。
