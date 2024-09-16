@@ -6,6 +6,17 @@ title: Pytorch
 
 Pytorch is an optimized tensor library for **deep learning** using GPUs and CPUs.
 
+Summary: Tensors and Dynamic neural networks in Python with strong GPU acceleration.
+
+## 计算图与自动求导
+
+计算图（`Computational Graphs`）是一种描述运算的「语言」，它由`节点(Node)`和`边(Edge)`构成。记录所有节点和边的信息，可以方便地完成**自动求导**。
+
+- **节点**：表示数据和计算操作。
+- **边**：表示数据流向。
+
+![An image](./img/compt-graph.png)
+
 ## VSCode Debugger 调试源码
 
 - 1、在目标代码处，设置断点 breakpoint。
