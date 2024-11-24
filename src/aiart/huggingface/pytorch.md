@@ -1,5 +1,6 @@
 ---
 title: Pytorch
+outline: deep
 ---
 
 # Pytorch
@@ -43,3 +44,12 @@ Summary: Tensors and Dynamic neural networks in Python with strong GPU accelerat
   ]
 }
 ```
+
+## 方法简介
+
+### unsqueeze
+
+PyTorch 中用于在张量指定位置**添加一个新维度**的方法。
+
+- unsqueeze：非原地操作，返回新张量，不修改原张量。
+- unsqueeze\_：原地操作，修改原张量本身。

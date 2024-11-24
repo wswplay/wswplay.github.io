@@ -24,5 +24,6 @@ export default [
   "故善战者，求之于势，不责于人，故能择人而任势。",
   "先为不可胜，以待敌之可胜。",
   "If you are going through hell，keep going。",
-  "Never waste a great crisis。"
+  "Never waste a great crisis。",
+  "劝君莫惜金缕衣，劝君须惜少年时。花开堪折直须折，莫待无花空折枝。"
 ];
