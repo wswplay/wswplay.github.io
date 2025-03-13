@@ -229,6 +229,12 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         ]
       },
       {
+        text: "ComfyUI",
+        items: [
+          { text: "基本概念",  link: "/aiart/comfyui/basic" }
+        ],
+      },
+      {
         text: "Python",
         items: [
           { text: "安装与设置", link: "/aiart/python/basic-info" },
