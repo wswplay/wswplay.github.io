@@ -214,13 +214,17 @@ function geneSidebar(): ThemeConfig["sidebar"] {
       {
         text: "机器学习",
         items: [
+          { text: "概览", link: "/aiart/machine-learning/overview" },
           { text: "conda", link: "/aiart/machine-learning/conda" },
           { text: "kaggle", link: "/aiart/machine-learning/kaggle" },
         ],
       },
       {
         text: "深度学习",
-        items: [{ text: "概览", link: "/aiart/deep-learning/overview" }],
+        items: [
+          { text: "源起", link: "/aiart/deep-learning/index" },
+          { text: "概览", link: "/aiart/deep-learning/overview" },
+        ],
       },
       {
         text: "Huggingface",
