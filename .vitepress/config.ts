@@ -216,23 +216,24 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         items: [
           { text: "conda", link: "/aiart/machine-learning/conda" },
           { text: "kaggle", link: "/aiart/machine-learning/kaggle" },
-          { text: "深度学习", link: "/aiart/machine-learning/deep-learning" },
         ],
       },
       {
-        text: 'Huggingface',
+        text: "深度学习",
+        items: [{ text: "概览", link: "/aiart/deep-learning/overview" }],
+      },
+      {
+        text: "Huggingface",
         items: [
-          { text: "基础配置", link: "/aiart/huggingface/config"},
-          { text: "Diffusers", link: "/aiart/huggingface/diffusers"},
-          { text: "Accelerate", link: "/aiart/huggingface/accelerate"},
-          { text: "Pytorch", link: "/aiart/huggingface/pytorch"},
-        ]
+          { text: "基础配置", link: "/aiart/huggingface/config" },
+          { text: "Diffusers", link: "/aiart/huggingface/diffusers" },
+          { text: "Accelerate", link: "/aiart/huggingface/accelerate" },
+          { text: "Pytorch", link: "/aiart/huggingface/pytorch" },
+        ],
       },
       {
         text: "ComfyUI",
-        items: [
-          { text: "基本概念",  link: "/aiart/comfyui/basic" }
-        ],
+        items: [{ text: "基本概念", link: "/aiart/comfyui/basic" }],
       },
       {
         text: "Python",
