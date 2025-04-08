@@ -222,8 +222,8 @@ function geneSidebar(): ThemeConfig["sidebar"] {
       {
         text: "深度学习",
         items: [
-          { text: "源起", link: "/aiart/deep-learning/index" },
           { text: "概览", link: "/aiart/deep-learning/overview" },
+          { text: "基础概念", link: "/aiart/deep-learning/basic-concept" },
         ],
       },
       {
