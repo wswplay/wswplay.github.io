@@ -8,6 +8,7 @@ import "./override.css";
 export default {
   ...VPTheme,
   Layout() {
+    // @ts-ignore
     return h(VPTheme.Layout, null, {
       "navbar-title": () => h(NavbarTitle),
       "aside-mid": () => h(Poetry),
