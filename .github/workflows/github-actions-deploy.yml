@@ -9,20 +9,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 1. 安装 Node.js（并启用 pnpm 缓存）
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: 'pnpm'  # 缓存 pnpm 依赖
 
-      - name: Install pnpm
-        run: corepack enable && corepack prepare pnpm@latest --activate
+      # 2. 确保 corepack 启用，并安装最新 pnpm
+      - name: 安装并激活 pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+          echo "PNPM 版本: $(pnpm --version)"  # 验证 pnpm 是否可用
 
+      # 3. 安装依赖
       - run: pnpm install
 
-      - name: Build
+      # 4. 构建项目
+      - name: 构建
         run: pnpm run build
 
-      - name: Deploy
+      # 5. 部署到 GitHub Pages
+      - name: 部署
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
