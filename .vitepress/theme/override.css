@@ -1,3 +1,13 @@
 .line-numbers-wrapper .line-number {
   color: var(--vt-c-text-dark-3);
 }
+
+/* MathJax 3 (MJX)对于当前主题的样式重置 */
+.MathJax {
+  display: inline-block;
+}
+
+mjx-container[tabindex]>svg {
+  display: inline !important;
+  margin: 0 auto !important;
+}

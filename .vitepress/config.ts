@@ -22,6 +22,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   },
   markdown: {
     lineNumbers: true,
+    math: true,
   },
 });
 

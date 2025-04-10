@@ -9,30 +9,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1. 安装 Node.js（但不启用 pnpm 缓存，避免提前调用 pnpm）
+      # 1. 安装 Node.js（官方推荐用 setup-node 管理 Node 版本）
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          # 先不启用 cache: 'pnpm'，否则可能会尝试调用未安装的 pnpm
 
-      # 2. 强制安装 pnpm（确保可用）
-      - name: 安装 pnpm
-        run: npm install -g pnpm --force
-
-      # 3. 启用 pnpm 缓存（现在 pnpm 已安装，可以安全启用）
-      - name: 设置 pnpm 缓存
-        uses: actions/setup-node@v4
+      # 2. 用 pnpm 官方 Action 安装 pnpm（最稳的方式，自动处理 PATH 和缓存）
+      - uses: pnpm/action-setup@v2
         with:
-          cache: 'pnpm'
+          version: latest # 默认安装最新版，也可以指定如 "8.15.0"
+          run_install: false # 不自动执行 pnpm install，我们自己控制
 
-      # 4. 安装依赖
+      # 3. 安装依赖（自动走 pnpm 缓存，速度更快）
       - run: pnpm install
 
-      # 5. 构建项目
-      - name: 构建
-        run: pnpm run build
+      # 4. 构建项目
+      - run: pnpm run build
 
-      # 6. 部署到 GitHub Pages
+      # 5. 部署到 GitHub Pages
       - name: 部署
         uses: peaceiris/actions-gh-pages@v4
         with:
