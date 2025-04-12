@@ -226,6 +226,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "概览", link: "/aiart/deep-learning/overview" },
           { text: "数学基础", link: "/aiart/deep-learning/mathematics" },
           { text: "基本概念", link: "/aiart/deep-learning/basic-concept" },
+          { text: "线性回归", link: "/aiart/deep-learning/linear-regression" },
         ],
       },
       {
