@@ -6,7 +6,8 @@ import { logoUrl } from "./theme/composables/constant";
 export default defineConfigWithTheme<ThemeConfig>({
   extends: baseConfig,
 
-  title: "JavaScript边城",
+  // title: "JavaScript边城",
+  title: "AI边城",
   head: [["link", { rel: "icon", href: logoUrl }]],
   srcDir: "src",
   themeConfig: {
@@ -23,7 +24,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   markdown: {
     lineNumbers: true,
     math: true,
-    theme: "github-dark"
+    theme: "github-dark",
   },
 });
 
@@ -33,6 +34,11 @@ function geneNav(): ThemeConfig["nav"] {
     {
       text: "首页",
       link: "/",
+    },
+    {
+      text: "AI·文艺",
+      activeMatch: "^/aiart",
+      link: "/aiart/machine-learning/overview",
     },
     // {
     //   text: "Vue",
@@ -66,11 +72,6 @@ function geneNav(): ThemeConfig["nav"] {
       text: "Mac·Linux",
       activeMatch: "^/mac",
       link: "/mac/setting",
-    },
-    {
-      text: "AI·文艺",
-      activeMatch: "^/aiart",
-      link: "/aiart/chat-gpt",
     },
     {
       text: "数学·统计",
@@ -210,10 +211,6 @@ function geneSidebar(): ThemeConfig["sidebar"] {
     ],
     "/aiart/": [
       {
-        text: "AI",
-        items: [{ text: "ChatGPT问答集锦", link: "/aiart/chat-gpt" }],
-      },
-      {
         text: "机器学习",
         items: [
           { text: "概览", link: "/aiart/machine-learning/overview" },
@@ -256,6 +253,10 @@ function geneSidebar(): ThemeConfig["sidebar"] {
       {
         text: "文艺",
         items: [{ text: "孙子兵法", link: "/aiart/sunzi-war-art" }],
+      },
+      {
+        text: "AI",
+        items: [{ text: "ChatGPT问答集锦", link: "/aiart/chat-gpt" }],
       },
     ],
     "/mathstat": [

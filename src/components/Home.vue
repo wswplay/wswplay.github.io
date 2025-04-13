@@ -2,12 +2,12 @@
   <section id="hero">
     <h1 class="tagline">
       {{ homeInfo.action }}
-      <span class="accent">{{ homeInfo.tool }}</span>
+      <span>{{ homeInfo.tool }}</span>
       <br />
-      <span>{{ homeInfo.target }}</span>
+      <span class="accent">{{ homeInfo.target }}</span>
     </h1>
     <p class="description">{{ homeInfo.desc }}</p>
-    <a id="vuemastery-action" href="/vite/press/theme-vue">
+    <a id="vuemastery-action" :href="homeInfo.goto">
       {{ homeInfo.mainBtnText }}
       <svg
         class="icon-play"
@@ -39,17 +39,23 @@
 <script setup lang="ts">
 const homeInfo = {
   action: "Solve",
-  tool: "Three Problems",
-  target: "For Civilization",
-  desc: "解决3个问题，给岁月以文明。",
+  tool: "Three Problems For",
+  target: "AI",
+  desc: "解决3个问题，给岁月以AI。",
+  // target: "For Civilization",
+  // desc: "解决3个问题，给岁月以文明。",
   // desc: "解决3个问题，给岁月以文明。我看过许多地方的云。——边城执剑人",
   // mainBtnText: "开启「三体」Vitepress-> Vue/core -> Vite(Rollup) -> About",
   mainBtnText: "开释「三题」",
   details: [
     { title: "What", brief: "是什么？" },
-    { title: "Where", brief: "Vue在哪里用到了？" },
-    { title: "How", brief: "Vue是怎样用的？" },
+    { title: "Where", brief: "哪里用到了？" },
+    { title: "How", brief: "怎样用的？" },
+    // { title: "What", brief: "是什么？" },
+    // { title: "Where", brief: "Vue在哪里用到了？" },
+    // { title: "How", brief: "Vue是怎样用的？" },
   ],
+  goto: "/aiart/machine-learning/overview",
 };
 </script>
 
