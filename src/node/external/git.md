@@ -95,6 +95,12 @@ git remote add origin git@github.com:mygithub/test.git  #这里换成你要克�
 git pull origin master    #下载
 ```
 
+## 手动编辑.git/config
+
+```sh
+git config --edit --local
+```
+
 ## 设置多个远程 push 地址
 
 ```bash
