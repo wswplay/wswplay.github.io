@@ -51,6 +51,12 @@ $$ \mathbf{w}^*, b^* = \underset{\mathbf{w},b}{\mathrm{argmin}}\, L(\mathbf{w}, 
 线性回归，刚好是一个很简单的优化问题。与其他大部分模型不同，线性回归的解可以用一个公式简单地表达出来，这类解叫作解析解（`analytical solution`）。
 
 首先，我们将偏置 $b$ 合并到参数 $\mathbf{w}$ 中，合并方法是在包含所有参数的矩阵中附加一列，预测问题是最小化 $\Vert\mathbf{y} - \mathbf{X}\mathbf{w}\Vert^2$。这在损失平面上只有一个临界点，这个临界点对应于整个区域的损失极小点。将损失关于 $\mathbf{w}$ 的导数设为0，得到解析解：
-$$ \mathbf{w}^* = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y} $$
+$$ \mathbf{w}^* = (\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y} $$
 
 **并不是所有问题都存在解析解**。解析解可以进行很好的数学分析，但解析解对问题的限制很严格，导致它无法广泛应用在深度学习里。
+
+## 随机梯度下降
+
+梯度下降（`gradient descent`）， 几乎可以优化所有深度学习模型。它通过不断地在损失函数递减的方向上更新参数来降低误差。
+
+可以调整但不在训练过程中更新的参数称为**超参数**（`hyperparameter`）。 调参（`hyperparameter tuning`）是选择超参数的过程。超参数通常是我们根据训练迭代结果来调整的，而训练迭代结果是在独立的验证数据集（validation dataset）上评估得到的。
