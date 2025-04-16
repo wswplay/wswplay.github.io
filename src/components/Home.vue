@@ -41,7 +41,7 @@ const homeInfo = {
   action: "Solve",
   tool: "Three Problems For",
   target: "AI",
-  desc: "解决3个问题，给岁月以AI。",
+  desc: "解决3个问题，给岁月以AI",
   // target: "For Civilization",
   // desc: "解决3个问题，给岁月以文明。",
   // desc: "解决3个问题，给岁月以文明。我看过许多地方的云。——边城执剑人",
@@ -69,7 +69,7 @@ const homeInfo = {
   font-weight: 600;
   background-color: var(--vt-c-green);
   color: #fff;
-  margin-right: 18px;
+  /* margin-right: 18px; */
   padding: 8px 1em 8px 3em;
 }
 
