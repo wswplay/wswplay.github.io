@@ -60,3 +60,12 @@ $$ \mathbf{w}^* = (\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y} $$
 梯度下降（`gradient descent`）， 几乎可以优化所有深度学习模型。它通过不断地在损失函数递减的方向上更新参数来降低误差。
 
 可以调整但不在训练过程中更新的参数称为**超参数**（`hyperparameter`）。 调参（`hyperparameter tuning`）是选择超参数的过程。超参数通常是我们根据训练迭代结果来调整的，而训练迭代结果是在独立的验证数据集（validation dataset）上评估得到的。
+
+## 正态分布与平方损失
+
+正态分布（normal distribution），也称为**高斯分布**（Gaussian distribution），最早由德国数学家高斯（Gauss）应用于天文学研究。
+
+若随机变量 $x$ 具有均值 $\mu$ 和方差 $\sigma^2$（标准差 $\sigma$ ），其正态分布概率密度函数如下：
+$$ p(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{1}{2\sigma^2} (x - \mu)^2\right) $$
+
+在高斯噪声的假设下，最小化均方误差等价于对线性模型的极大似然估计。
