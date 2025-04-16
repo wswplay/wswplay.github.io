@@ -13,6 +13,32 @@ title: Github Token设置及Pages自动部署
 -> Personal access tokens -> Generate new token -> repo
 ```
 
+## 从 PAT 切换到 SSH
+
+如果你之前使用的是 GitHub 的 **PAT** (`Personal Access Token`) 进行 HTTPS 认证，切换到 **SSH** 后就不再需要 PAT 了。
+
+```sh
+# 确认仓库远程地址
+git remote -v
+# 如果还没有密钥，生成之
+ssh-keygen -t ed25519 -C "your_email@example.com"
+# 复制公钥 → 登录 GitHub → Settings → SSH and GPG keys → New SSH key → 粘贴并保存
+cat ~/.ssh/id_ed25519.pub
+# 修改远程地址
+git remote set-url origin git@github.com:wswplay/wswplay.github.io.git
+# 或设为多个push地址之一
+git remote set-url --add --push origin git@github.com:yourname/repo.git
+# 测试是否成功
+ssh -T git@github.com
+# 再看看
+git remote -v
+# origin	https://gitee.com/yunling2016/wswplay.github.io (fetch)
+# origin	https://gitee.com/yunling2016/wswplay.github.io (push)
+# origin	git@github.com:wswplay/wswplay.github.io.git (push)
+```
+
+现在你可以正常使用 `git pull`、`git push` 等命令，无需再输入密码（因为 SSH 会自动认证）。
+
 ## 集成自动化部署
 
 #### Vitepress
