@@ -139,21 +139,22 @@ git pull origin master --allow-unrelated-histories
 
 ## 撤销 commit 提交
 
-```bash
-# 整体回到上次一次操作，绿字变红字(撤销add)
-git reset HEAD
-# 红字变无 (撤销没add修改)
-git reset HEAD 路径文件名
-# 撤销最近一次commit，git status 显示绿字
-git reset --soft HEAD^
-# 慎用！慎用！慎用！撤销commit，且会删除所有改动的代码。一夜回到解放前！
-git reset --hard HEAD~1
-```
+所有 Git 的“撤销”操作，本质上都是在处理 **3 个区域**：
 
-:::tip
-HEAD^ 表示上一个版本，即上一次的 commit，也可以写成 HEAD~1  
-如果进行两次的 commit，想要都撤回，可以使用 HEAD~2
-:::
+1. **工作目录**（Working Directory）—— 你直接编辑的文件。
+2. **暂存区**（Staged/Index）—— 执行 `git add` 后的文件。
+3. **仓库历史**（Repository）—— 执行 `git commit` 后的提交记录。
+
+```bash
+# 本地commit但未push
+git reset --soft HEAD~1   # 撤销 commit，但保留修改到暂存区(无需重新 git add)
+git reset HEAD~1          # 撤销 commit，修改回到工作目录（默认 --mixed）
+git reset --hard HEAD~1   # 彻底丢弃最近一次提交所有更改（包括工作目录和暂存区）
+
+# 本地已push
+git log --oneline    # 找到要撤销的 commit ID
+git revert commitid  # 创建一个新提交，撤销 commitid 的更改
+```
 
 ## 修改 commit 注释
 
