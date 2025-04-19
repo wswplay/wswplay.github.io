@@ -96,3 +96,91 @@ $$ p(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{1}{2\sigma^2} (x - \mu)
 
 **熵**，是当分配的概率真正匹配数据生成过程时的**信息量的期望**。
 
+## 从零实现线性回归
+
+```python
+# 引入包资源
+import torch
+import random
+from d2l import torch as d2l
+
+# 生成数据：y = Xw + b + noise
+def synthetic_data(w, b, num_samples):
+  X = torch.normal(0, 1, (num_samples, len(w)))
+  y = torch.matmul(X, w) + b
+  y += torch.normal(0, 0.01, y.shape)
+
+  return X, y.reshape(-1, 1)
+
+# 定义源参数
+origin_w = torch.tensor([2.6, -3.4])
+origin_b = 4.2
+
+# 生成数据
+features, labels = synthetic_data(origin_w, origin_b, 1000)
+
+# 定义数据迭代器
+def data_iter(batch_size, features, labels):
+  num_samples = len(features)
+  indexes = list(range(num_samples))
+  random.shuffle(indexes)
+
+  for i in range(0, num_samples, batch_size):
+    batch_indexes = torch.tensor(indexes[i: min(i + batch_size, num_samples)])
+    yield features[batch_indexes], labels[batch_indexes]
+
+# 创建迭代数据
+batch_size = 10
+for X, y in data_iter(batch_size, features, labels):
+  print(X, '\n', y)
+  break
+
+# 初始化模型参数
+w = torch.normal(0, 0.01, size=(2, 1), requires_grad=True)
+b = torch.zeros(1, requires_grad=True)
+w, b
+
+# 定义模型
+def linereg(X, w, b):
+  return torch.matmul(X, w) + b
+
+# 定义损失函数
+def squared_loss(y_hat, y):
+  return (y_hat - y.reshape(y_hat.shape)) ** 2 / 2
+
+# 定义优化器
+def sgd(params, lr, batch_size):
+  with torch.no_grad():
+    for pitem in params:
+      pitem -= lr * pitem.grad / batch_size
+      pitem.grad.zero_()
+
+# 定义超参
+lr = 0.03
+num_epochs = 3
+net = linereg
+loss = squared_loss
+
+# 开启迭代训练
+for epo in range(num_epochs):
+  for X, y in data_iter(batch_size, features, labels):
+    l = loss(net(X, w, b), y)
+    l.sum().backward()
+    # 更新参数
+    sgd([w, b], lr, batch_size)
+
+  with torch.no_grad():
+    print('w:', w, '\n', 'b:', b)
+    train_l = loss(net(features, w, b), labels)
+    print(f'epoch {epo + 1}: loss {train_l.mean(): f} \n')
+
+# epoch 1: loss  0.051860
+# epoch 2: loss  0.000201
+# epoch 3: loss  0.000048
+
+# 训练完成，获取学习到的参数。与源参数对比，相差无几
+w, b
+# (tensor([[ 2.5996],
+#          [-3.3998]], requires_grad=True),
+#  tensor([4.1998], requires_grad=True))
+```
