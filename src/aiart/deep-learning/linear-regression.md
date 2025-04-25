@@ -12,7 +12,9 @@ outline: deep
 使用 $n$ 来表示数据集中的样本数。对索引为 $i$ 的样本，其输入表示为 $x^{(i)} = [x_1^{(i)}, x_2^{(i)}]^T$，其对应的标签是 $y^{(i)}$。
 
 线性假设是指目标（房屋价格）可以表示为特征（面积和房龄）的加权和，如下面的式子：
-$$ price = w_{area} · area + w_{age} · age + b $$
+$$
+price = w_{area} · area + w_{age} · age + b
+$$
 
 - $w_{area}$ 和 $w_{age}$ 称为**权重**（`weight`），权重决定了每个特征对预测值的影响。
 - $b$ 称为**偏置**（`bias`）、偏移量（`offset`）或截距（`intercept`）。偏置是指当所有特征都取值为0时，预测值应该为多少。
@@ -22,13 +24,19 @@ $$ price = w_{area} · area + w_{age} · age + b $$
 给定一个数据集，目标是**寻找模型权重 $w$ 和偏置 $b$**，使得根据模型做出的预测大体符合数据里的真实价格。输出的预测值由输入特征通过线性模型的仿射变换决定，仿射变换**由所选权重和偏置确定**。
 
 **标量**：当输入包含 $d$ 个特征，预测结果 $\hat{y}$（“尖角”$y$ 通常代表估计值）表示为：
-$$ \hat{y} = w_1x_1 + ... +w_dx_d + b $$
+$$
+\hat{y} = w_1x_1 + ... +w_dx_d + b
+$$
 
 **向量**：将所有特征放到向量 $\mathbf{x} ∈ R^d$ 中， 并将所有权重放到向量 $\mathbf{w} ∈ R^d$ 中， 可用**点积**简洁表达模型：
-$$ \hat{y} = \mathbf{w}^T\mathbf{x} + b $$
+$$
+\hat{y} = \mathbf{w}^T\mathbf{x} + b
+$$
 
 **矩阵**：矩阵 $\mathbf{X} ∈ R^{n×d}$ 表示整个数据集 $n$ 个样本，预测值 $\hat{y} ∈ R^n$ 可通过**矩阵-向量乘法**表示为：
-$$ \hat{y} = \mathbf{X}\mathbf{w} + b $$
+$$
+\hat{y} = \mathbf{X}\mathbf{w} + b
+$$
 
 ## 损失函数
 
@@ -37,21 +45,29 @@ $$ \hat{y} = \mathbf{X}\mathbf{w} + b $$
 回归问题中最常用的损失函数是：**平方误差函数**。
 
 单个样本 $i$ 预测值为 $\hat{y}^i$，真实标签为 $y^{i}$ 时，平方误差可以定义为以下公式：
-$$ l^i(\mathbf{w}, b) = \frac{1}{2}(\hat{y}^i - y^i)^2 $$
+$$
+l^i(\mathbf{w}, b) = \frac{1}{2}(\hat{y}^i - y^i)^2
+$$
 常数 $\frac{1}{2}$ 不会带来本质的差别，但这样在形式上稍微简单一些 （因为当我们对损失函数求导后常数系数为1）
 
 $n$ 个样本上的**损失均值**（也等价于求和）：
-$$ L(\mathbf{w}, b) = \frac{1}{n}\sum_{i=1}^n l^i(\mathbf{w}, b) = \frac{1}{n}\sum_{i=1}^n \frac{1}{2}(\mathbf{w}^T\mathbf{x}^i + b - y^i)^2 $$
+$$
+L(\mathbf{w}, b) = \frac{1}{n}\sum_{i=1}^n l^i(\mathbf{w}, b) = \frac{1}{n}\sum_{i=1}^n \frac{1}{2}(\mathbf{w}^T\mathbf{x}^i + b - y^i)^2
+$$
 
 训练模型时，寻找一组参数（$\mathbf{w}^*$, b*），能最小化在所有训练样本上总损失。如下式：
-$$ \mathbf{w}^*, b^* = \underset{\mathbf{w},b}{\mathrm{argmin}}\, L(\mathbf{w}, b) $$
+$$
+\mathbf{w}^*, b^* = \underset{\mathbf{w},b}{\mathrm{argmin}}\, L(\mathbf{w}, b)
+$$
 
 ## 解析解
 
 线性回归，刚好是一个很简单的优化问题。与其他大部分模型不同，线性回归的解可以用一个公式简单地表达出来，这类解叫作解析解（`analytical solution`）。
 
 首先，我们将偏置 $b$ 合并到参数 $\mathbf{w}$ 中，合并方法是在包含所有参数的矩阵中附加一列，预测问题是最小化 $\Vert\mathbf{y} - \mathbf{X}\mathbf{w}\Vert^2$。这在损失平面上只有一个临界点，这个临界点对应于整个区域的损失极小点。将损失关于 $\mathbf{w}$ 的导数设为0，得到解析解：
-$$ \mathbf{w}^* = (\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y} $$
+$$
+\mathbf{w}^* = (\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y}
+$$
 
 **并不是所有问题都存在解析解**。解析解可以进行很好的数学分析，但解析解对问题的限制很严格，导致它无法广泛应用在深度学习里。
 
@@ -66,7 +82,9 @@ $$ \mathbf{w}^* = (\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y} $$
 正态分布（normal distribution），也称为**高斯分布**（Gaussian distribution），最早由德国数学家高斯（Gauss）应用于天文学研究。
 
 若随机变量 $x$ 具有均值 $\mu$ 和方差 $\sigma^2$（标准差 $\sigma$ ），其正态分布概率密度函数如下：
-$$ p(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{1}{2\sigma^2} (x - \mu)^2\right) $$
+$$
+p(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{1}{2\sigma^2} (x - \mu)^2\right)
+$$
 
 在高斯噪声的假设下，最小化均方误差等价于对线性模型的极大似然估计。
 
