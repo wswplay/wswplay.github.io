@@ -173,7 +173,7 @@ d2l.plot(x.detach(), y.detach(), 'x', 'tanh(x)', figsize=(5, 2.5))
 - 在训练深度学习模型时，前向传播和反向传播是相互依赖的。
 - 训练比预测需要更多的内存。
 
-## 卷积层
+## 卷积层(convolutional)
 
 ![An image](./img/correlation.svg)
 $$ 0 \times 0 + 1 \times 1 + 3 \times 2 + 4 \times 3 = 19 $$
@@ -262,6 +262,19 @@ python xxx.py
 tensorboard --logdir=your_path_dir
 # 打开浏览器 http://localhost:6006/
 ```
+
+## 汇聚层(pooling)
+
+处理图像时，希望降低隐藏表示的空间分辨率、聚集信息，提升每个神经元感受野。汇聚（`pooling`）层双重目的：**降低**卷积层对**位置敏感性**，**降低**对空间**降采样**表示敏感性。
+
+不同于卷积层**互相关计算**，汇聚层不包含参数。相反，**池运算**是确定性的。
+
+通常计算汇聚窗口中所有元素的最大值或平均值，分别称为**最大汇聚层**（`maximum pooling`）和**平均汇聚层**（`average pooling`）。
+![An Image](./img/pooling.svg)
+
+$$
+\max(0,1,3,4) = 4
+$$
 
 ## 正则化技术
 
