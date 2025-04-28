@@ -3,6 +3,8 @@ title: 深度学习
 outline: deep
 ---
 
+<SpeechButton />
+
 # 基本概念
 
 ## 术语
