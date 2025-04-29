@@ -14,7 +14,6 @@ const getPremiumVoice = () => {
   // console.log("中文语音:", chineseVoices);
 
   return (
-    // voices.find((v) => v.voiceURI.includes("普通话")) ||
     voices.find((v) => v.voiceURI.includes("Tingting")) ||
     voices.find((v) => v.voiceURI.includes("Yu-shu")) || // Mac高清语音
     voices.find((v) => v.lang === "zh-CN") || // 其他中文
@@ -38,6 +37,7 @@ const speakFluently = () => {
   const utterance = new SpeechSynthesisUtterance();
   utterance.text = getArticleText();
   utterance.voice = getPremiumVoice();
+  console.log("当前语音:", utterance.voice);
 
   // Mac专业调参（实测最佳）
   utterance.rate = 0.92;
@@ -113,7 +113,7 @@ onMounted(() => {
   </button>
 </template>
 
-<style scoped>
+<style scoped lang="less">
 .speech-btn {
   padding: 4px;
   background: var(--vp-c-brand);
@@ -127,21 +127,18 @@ onMounted(() => {
   font-size: 14px;
   transition: all 0.3s;
   margin: 1rem 0;
-}
-
-.speech-btn:hover {
-  background: var(--vp-c-brand-dark);
-  transform: translateY(-1px);
-}
-
-.speech-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.speech-btn.speaking {
-  background: var(--vp-c-red);
-  animation: pulse 1.5s infinite;
+  &:hover {
+    background: var(--vp-c-brand-dark);
+    transform: translateY(-1px);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  &.speaking {
+    background: var(--vp-c-red);
+    animation: pulse 1.5s infinite;
+  }
 }
 
 .icon {
