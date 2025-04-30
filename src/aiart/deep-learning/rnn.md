@@ -5,7 +5,7 @@ outline: deep
 
 # 循环神经网络(RNN)
 
-**RNN**：recurrent neural network。
+**RNN**：Recurrent Neural Network。
 
 到目前为止，我们遇到过两种类型的数据：表格**数据和图像**数据。对于图像数据，我们设计了专门的卷积神经网络架构来为这类特殊的数据结构建模。但若我们对图像中的像素位置进行重排，就会对图像中内容的推断造成极大的困难。
 
