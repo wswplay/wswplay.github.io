@@ -52,7 +52,7 @@ $$
 当 $t=1$，$P(x_1 \mid x_0)$ 中 $x_0$ 不存在(或为初始状态)，故约定 $P(x_1 \mid x_0) = P(x_1)$，即 $x_1$ 的边缘概率。这确保了公式从 $t=1$ 开始时的合法性。
 :::
 
-当假设 $x_t$ 仅是离散值时，使用**动态规划**可以沿着马尔可夫链精确地计算结果。可以高效地计算 $P(x_{t+1} \mid x_{t-1})$ :
+当假设 $x_t$ 仅是离散值时，使用[动态规划](/aiart/deep-learning/basic-concept.html#动态规划)可以沿着[马尔可夫链](/aiart/deep-learning/basic-concept.html#马尔可夫链)精确地计算结果。可以高效地计算 $P(x_{t+1} \mid x_{t-1})$ :
 
 $$
 \begin{align*}
