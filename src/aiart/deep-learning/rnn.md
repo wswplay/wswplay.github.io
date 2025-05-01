@@ -100,3 +100,18 @@ $0$ 开始的**数字索引**中。
 文本: ['the', 'time', 'machine', 'by', 'h', 'g', 'wells']
 索引: [1, 19, 50, 40, 2183, 2184, 400]
 ```
+
+### 语言模型
+
+比如 `deep learning niubi` 文本序列的概率是：
+
+$$
+P(deep, learning, niubi) = P(deep)P(learning \mid deep)P(niubi \mid deep, learning)
+$$
+
+为了训练语言模型，我们需要计算单词的概率，以及给定前面几个单词后出现某个单词的条件概率。这些概率本质上就是语言模型的参数。
+
+### 循环神经网络
+
+![An Image](./img/rnn.svg)
+循环神经网络（recurrent neural networks，RNNs） 是具有隐状态的神经网络。循环神经网络模型的**参数数量**不会随着时间步的增加而增加。我们可以使用**困惑度**来评价语言模型的质量。
