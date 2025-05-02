@@ -253,12 +253,15 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         ],
       },
       {
-        text: "文艺",
-        items: [{ text: "孙子兵法", link: "/aiart/sunzi-war-art" }],
+        text: "AI语录",
+        items: [
+          { text: "概率、记忆与意识", link: "/aiart/three-body" },
+          { text: "ChatGPT问答集锦", link: "/aiart/chat-gpt" },
+        ],
       },
       {
-        text: "AI",
-        items: [{ text: "ChatGPT问答集锦", link: "/aiart/chat-gpt" }],
+        text: "文艺",
+        items: [{ text: "孙子兵法", link: "/aiart/sunzi-war-art" }],
       },
     ],
     "/mathstat": [

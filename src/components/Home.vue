@@ -55,7 +55,8 @@ const homeInfo = {
     // { title: "Where", brief: "Vue在哪里用到了？" },
     // { title: "How", brief: "Vue是怎样用的？" },
   ],
-  goto: "/aiart/machine-learning/overview",
+  goto: "/aiart/three-body",
+  // goto: "/aiart/machine-learning/overview",
 };
 </script>
 
