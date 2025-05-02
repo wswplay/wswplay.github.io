@@ -116,6 +116,35 @@ $$
 ![An Image](./img/rnn.svg)
 循环神经网络（recurrent neural networks，RNNs） 是具有隐状态的神经网络。循环神经网络模型的**参数数量**不会随着时间步的增加而增加。我们可以使用**困惑度**来评价语言模型的质量。
 
+无隐状态的神经网络：
+
+$$
+H = \phi(\mathbf{X} \mathbf{W}_{xh} + \mathbf{b}_h)
+$$
+
+$$
+O = \mathbf{H} \mathbf{W}_{hq} + \mathbf{b}_q
+$$
+
+有隐状态的**循环**神经网络：
+
+$$
+H_t = \phi(\mathbf{X}_t \mathbf{W}_{xh} + H_{t-1} \mathbf{W}_{hh} + \mathbf{b}_h)
+$$
+
+$$
+O_t = \mathbf{H}_t \mathbf{W}_{hq} + \mathbf{b}_q
+$$
+
+`有隐藏状态`比`无隐藏状态`多了 $H_{t-1} \mathbf{W}_{hh}$，从相邻时间步的隐藏变量 $H_{t}$ 和 $H_{t-1}$ 之间关系可知，这些变量捕获并保留了序列直到其当前时间步的**历史信息**，就如当前时间步下神经网络的状态或**记忆**，因此这样的隐藏变量被称为**隐状态**（`hidden state`）。
+
+由于在当前时间步中，**隐状态使用的定义与前一个时间步中使用的定义相同**，因此**计算是循环**的（`recurrent`）。 于是基于循环计算的隐状态神经网络被命名为**循环神经网络**，执行计算的层 称为**循环层**（`recurrent layer`）。
+
+在任意时间步 $t$，隐状态的计算可以被视为：
+
+- 1、拼接当前时间步 $t$ 的输入 $\mathbf{X}_t$ 和前一时间步 $t-1$ 的隐状态 $\mathbf{H}_{t-1}$；
+- 2、将拼接结果送入带有激活函数 $\phi$ 的全连接层，全连接层输出当前时间步 $t$ 的隐状态 $\mathbf{H}_t$。
+
 ## 从零实现 RNN
 
 ```py
@@ -185,9 +214,8 @@ state = net.begin_state(X.shape[0], d2l.try_gpu())
 Y, new_state = net(X.to(d2l.try_gpu()), state)
 Y.shape, len(new_state), new_state[0].shape
 
-# 5、预测
+# 5、预测：在prefix后面生成新字符
 def predict_ch8(prefix, num_preds, net, vocab, device):
-  # 在prefix后面生成新字符
   state = net.begin_state(batch_size=1, device=device)
   outputs = [vocab[prefix[0]]]
   get_input = lambda: torch.tensor([outputs[-1]], device=device).reshape((1, 1))
@@ -198,4 +226,63 @@ def predict_ch8(prefix, num_preds, net, vocab, device):
     y, state = net(get_input(), state)
     outputs.append(int(y.argmax(dim=1).reshape(1)))
   return ''.join([vocab.idx_to_token[i] for i in outputs])
+
+# 6、训练
+def train_epoch_ch8(net, train_iter, loss, updater, device, use_random_iter):
+  state, timer = None, d2l.Timer()
+  metric = d2l.Accumulator(2)  # 训练损失之和,词元数量
+  for X, Y in train_iter:
+    if state is None or use_random_iter:
+      # 在第一次迭代或使用随机抽样时初始化state
+      state = net.begin_state(batch_size=X.shape[0], device=device)
+    else:
+      if isinstance(net, nn.Module) and not isinstance(state, tuple):
+        # state对于nn.GRU是个张量
+        state.detach_()
+      else:
+        # state对于nn.LSTM或对于我们从零开始实现的模型是个张量
+        for s in state:
+          s.detach_()
+    y = Y.T.reshape(-1)
+    X, y = X.to(device), y.to(device)
+    y_hat, state = net(X, state)
+    l = loss(y_hat, y.long()).mean()
+    if isinstance(updater, torch.optim.Optimizer):
+      updater.zero_grad()
+      l.backward()
+      grad_clipping(net, 1)
+      updater.step()
+    else:
+      l.backward()
+      grad_clipping(net, 1)
+      # 因为已经调用了mean函数
+      updater(batch_size=1)
+    metric.add(l * y.numel(), y.numel())
+  return math.exp(metric[0] / metric[1]), metric[1] / timer.stop()
 ```
+
+### 梯度剪裁
+
+对于长度为 $T$ 的序列，我们在迭代中计算这 $T$个时间步上的梯度，将会在反向传播过程中产生长度为 $O(T)$ 的矩阵乘法链。当 $T$ 较大时，它可能导致数值不稳定，例如可能导致梯度爆炸或梯度消失。有时梯度可能很大，从而优化算法可能无法收敛。一个流行的替代方案是通过将梯度 $\mathbf{g}$ 投影回给定半径(如 $\theta$)的球来裁剪梯度。如下式：
+
+$$
+\mathbf{g} \gets \min\left(1, \frac{\theta}{\|\mathbf{g}\|}\right) \mathbf{g}
+$$
+
+```py
+def grad_clipping(net, theta):
+  if isinstance(net, nn.Module):
+    params = [p for p in net.parameters() if p.requires_grad]
+  else:
+    params = net.params
+  norm = torch.sqrt(sum(torch.sum((p.grad ** 2)) for p in params))
+  if norm > theta:
+    for param in params:
+      param.grad[:] *= theta / norm
+```
+
+### 小结
+
+- 循环神经网络模型在训练以前需要初始化状态，不过**随机抽样和顺序划分**使用初始化方法不同。当使用顺序划分时，我们需要分离梯度以减少计算量。
+- 在进行任何预测之前，模型通过**预热期**进行自我更新（例如，获得比初始值更好的隐状态）。
+- 梯度裁剪可以防止梯度爆炸，但不能应对**梯度消失**。
