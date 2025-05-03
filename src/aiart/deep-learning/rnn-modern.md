@@ -56,3 +56,58 @@ GRU：Gated Recurrent Unit。
 
 - LSTM 思想：通过残差连接实现"记忆高速公路"
 - GRU 思想：简化门控机制（如 Transformer 中的 FFN 层）
+
+## 编码器-解码器架构
+
+![An Image](./img/encoder-decoder.svg)
+编码器-解码器（`encoder-decoder`）架构两个主要组件：
+
+1. **编码器**（encoder）：接受长度可变序列作为输入，并将其转换为具有固定形状编码状态。
+2. **解码器**（decoder）：将固定形状编码状态映射到长度可变序列。
+
+“编码器－解码器”架构可以将长度可变的序列作为输入和输出，因此适用于**机器翻译**等序列转换问题。
+
+### 编码器
+
+```py
+from torch import nn
+class Encoder(nn.Module):
+  def __init__(self, **kwargs):
+    super(Encoder, self).__init__(**kwargs)
+
+  def forward(self, X, *args):
+    raise NotImplementedError
+```
+
+### 解码器
+
+```py
+class Decoder(nn.Module):
+  def __init__(self, **kwargs):
+    super(Decoder, self).__init__(**kwargs)
+
+  def init_state(self, enc_outputs, *args):
+    raise NotImplementedError
+
+  def forward(self, X, state):
+    raise NotImplementedError
+```
+
+init_state 函数，用于将编码器的输出(`enc_outputs`)转换为编码后的状态。注意，此步骤可能需要额外的输入，例如：输入序列的有效长度。为了逐个地生成长度可变的词元序列，解码器在每个时间步都会将输入(例如：在前一时间步生成的词元)和编码后的状态映射成当前时间步的输出词元。
+
+### 合并
+
+```py
+class EncoderDecoder(nn.Module):
+  def __init__(self, encoder, decoder, **kwargs):
+    super(EncoderDecoder, self).__init__(**kwargs)
+    self.encoder = encoder
+    self.decoder = decoder
+
+  def forward(self, enc_X, dec_X, *args):
+    enc_outputs = self.encoder(enc_X, *args)
+    dec_state = self.decoder.init_state(enc_outputs, *args)
+    return self.decoder(dec_X, dec_state)
+```
+
+“编码器-解码器”架构包含了一个编码器和一个解码器，并且还拥有可选的额外的参数。在前向传播中，编码器的输出用于生成编码状态，这个状态又被解码器作为其输入的一部分。
