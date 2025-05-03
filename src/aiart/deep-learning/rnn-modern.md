@@ -111,3 +111,62 @@ class EncoderDecoder(nn.Module):
 ```
 
 “编码器-解码器”架构包含了一个编码器和一个解码器，并且还拥有可选的额外的参数。在前向传播中，编码器的输出用于生成编码状态，这个状态又被解码器作为其输入的一部分。
+
+## 序列到序列学习(seq2seq)
+
+seq2seq：sequence to sequence。
+
+![An Image](./img/seq2seq.svg)
+上图是机器翻译中使用两个循环神经网络进行序列到序列学习。特定的`“<eos>”`表示序列结束词元。一旦输出序列生成此词元，模型就会停止预测。
+
+在循环神经网络解码器的初始化时间步，有两个特定的设计决定：首先，特定的`“<bos>”`表示序列开始词元，它是解码器的输入序列的第一个词元。其次，使用循环神经网络编码器最终的隐状态来初始化解码器的隐状态。
+
+### 用 RNN 实现编码器
+
+```py
+import collections
+import math
+import torch
+from torch import nn
+from d2l import torch as d2l
+
+# 用于序列到序列学习的循环神经网络编码器
+class Seq2SeqEncoder(d2l.Encoder):
+  def __init__(self, vocab_size, embed_size, num_hiddens, num_layers, dropout=0, **kwargs):
+    super(Seq2SeqEncoder, self).__init__(**kwargs)
+    # 嵌入层
+    self.embedding = nn.Embedding(vocab_size, embed_size)
+    self.rnn = nn.GRU(embed_size, num_hiddens, num_layers, dropout=dropout)
+
+  def forward(self, X, *args):
+    # 输出'X'的形状：(batch_size,num_steps,embed_size)
+    X = self.embedding(X)
+    # 在循环神经网络模型中，第一个轴对应于时间步
+    X = X.permute(1, 0, 2)
+    # 如果未提及状态，则默认为0
+    output, state = self.rnn(X)
+    # output的形状:(num_steps,batch_size,num_hiddens)
+    # state的形状:(num_layers,batch_size,num_hiddens)
+    return output, state
+```
+
+**嵌入层**(`embedding layer`，`nn.Embedding`)，用以获得输入序列中每个词元的特征向量。
+
+嵌入层的权重是一个矩阵，其行数是输入词表大小(`vocab_size`)，其列数是特征向量维度(`embed_size`)。对于任意输入词元索引 $i$，嵌入层获取权重矩阵第 $i$ 行(`从0开始`)以返回其特征向量。
+
+```py
+encoder = Seq2SeqEncoder(vocab_size=10, embed_size=8, num_hiddens=16, num_layers=2)
+encoder.eval()
+X = torch.zeros((4, 7), dtype=torch.long)
+output, state = encoder(X)
+output.shape, state.shape
+
+# (torch.Size([7, 4, 16]), torch.Size([2, 4, 16]))
+```
+
+:::tip
+`embed_size << vocab_size`，如大小接近，或导致参数量爆炸、过拟合。比率：`1/10 到 1/100`。  
+`num_hiddens >= embed_size`，确保隐藏层有足够容量融合时序信息和输入特征。比率：`num_hiddens = 2~4 × embed_size`。
+:::
+
+最后一层的隐状态的输出是一个张量（output 由编码器的循环层返回），其形状为（时间步数，批量大小，隐藏单元数）。最后一个时间步的多层隐状态的形状是（隐藏层的数量，批量大小，隐藏单元的数量）。如果使用长短期记忆网络，`state`中还将包含记忆单元信息。
