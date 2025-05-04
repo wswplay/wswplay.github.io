@@ -287,7 +287,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
 function geneI18n(): ThemeConfig["i18n"] {
   return {
     toc: "本页目录",
-    previous: "前一篇",
+    previous: "上一篇",
     next: "下一篇",
     pageNotFound: "页面未找到",
   };
