@@ -180,7 +180,7 @@ def transpose_output(X, num_heads):
 ### 与 CNN、RNN 比较
 
 ![An Image](./img/cnn-rnn-self-attention.svg)
-**目标**：将由 $n$ 个词元组成的序列映射到另一个长度相等的序列，其中的每个输入词元或输出词元都由 $d$ 维向量表示。
+**目标**：把 $n$ 个词元序列映射到另一个长度相等序列，每个输入输出词元都是 $d$ 维向量。
 
 **CNN(卷积神经网络)**：
 
@@ -198,3 +198,83 @@ def transpose_output(X, num_heads):
 - 每个词元都通过自注意力直接连接到任何其他词元，有 $O(1)$ 个顺序操作可以并行计算，**最大路径长度**也是 $O(1)$。
 
 **结论**：卷积神经网络和**自注意力**都拥有**并行计算**优势，且自注意力**最大路径长度最短**。但是因为自注意力计算复杂度是关于序列长度的二次方，所以在很**长序列**中计算会**非常慢**。
+
+### 位置编码
+
+在处理词元序列时，循环神经网络是逐个的重复地处理词元的，而自注意力则因为并行计算而放弃了**顺序操作**。
+
+为了使用序列的顺序信息，通过在输入表示中添加**位置编码**（`positional encoding`）来注入**绝对或相对位置信息**。位置编码可以通过**学习得到**也可以**直接固定**得到。
+
+下面介绍<span style="color: #f00">**固定位置编码**</span>：
+
+假设输入 $\mathbf{X} \in \mathbb{R}^{n \times d}$ 包含一个序列中 $n$ 个词元 $d$ 维嵌入表示。**位置编码**使用相同形状的位置嵌入矩阵 $\mathbf{P} \in \mathbb{R}^{n \times d}$ 输出 $\mathbf{X + P}$。
+
+在位置嵌入矩阵 $\mathbf{P}$ 中，行代表词元在序列中的位置，列代表位置编码的不同维度。相关位置如下：
+
+矩阵第 $i$ 行、第 $2j$ 列的元素：
+
+$$
+p_{i,2j} = \sin\left(\frac{i}{10000^{2j/d}}\right)
+$$
+
+矩阵第 $i$ 行、第 $2j+1$ 列的元素：
+
+$$
+p_{i,2j+1} = \cos\left(\frac{i}{10000^{2j/d}}\right)
+$$
+
+**代码实现**如下：
+
+```py
+import math
+import torch
+from torch import nn
+from d2l import torch as d2l
+
+# 位置编码
+class PositionalEncoding(nn.Module):
+  def __init__(self, num_hiddens, dropout, max_len=1000):
+    super(PositionalEncoding, self).__init__()
+    self.dropout = nn.Dropout(dropout)
+    # 创建一个足够长的P
+    self.P = torch.zeros((1, max_len, num_hiddens))
+    X = torch.arange(max_len, dtype=torch.float32).reshape(
+        -1, 1) / torch.pow(10000, torch.arange(
+        0, num_hiddens, 2, dtype=torch.float32) / num_hiddens)
+    self.P[:, :, 0::2] = torch.sin(X)
+    self.P[:, :, 1::2] = torch.cos(X)
+
+  def forward(self, X):
+    X = X + self.P[:, :X.shape[1], :].to(X.device)
+    return self.dropout(X)
+
+# Go!
+encoding_dim, num_steps = 32, 60
+pos_encoding = PositionalEncoding(encoding_dim, 0)
+pos_encoding.eval()
+X = pos_encoding(torch.zeros((1, num_steps, encoding_dim)))
+P = pos_encoding.P[:, :X.shape[1], :]
+d2l.plot(torch.arange(num_steps), P[0, :, 6:10].T, xlabel='Row (position)',
+         figsize=(6, 2.5), legend=["Col %d" % d for d in torch.arange(6, 10)])
+```
+
+![An Image](./img/positional-encoding.svg)
+**效果如图**：可以看到位置嵌入矩阵第 6、7 列和**频率高于**第 8、9 列。
+
+点解？在**二进制**表示中，较高比特位的**交替频率**低于较低比特位。
+
+```py
+for i in range(8):
+  print(f'{i}的二进制是：{i:>03b}')
+
+# 0的二进制是：000
+# 1的二进制是：001
+# 2的二进制是：010
+# 3的二进制是：011
+# 4的二进制是：100
+# 5的二进制是：101
+# 6的二进制是：110
+# 7的二进制是：111
+```
+
+打印 $0,1,...,7$ 的二进制表示形式，可以看到：每 1 个数字、每 2 个数字和每 4 个数字上的比特值在第 1 个最低位、第 2 个最低位和第 3 个最低位上**分别交替 0 和 1**。
