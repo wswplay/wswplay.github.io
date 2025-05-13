@@ -11,3 +11,9 @@ mjx-container[tabindex]>svg {
   display: inline !important;
   margin: 0 auto !important;
 }
+
+/* 上下标样式 */
+sup,
+sub {
+  font-size: 0.7em;
+}
