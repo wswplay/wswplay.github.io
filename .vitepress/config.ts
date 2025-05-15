@@ -230,6 +230,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "现代RNN", link: "/aiart/deep-learning/rnn-modern" },
           { text: "注意力机制(attention)", link: "/aiart/deep-learning/attention-mechanisms" },
           { text: "Transformer架构", link: "/aiart/deep-learning/transformer" },
+          { text: "自然语言处理(NLP)", link: "/aiart/deep-learning/nlp" },
         ],
       },
       {
