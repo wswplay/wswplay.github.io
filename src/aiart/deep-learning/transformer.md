@@ -165,6 +165,10 @@ class TransformerEncoder(d2l.Encoder):
     return X
 ```
 
+- 嵌入和位置编码两数相加后生成“一个数”，实际上是**高维空间**中**一个坐标点**。
+- 而这个点，可以看作是**原始嵌入**向量和**位置编码**向量在该维度上的**线性组合**。
+- 模型通过**训练**，能够**解耦**出原始嵌入和位置信息。
+
 ## 解码器实现
 
 ```py
@@ -239,14 +243,37 @@ class TransformerDecoder(d2l.AttentionDecoder):
     for i, blk in enumerate(self.blks):
       X, state = blk(X, state)
       # 解码器自注意力权重
-      self._attention_weights[0][
-          i] = blk.attention1.attention.attention_weights
+      self._attention_weights[0][i] = blk.attention1.attention.attention_weights
       # “编码器－解码器”自注意力权重
-      self._attention_weights[1][
-          i] = blk.attention2.attention.attention_weights
+      self._attention_weights[1][i] = blk.attention2.attention.attention_weights
     return self.dense(X), state
 
   @property
   def attention_weights(self):
     return self._attention_weights
 ```
+
+## 训练
+
+```py
+num_hiddens, num_layers, dropout, batch_size, num_steps = 32, 2, 0.1, 64, 10
+lr, num_epochs, device = 0.005, 200, d2l.try_gpu()
+ffn_num_input, ffn_num_hiddens, num_heads = 32, 64, 4
+key_size, query_size, value_size = 32, 32, 32
+norm_shape = [32]
+
+train_iter, src_vocab, tgt_vocab = d2l.load_data_nmt(batch_size, num_steps)
+
+encoder = TransformerEncoder(
+    len(src_vocab), key_size, query_size, value_size, num_hiddens,
+    norm_shape, ffn_num_input, ffn_num_hiddens, num_heads,
+    num_layers, dropout)
+decoder = TransformerDecoder(
+    len(tgt_vocab), key_size, query_size, value_size, num_hiddens,
+    norm_shape, ffn_num_input, ffn_num_hiddens, num_heads,
+    num_layers, dropout)
+net = d2l.EncoderDecoder(encoder, decoder)
+d2l.train_seq2seq(net, train_iter, lr, num_epochs, tgt_vocab, device)
+```
+
+`d2l.EncoderDecoder` 的 [EncoderDecoder](/aiart/deep-learning/rnn-modern.html#合并)
