@@ -165,3 +165,63 @@ print(segment_BPE(tokens, symbols))
 ```
 
 字节对编码执行训练数据集的统计分析，以发现词内的公共符号。作为一种**贪心方法**，字节对编码迭代地**合并最频繁的连续符号对**。
+
+### Transformers 的 BERT
+
+**词嵌入模型**预训练后，输出可认为是一个**矩阵**，每一行都是一个表示预定义词表中词的向量。
+
+但，这些词嵌入模型都是与**上下文无关**的。
+
+**ELMo**：从上下文无关到**上下文敏感**，ELMo<sup>Embeddings from Language Models</sup>为输入序列中的每个单词分配一个表示的函数。具体来说，ELMo 将来自预训练的**双向长短期记忆**网络的所有中间层表示**组合为输出**表示。然后，ELMo 的表示将作为附加特征添加到下游任务的现有监督模型中，例如通过将 ELMo 的表示和现有模型中词元的原始表示连结起来。
+
+尽管，ELMo 显著改进了各种自然语言处理任务的解决方案，但每个解决方案仍然**依赖于一个特定于任务架构**。
+
+**GPT**：生成式预训练<sup>Generative Pre Training</sup>模型为上下文的敏感表示设计了通用**任务无关**模型。GPT 建立在 `Transformer` 解码器的基础上，预训练了一个用于表示文本序列的语言模型。当将 `GPT` 应用于下游任务时，语言模型的输出将被送到一个附加的线性输出层，以预测任务的标签。与 `ELMo` 冻结预训练模型的参数不同，`GPT` 在下游任务的监督学习过程中对预训练 `Transformer` 解码器中的所有参数进行**微调**。
+
+然而，由于语言模型的**自回归**特性，GPT **只能向前看**（从左到右）。
+
+**BERT**：Google 2018 年提出基于 `Transformer` 架构预训练语言模型 BERT<sup>Bidirectional Encoder Representations from Transformers</sup>(双向编码模型)。BERT 推动了**预训练模型**的浪潮，后续模型如 `GPT-3、T5` 等均受其启发。当前趋势转向更大规模（如 `PaLM`）、多模态（如 `CLIP`）和高效训练（如 `LoRA`）。
+
+**1. 核心思想**
+
+- 双向上下文建模：  
+  与传统单向语言模型（如 GPT）不同，BERT 通过 **Masked Language Model (MLM)** 同时利用左右两侧的上下文信息，更全面地理解词语含义。
+- 预训练+微调：  
+  先在大规模语料上无监督预训练，再针对下游任务（如分类、问答）进行少量数据微调。
+
+**2. 关键技术创新**
+
+- Transformer 编码器：  
+  完全基于 Transformer 的编码器堆叠（多层 Self-Attention + Feed-Forward），无需解码器。
+- 两种预训练任务：
+  - MLM（掩码语言模型）：随机遮盖 15% 的单词，预测被遮盖的词。
+  - NSP（下一句预测）：判断两个句子是否连续，增强句子间关系理解。
+- 输入表示：  
+  使用 `[CLS]`（分类标记）、`[SEP]`（分隔标记）和词/段/位置嵌入的三层编码。
+
+**3. 优缺点**
+
+- 优点：
+  - 上下文敏感，解决多义词问题（如 "bank" 在金融或河岸的差异）。
+  - 通用性强，微调即可适配多种任务。
+- 缺点：
+  - 计算资源消耗大（尤其是 Large 版本）。
+  - 对超长文本处理有限（最大长度通常为 512 token）。
+
+**4. 代码示例（Hugging Face 库**
+
+```python
+from transformers import BertTokenizer, BertModel
+
+# 加载预训练模型和分词器
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model = BertModel.from_pretrained('bert-base-uncased')
+
+# 输入处理
+inputs = tokenizer("Hello, BERT!", return_tensors="pt")
+outputs = model(**inputs)
+
+# 获取词嵌入或句子表示
+last_hidden_states = outputs.last_hidden_state  # 词级别嵌入
+pooler_output = outputs.pooler_output          # [CLS] 的句子表示
+```
