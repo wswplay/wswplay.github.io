@@ -9,7 +9,17 @@ outline: deep
 
 **OpenAI 最新 GPT-4.1** 支持 100 万 token 的**超长上下文**（约 75 万字），适用于金融分析、法律文档处理、大型代码库分析等任务。
 
-## 分词算法-BPE
+## 架构：Decoder-only
+
+GPT 系列（GPT-1/2/3/4）采用 `Transformer` **解码器-only**<sup>Decoder-only</sup>架构，这不是“耍花样”，而是为了适应**自回归**语言建模目标而做的结构取舍。
+
+## 模型：MoE
+
+**MoE**：Mixture of Experts，**多专家混合**。
+
+多个子模型（专家网络），每次推理**只激活一部分**，大幅提升模型规模同时控制计算成本。
+
+## 分词算法：BPE
 
 GPT（如 GPT-2/3/4）使用 **BPE 分词算法**。
 
@@ -60,3 +70,7 @@ for i in range(num_merges):
 # Merge 2: ('es', 't') -> est
 # ...
 ```
+
+## 注意力机制：FlashAttention、稀疏注意力
+
+## 位置编码：RoPE
