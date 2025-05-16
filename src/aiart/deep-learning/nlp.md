@@ -71,9 +71,97 @@ tokens = tokenizer.tokenize("unhappiness")  # 输出：['un', 'happiness']
 **代码示例**：
 
 ```py
+# Hugging Face 库调用
 from transformers import GPT2Tokenizer
 
 # GPT-2使用BPE分词
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 tokens = tokenizer.tokenize("unhappiness")  # 输出：['un', 'happiness']
 ```
+
+**代码实现**：
+
+```py
+import collections
+
+symbols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+           'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+           '_', '[UNK]']
+
+# 频率字典
+raw_token_freqs = {'fast_': 4, 'faster_': 3, 'tall_': 5, 'taller_': 4}
+token_freqs = {}
+for token, freq in raw_token_freqs.items():
+  token_freqs[' '.join(list(token))] = raw_token_freqs[token]
+token_freqs
+# {'f a s t _': 4, 'f a s t e r _': 3, 't a l l _': 5, 't a l l e r _': 4}
+
+# 返回词内最频繁的连续符号对，其中词来自输入词典token_freqs的键
+def get_max_freq_pair(token_freqs):
+  pairs = collections.defaultdict(int)
+  for token, freq in token_freqs.items():
+    symbols = token.split()
+    for i in range(len(symbols) - 1):
+      # “pairs”的键是两个连续符号的元组
+      pairs[symbols[i], symbols[i + 1]] += freq
+  return max(pairs, key=pairs.get)  # 具有最大值的“pairs”键
+
+# 基于连续符号频率的贪心方法，合并最频繁的连续符号对以产生新符号
+def merge_symbols(max_freq_pair, token_freqs, symbols):
+  symbols.append(''.join(max_freq_pair))
+  new_token_freqs = dict()
+  for token, freq in token_freqs.items():
+    new_token = token.replace(' '.join(max_freq_pair), ''.join(max_freq_pair))
+    new_token_freqs[new_token] = token_freqs[token]
+  return new_token_freqs
+
+# 迭代
+num_merges = 10
+for i in range(num_merges):
+  max_freq_pair = get_max_freq_pair(token_freqs)
+  token_freqs = merge_symbols(max_freq_pair, token_freqs, symbols)
+  print(f'合并# {i+1}:',max_freq_pair)
+
+# 合并# 1: ('t', 'a')
+# 合并# 2: ('ta', 'l')
+# 合并# 3: ('tal', 'l')
+# 合并# 4: ('f', 'a')
+# 合并# 5: ('fa', 's')
+# 合并# 6: ('fas', 't')
+# 合并# 7: ('e', 'r')
+# 合并# 8: ('er', '_')
+# 合并# 9: ('tall', '_')
+# 合并# 10: ('fast', '_')
+
+print(symbols)
+# ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '_', '[UNK]', 'ta', 'tal', 'tall', 'fa', 'fas', 'fast', 'er', 'er_', 'tall_', 'fast_']
+
+print(list(token_freqs.keys()))
+# ['fast_', 'fast er_', 'tall_', 'tall er_']
+
+# 用从一个数据集学习的子词来切分另一个数据集的单词
+# 尝试将单词从输入参数symbols分成可能最长的子词
+def segment_BPE(tokens, symbols):
+  outputs = []
+  for token in tokens:
+    start, end = 0, len(token)
+    cur_output = []
+    # 具有符号中可能最长子字的词元段
+    while start < len(token) and start < end:
+      if token[start: end] in symbols:
+        cur_output.append(token[start: end])
+        start = end
+        end = len(token)
+      else:
+        end -= 1
+    if start < len(token):
+      cur_output.append('[UNK]')
+    outputs.append(' '.join(cur_output))
+  return outputs
+
+tokens = ['tallest_', 'fatter_']
+print(segment_BPE(tokens, symbols))
+# ['tall e s t _', 'fa t t er_']
+```
+
+字节对编码执行训练数据集的统计分析，以发现词内的公共符号。作为一种**贪心方法**，字节对编码迭代地**合并最频繁的连续符号对**。
