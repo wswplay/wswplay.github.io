@@ -357,6 +357,8 @@ nsp_l.shape
 
 **整合代码**：
 
+BERT 预训练最终损失 = 遮蔽语言模型损失 + 下一句预测损失
+
 ```py
 # BERT模型
 class BERTModel(nn.Module):

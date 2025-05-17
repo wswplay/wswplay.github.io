@@ -13,6 +13,8 @@ outline: deep
 
 GPT 系列（GPT-1/2/3/4）采用 `Transformer` **解码器-only**<sup>Decoder-only</sup>架构，这不是“耍花样”，而是为了适应**自回归**语言建模目标而做的结构取舍。
 
+没有**编码器-解码器交叉注意力**层（因无编码器）。
+
 ## 模型：MoE
 
 **MoE**：Mixture of Experts，**多专家混合**。
@@ -74,3 +76,157 @@ for i in range(num_merges):
 ## 注意力机制：FlashAttention、稀疏注意力
 
 ## 位置编码：RoPE
+
+## PyTorch 实现简化版 GPT
+
+```sh
+# 安装torch和transformers（用于分词）
+pip install torch transformers
+```
+
+```py
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import math
+from transformers import GPT2Tokenizer
+
+# 掩蔽自注意力机制
+class SelfAttention(nn.Module):
+  def __init__(self, embed_size, heads):
+    super(SelfAttention, self).__init__()
+    self.embed_size = embed_size
+    self.heads = heads
+    self.head_dim = embed_size // heads
+
+    assert self.head_dim * heads == embed_size, "Embed size needs to be divisible by heads"
+
+    self.keys = nn.Linear(embed_size, embed_size)
+    self.queries = nn.Linear(embed_size, embed_size)
+    self.values = nn.Linear(embed_size, embed_size)
+    self.fc_out = nn.Linear(embed_size, embed_size)
+
+  def forward(self, x, mask=None):
+    N, seq_length, _ = x.shape
+    # 分割为多头
+    keys = self.keys(x).view(N, seq_length, self.heads, self.head_dim)
+    queries = self.queries(x).view(N, seq_length, self.heads, self.head_dim)
+    values = self.values(x).view(N, seq_length, self.heads, self.head_dim)
+
+    # 计算注意力分数
+    energy = torch.einsum("nqhd,nkhd->nhqk", [queries, keys])  # (N, heads, seq_len, seq_len)
+    if mask is not None:
+      energy = energy.masked_fill(mask == 0, float("-1e20"))
+
+    attention = torch.softmax(energy / (self.embed_size ** (1/2)), dim=3)
+    out = torch.einsum("nhql,nlhd->nqhd", [attention, values]).reshape(
+      N, seq_length, self.embed_size
+    )
+    return self.fc_out(out)
+
+# Transformer解码器块
+class TransformerBlock(nn.Module):
+  def __init__(self, embed_size, heads, dropout, forward_expansion):
+    super(TransformerBlock, self).__init__()
+    self.attention = SelfAttention(embed_size, heads)
+    self.norm1 = nn.LayerNorm(embed_size)
+    self.norm2 = nn.LayerNorm(embed_size)
+
+    self.feed_forward = nn.Sequential(
+      nn.Linear(embed_size, forward_expansion * embed_size),
+      nn.GELU(),
+      nn.Linear(forward_expansion * embed_size, embed_size),
+    )
+    self.dropout = nn.Dropout(dropout)
+
+  def forward(self, x, mask):
+    attention = self.attention(x, mask)
+    x = self.norm1(attention + self.dropout(x))
+    forward = self.feed_forward(x)
+    out = self.norm2(forward + self.dropout(x))
+    return out
+
+# 位置编码
+class PositionalEncoding(nn.Module):
+  def __init__(self, embed_size, max_len=5000):
+    super(PositionalEncoding, self).__init__()
+    pe = torch.zeros(max_len, embed_size)
+    position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
+    div_term = torch.exp(torch.arange(0, embed_size, 2).float() * (-math.log(10000.0) / embed_size))
+    pe[:, 0::2] = torch.sin(position * div_term)
+    pe[:, 1::2] = torch.cos(position * div_term)
+    pe = pe.unsqueeze(0)
+    self.register_buffer("pe", pe)
+
+  def forward(self, x):
+    return x + self.pe[:, :x.shape[1], :]
+
+# 简化版GPT模型
+class GPT(nn.Module):
+  def __init__(
+    self,
+    vocab_size,
+    embed_size=256,
+    num_layers=6,
+    heads=8,
+    forward_expansion=4,
+    dropout=0.1,
+    max_length=100,
+  ):
+    super(GPT, self).__init__()
+    self.token_embedding = nn.Embedding(vocab_size, embed_size)
+    self.position_encoding = PositionalEncoding(embed_size, max_length)
+    self.layers = nn.ModuleList(
+      [
+        TransformerBlock(
+          embed_size,
+          heads,
+          dropout=dropout,
+          forward_expansion=forward_expansion,
+        )
+        for _ in range(num_layers)
+      ]
+    )
+    self.fc_out = nn.Linear(embed_size, vocab_size)
+    self.dropout = nn.Dropout(dropout)
+
+  def forward(self, x, mask=None):
+    N, seq_length = x.shape
+    out = self.dropout(self.token_embedding(x))
+    out = self.position_encoding(out)
+    for layer in self.layers:
+      out = layer(out, mask)
+    return self.fc_out(out)
+
+  # 文本生成
+  def generate(self, prompt, max_len=50, temperature=1.0):
+    self.eval()
+    tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+    tokens = tokenizer.encode(prompt, return_tensors="pt")
+    for _ in range(max_len):
+      # 生成掩码（防止看到未来token）
+      mask = torch.tril(torch.ones((1, tokens.size(1), tokens.size(1))).bool()
+      outputs = self(tokens, mask)
+      next_token_logits = outputs[:, -1, :] / temperature
+      next_token = torch.argmax(torch.softmax(next_token_logits, dim=-1), dim=-1)
+      tokens = torch.cat([tokens, next_token.unsqueeze(0)], dim=1)
+    return tokenizer.decode(tokens[0].tolist())
+
+# 示例用法
+if __name__ == "__main__":
+  vocab_size = 50257  # GPT-2的词汇表大小
+  model = GPT(vocab_size)
+  input_text = "The future of AI is"
+  generated_text = model.generate(input_text, max_len=20)
+  print(f"Generated text: {generated_text}")
+```
+
+关键点说明：
+
+1. **自注意力掩码**：通过`torch.tril`生成下三角矩阵，确保生成时只能看到左侧上下文（自回归特性）。
+
+2. **位置编码**：使用正弦/余弦函数生成位置信息（与原始 Transformer 相同），但实际应用中可替换为可学习的位置嵌入。
+
+3. **文本生成**：`generate()`方法通过迭代预测下一个词实现生成，支持温度参数（`temperature`）控制随机性。
+
+4. **简化处理**：未实现更复杂特性（如稀疏注意力、梯度检查点），但保留了 GPT 核心设计。
