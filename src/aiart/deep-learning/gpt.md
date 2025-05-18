@@ -77,6 +77,62 @@ for i in range(num_merges):
 
 ## 位置编码：RoPE
 
+**RoPE**：Rotary Position Embedding，**旋转位置编码**。
+
+### 复数旋转
+
+**1. 复数表示向量**
+
+在复数空间中，一个向量 $\mathbf{v} \in \mathbb{R}^2$ 可以表示为复数：
+
+$$
+\mathbf{v} = a + ib
+$$
+
+$a$ 是实部（对应向量横坐标），$b$ 是虚部（对应向量纵坐标）
+
+**2. 旋转矩阵**
+
+旋转矩阵是表示**旋转操作**的方阵，**二维(2D)旋转**矩阵绕原点旋转角度 $\theta$（逆时针为正）：
+
+$$
+R(\theta) = \begin{pmatrix}
+\cos\theta & -\sin\theta \\
+\sin\theta & \cos\theta \\
+\end{pmatrix}
+$$
+
+- **性质**：正交矩阵（$R^T = R^{-1}$），行列式为 1。
+- **示例**：旋转 $90^\circ$ 时，矩阵为 $\begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$。
+
+**3. 欧拉公式：建立复数与三角函数联系**
+
+$$
+e^{i\theta} = \cos \theta + i \sin \theta
+$$
+
+它表示一个 **单位复数**（长度为 1），角度为 $\theta$。
+
+$$
+e^{i\theta} \cdot \mathbf{v} = (a + ib)(\cos \theta + i \sin \theta) = (a \cos \theta - b \sin \theta) + i(a \sin \theta + b \cos \theta)
+$$
+
+这结果正好对应旋转后的向量 $R(\theta) \cdot \begin{pmatrix} a \\ b \end{pmatrix}$，表示为：
+
+$$
+\begin{pmatrix}
+a' \\
+b'
+\end{pmatrix}
+=
+\begin{pmatrix}
+a \cos \theta - b \sin \theta \\
+a \sin \theta + b \cos \theta
+\end{pmatrix}
+$$
+
+<span style="color:#f00">**所以**</span>：**乘以 $e^{i\theta}$ 等价于 旋转角度 $\theta$**。
+
 ## PyTorch 实现简化版 GPT
 
 ```sh
@@ -114,6 +170,7 @@ class SelfAttention(nn.Module):
     values = self.values(x).view(N, seq_length, self.heads, self.head_dim)
 
     # 计算注意力分数
+    # 爱因斯坦求和约定(Einstein Summation)，表示复杂的张量乘法
     energy = torch.einsum("nqhd,nkhd->nhqk", [queries, keys])  # (N, heads, seq_len, seq_len)
     if mask is not None:
       energy = energy.masked_fill(mask == 0, float("-1e20"))
@@ -134,6 +191,7 @@ class TransformerBlock(nn.Module):
 
     self.feed_forward = nn.Sequential(
       nn.Linear(embed_size, forward_expansion * embed_size),
+      # 高斯误差线性单元(Gaussian Error Linear Unit)比 ReLU 更平滑的非线性
       nn.GELU(),
       nn.Linear(forward_expansion * embed_size, embed_size),
     )
