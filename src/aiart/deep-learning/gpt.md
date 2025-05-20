@@ -77,9 +77,9 @@ for i in range(num_merges):
 
 ## 位置编码：RoPE
 
-**RoPE**：Rotary Position Embedding，**旋转位置编码**。结合了绝对位置编码和相对位置编码优势的方法，广泛应用于现代大型语言模型（LLMs），包括 LLaMA、ChatGLM、Baichuan 等。
+**RoPE**：Rotary Position Embedding，**旋转位置编码**，广泛应用于现代大型语言模型（LLMs），包括 LLaMA、ChatGLM、Baichuan 等。
 
-### 核心特点
+### 主要特点
 
 **1. 绝对位置编码形式，相对位置编码效果**  
  RoPE 通过旋转矩阵对 Query 和 Key 向量进行变换，使得内积计算后能自动包含相对位置信息，而无需额外修改 Attention 结构。
@@ -96,6 +96,12 @@ for i in range(num_merges):
 - **更强的泛化能力**：RoPE 能更好地捕捉长距离依赖关系，适合 GPT 系列模型的生成式任务。
 - **兼容性**：RoPE 可直接融入现有 Transformer 架构，无需修改 Attention 计算逻辑。
 - **动态调整**：通过调整旋转角底数（如 NTK-aware 缩放），可进一步提升外推性能。
+
+### 核心思想
+
+通过**旋转矩阵**将**绝对位置信息**融入**相对位置计算**，使得注意力机制能够隐式捕获位置关系，同时保持**线性可加性**（即相对**位置可以通过旋转角度**差值表示）。
+
+`RoPE` 灵感源于**复数旋转**。在复数空间中，一个向量 $z = x + iy$ 可通过乘以 $e^{i\theta}$ 进行旋转。
 
 ### 复数旋转
 
@@ -123,13 +129,13 @@ $$
 - **性质**：正交矩阵（$R^T = R^{-1}$），行列式为 1。
 - **示例**：旋转 $90^\circ$ 时，矩阵为 $\begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$。
 
-**3. 欧拉公式：建立复数与三角函数联系**
+**3. 欧拉公式：连接复数、指数函数和三角函数**
 
 $$
 e^{i\theta} = \cos \theta + i \sin \theta
 $$
 
-它表示一个 **单位复数**（长度为 1），角度为 $\theta$。
+[欧拉公式](/aiart/deep-learning/mathematics.html#欧拉公式)表示的是一个 **单位复数**（长度为 1），角度为 $\theta$。
 
 $$
 e^{i\theta} \cdot \mathbf{v} = (a + ib)(\cos \theta + i \sin \theta) = (a \cos \theta - b \sin \theta) + i(a \sin \theta + b \cos \theta)
