@@ -77,7 +77,9 @@ for i in range(num_merges):
 
 ## 位置编码：RoPE
 
-**RoPE**：Rotary Position Embedding，**旋转位置编码**，广泛应用于现代大型语言模型（LLMs），包括 LLaMA、ChatGLM、Baichuan 等。
+**RoPE**：Rotary Position Embedding，**旋转位置编码**，是一种用于 `Transformer` 架的位置编码方法，由苏剑林[论文](https://arxiv.org/abs/2104.09864)提出。
+
+已广泛应用于现代大型语言模型（LLMs），包括 LLaMA、ChatGLM、Baichuan 等。
 
 ### 主要特点
 
@@ -99,7 +101,7 @@ for i in range(num_merges):
 
 ### 核心思想
 
-通过**旋转矩阵**将**绝对位置信息**融入**相对位置计算**，使得注意力机制能够隐式捕获位置关系，同时保持**线性可加性**（即相对**位置可以通过旋转角度**差值表示）。
+将位置编码融合进注意力计算 `query` 和 `key` 向量中，通过**旋转矩阵**将**绝对位置信息**融入**相对位置计算**，使得注意力机制能够隐式捕获位置关系，同时保持**线性可加性**（即相对**位置可以通过旋转角度**差值表示），而不是像传统 `Transformer` 那样加在 `embedding` 上。
 
 `RoPE` 灵感源于**复数旋转**。在复数空间中，一个向量 $z = x + iy$ 可通过乘以 $e^{i\theta}$ 进行旋转。
 
@@ -126,8 +128,7 @@ R(\theta) = \begin{pmatrix}
 \end{pmatrix}
 $$
 
-- **性质**：正交矩阵（$R^T = R^{-1}$），行列式为 1。
-- **示例**：旋转 $90^\circ$ 时，矩阵为 $\begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$。
+- **性质**：$\mathbf{R}_m^\top \mathbf{R}_n = \mathbf{R}_{n-m}$。内积仅依赖相对位置 $n-m$。
 
 **3. 欧拉公式：连接复数、指数函数和三角函数**
 
@@ -156,6 +157,91 @@ a \sin \theta + b \cos \theta
 $$
 
 <span style="color:#f00">**所以**</span>：**乘以 $e^{i\theta}$ 等价于 旋转角度 $\theta$**。
+
+<span style="color:#f00">**所以**</span>：**复数乘法 = 2D 旋转**。
+
+### 模拟实现
+
+`OpenAI` 最新版本 `GPT`（包括 `GPT-4`、`GPT-4.5`、`GPT-4-turbo`）都使用了类似 `RoPE` 方法(未开源)。
+
+本质上也是：将 `token` 向量中**相邻两个维度**当作二维平面做旋转，**等效实现复数旋转**，来嵌入相对位置信息。
+
+:::tip 等效实现旋转
+并不是用复数类型张量，而是但把实数向量中的相邻两个维度当成复数实部/虚部，然后用数学公式模拟复数乘法(旋转)效果。
+:::
+
+$$
+\tilde{q}_m^\top \cdot \tilde{k}_n = (R(m) q)^\top (R(n) k) = q^\top R(n - m) k
+$$
+
+**角度差值**体现在结构里，而不是代码逻辑里。
+
+```py
+import torch
+import math
+
+# ---- 配置 ----
+dim = 8  # 向量维度（必须是偶数）
+pos_q = 10
+pos_k = 20
+
+# ---- 构造向量 ----
+q = torch.arange(1, dim + 1, dtype=torch.float32)
+k = torch.arange(1, dim + 1, dtype=torch.float32) * 2
+# [1, 2, ..., 8] [2, 4, ..., 16]
+
+# ---- 构造频率项 ----
+half_dim = dim // 2
+# [1/10000^{0/d}, ..., 1/10000^{(d-2)/d}]
+inv_freq = 1.0 / (10000 ** (torch.arange(0, half_dim) * 2 / dim))
+
+# ---- 获取角度位置编码（RoPE核心） ----
+theta_q = pos_q * inv_freq   # [θ₀, θ₁, θ₂, θ₃]
+theta_k = pos_k * inv_freq
+
+sin_q = torch.sin(theta_q)
+cos_q = torch.cos(theta_q)
+sin_k = torch.sin(theta_k)
+cos_k = torch.cos(theta_k)
+
+# ---- 拆分向量 ----
+def split_even_odd(x):
+  return x[::2], x[1::2]
+
+# ---- RoPE 核心旋转函数 ----
+def apply_rope(x, cos_theta, sin_theta):
+  x_even, x_odd = split_even_odd(x)
+  x_rotated = torch.empty_like(x)
+  x_rotated[::2] = x_even * cos_theta - x_odd * sin_theta
+  x_rotated[1::2] = x_even * sin_theta + x_odd * cos_theta
+  return x_rotated
+
+# ---- 应用 RoPE ----
+q_rope = apply_rope(q, cos_q, sin_q) # q @ R_theta_q
+k_rope = apply_rope(k, cos_k, sin_k) # k @ R_theta_k
+
+# ---- 计算注意力得分 ----
+attn_plain = torch.dot(q, k)
+attn_rope = torch.dot(q_rope, k_rope)
+
+# ---- 打印结果 ----
+print("原始 Q:", q)
+print("原始 K:", k)
+print("RoPE 后 Q:", q_rope)
+print("RoPE 后 K:", k_rope)
+print()
+print("不带 RoPE 的注意力得分:", attn_plain.item())
+print("带 RoPE 的注意力得分:", attn_rope.item())
+
+# ---- 结果输出 ----
+# 原始 Q: tensor([1., 2., 3., 4., 5., 6., 7., 8.])
+# 原始 K: tensor([ 2.,  4.,  6.,  8., 10., 12., 14., 16.])
+# RoPE 后 Q: tensor([ 0.2837,  2.9150, -0.9324,  4.9420, -2.0054,  5.4258, -3.3625,  5.7471])
+# RoPE 后 K: tensor([ 0.5673,  5.8300, -1.8648,  9.8841, -4.0109, 10.8515, -6.7249, 11.4943])
+
+# 不带 RoPE 的注意力得分: 816.0
+# 带 RoPE 的注意力得分: 922.35
+```
 
 ## PyTorch 实现简化版 GPT
 
