@@ -243,6 +243,35 @@ print("带 RoPE 的注意力得分:", attn_rope.item())
 # 带 RoPE 的注意力得分: 922.35
 ```
 
+### NTK RoPE(GPT-4)
+
+**NTK RoPE**：Neural Tangent Kernel Rotary Positional Embedding，是 `OpenAI GPT-4` 中引入的一种位置编码变体，属于 RoPE 位置编码扩展。
+
+**背景**：`RoPE` 有限制
+
+- 原始的 RoPE 使用固定的频率 $\theta_i = 10000^{-2i/d}$ 做旋转；
+- 这意味着模型对 **训练时没见过的很大位置索引（如 10k+）** 的泛化能力有限；
+- 在长文本时，RoPE 的旋转频率太快，导致信息在高维度上“绕圈绕得太厉害”，难以匹配；
+- 这限制了 GPT-4 类模型在 **扩展上下文长度** 时的表现。
+
+**思想**：“拉伸”低频维度位置旋转频率，让远距离 token 不至于旋转太快。
+
+`原始RoPE` 频率指数序列：
+
+$$
+\omega_i = 10000^{-2i/d}
+$$
+
+`NTK RoPE` 把它换成了：
+
+$$
+\omega_i = 10000^{-2i/(d \cdot \alpha)}
+$$
+
+其中 $\alpha > 1$ 是一个**位置频率缩放因子**，称为 NTK factor。
+
+即：把位置频率**慢下来**，使位置编码**对远距离 token 更稳定**，从而**泛化到更长**上下文。
+
 ## PyTorch 实现简化版 GPT
 
 ```sh
