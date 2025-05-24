@@ -232,6 +232,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "Transformer架构", link: "/aiart/deep-learning/transformer" },
           { text: "自然语言处理(NLP)", link: "/aiart/deep-learning/nlp" },
           { text: "GPT", link: "/aiart/deep-learning/gpt" },
+          { text: "计算机视觉(CV)", link: "/aiart/deep-learning/computer-vision" },
         ],
       },
       {
