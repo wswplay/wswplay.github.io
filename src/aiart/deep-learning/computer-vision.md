@@ -89,3 +89,21 @@ def bilinear_kernel(in_channels, out_channels, kernel_size):
   weight[range(in_channels), range(out_channels), :, :] = filt
   return weight
 ```
+
+## 风格迁移(style transfer)
+
+把一张图的“内容”和另一张图的“风格”结合，生成一张“内容不变但风格变化”的图。
+
+**典型例子：**
+你拍了一张猫，用梵高《星夜》风格迁移它，就能得到一张“星夜风格猫”。
+
+**底层原理（简化）：**
+
+- 内容图像保留结构和形状信息（比如人脸、物体轮廓）。
+- 风格图像提供纹理、颜色、笔触风格等。
+- 通过神经网络（如卷积神经网络 CNN）提取两者的特征，并组合输出。
+
+**常见技术：**
+
+- Gatys 等人提出的经典神经风格迁移（基于 VGG 网络）。
+- 更快的实时风格迁移（Fast Style Transfer）用于移动端 App（如 Prisma）。
