@@ -18,6 +18,49 @@ outline: deep
 
 通常，**微调**参数使用**较小学习率**，而**从头开始**训练输出层可以使用**更大学习率**。
 
+**示意代码**：
+
+```py
+import os
+import torch
+import torchvision
+from torch import nn
+from d2l import torch as d2l
+
+finetune_net = torchvision.models.resnet18(pretrained=True)
+finetune_net.fc = nn.Linear(finetune_net.fc.in_features, 2)
+nn.init.xavier_uniform_(finetune_net.fc.weight)
+
+# 如果param_group=True，输出层中的模型参数将使用十倍的学习率
+def train_fine_tuning(net, learning_rate, batch_size=128, num_epochs=5, param_group=True):
+  train_iter = torch.utils.data.DataLoader(torchvision.datasets.ImageFolder(
+    os.path.join(data_dir, 'train'), transform=train_augs),
+    batch_size=batch_size, shuffle=True)
+
+  test_iter = torch.utils.data.DataLoader(torchvision.datasets.ImageFolder(
+    os.path.join(data_dir, 'test'), transform=test_augs),
+    batch_size=batch_size)
+
+  devices = d2l.try_all_gpus()
+  loss = nn.CrossEntropyLoss(reduction="none")
+
+  if param_group:
+    params_1x = [
+      param for name, param in net.named_parameters() if name not in ["fc.weight", "fc.bias"]
+    ]
+    trainer = torch.optim.SGD(
+      [{'params': params_1x}, {'params': net.fc.parameters(), 'lr': learning_rate * 10}],
+      lr=learning_rate, weight_decay=0.001
+    )
+  else:
+    trainer = torch.optim.SGD(net.parameters(), lr=learning_rate, weight_decay=0.001)
+
+  d2l.train_ch13(net, train_iter, test_iter, loss, trainer, num_epochs, devices)
+
+# 使用较小学习率，通过微调预训练获得的模型参数
+train_fine_tuning(finetune_net, 5e-5)
+```
+
 ## 目标检测和边界框
 
 很多时候图像里有多个我们感兴趣的目标，我们不仅想知道它们的类别，还想得到它们在图像中的**具体位置**，这类任务称为**目标检测**<sup>object detection</sup>或**目标识别**<sup>object recognition</sup>。
@@ -77,15 +120,14 @@ $$
 def bilinear_kernel(in_channels, out_channels, kernel_size):
   factor = (kernel_size + 1) // 2
   if kernel_size % 2 == 1:
-      center = factor - 1
+    center = factor - 1
   else:
-      center = factor - 0.5
+    center = factor - 0.5
   og = (torch.arange(kernel_size).reshape(-1, 1),
         torch.arange(kernel_size).reshape(1, -1))
   filt = (1 - torch.abs(og[0] - center) / factor) * \
           (1 - torch.abs(og[1] - center) / factor)
-  weight = torch.zeros((in_channels, out_channels,
-                        kernel_size, kernel_size))
+  weight = torch.zeros((in_channels, out_channels, kernel_size, kernel_size))
   weight[range(in_channels), range(out_channels), :, :] = filt
   return weight
 ```
