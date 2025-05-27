@@ -63,17 +63,28 @@ train_fine_tuning(finetune_net, 5e-5)
 
 ## 目标检测和边界框
 
-很多时候图像里有多个我们感兴趣的目标，我们不仅想知道它们的类别，还想得到它们在图像中的**具体位置**，这类任务称为**目标检测**<sup>object detection</sup>或**目标识别**<sup>object recognition</sup>。
+**目标检测/识别**：不仅可以检测<sup>object detection</sup>识别<sup>object recognition</sup>图像中所有感兴趣的物体，还能识别它们的位置，该位置通常由矩形边界框表示。
 
-## 交并比(IoU)
+**边界框**：在目标检测中，通常使用边界框<sup>bounding box</sup>来描述对象的空间位置。
 
-**IoU**: Intersection Over Union，**交集除以并集**，也被称为杰卡德系数。
+边界框通常是**矩形**，两种常用边界框表示「中心 $(x,y)$，宽度，高度」和「左上 $x$，右下 $y$」。
+
+## 锚框与交并比(IoU)
+
+**锚框**：目标检测算法通常会采样大量区域，判断其中是否包含目标，并调整边界更准确地预测目标真实边界框<sup>ground-truth bounding box</sup>，这些边界框被称为锚框<sup>anchor box</sup>。
+
+不同模型采样各异。比如以每个像素为中心，生成多个缩放比和宽高比<sup>aspect ratio</sup>的不同边界框。
+
+那么如何衡量锚框**准确性**呢？换言之，如果已知目标真实边界框，如何衡量锚框和**真实边界框**之间**相似性**？杰卡德系数<sup>Jaccard</sup>可以衡量两者之间相似性。
+
+**IoU**: Intersection Over Union **交并比**，两个边界框**交集除以并集**，也被称为杰卡德系数。
 
 $$
 J(A, B) = \frac{|A \cap B|}{|A \cup B|}
 $$
 
 交并比的取值范围在 0 和 1 之间：0 表示两个边界框无重合像素，1 表示两个边界框完全重合。
+![An Image](./img/iou.svg)
 
 ## 语义分割
 
