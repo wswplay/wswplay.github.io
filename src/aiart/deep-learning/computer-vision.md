@@ -71,15 +71,58 @@ train_fine_tuning(finetune_net, 5e-5)
 
 边界框通常是**矩形**，两种常用边界框表示「中心 $(x,y)$，宽度，高度」和「左上 $x$，右下 $y$」。
 
-## 锚框与交并比(IOU)
+## 锚框与交并比(IoU)
 
-**锚框**：目标检测算法通常会采样大量区域，判断其中是否包含目标，并调整边界更准确地预测目标真实边界框<sup>ground-truth bounding box</sup>，这些边界框被称为锚框<sup>anchor box</sup>。
+### 锚框
+
+目标检测算法通常会采样大量区域，判断其中是否包含目标，并调整边界更准确地预测目标真实边界框<sup>ground-truth bounding box</sup>，这些边界框被称为锚框<sup>anchor box</sup>。
 
 不同模型采样各异。比如以每个像素为中心，生成多个缩放比和宽高比<sup>aspect ratio</sup>的不同边界框。
 
+```py
+# 生成以每个像素为中心具有不同形状的锚框
+def multibox_prior(data, sizes, ratios):
+  in_height, in_width = data.shape[-2:]
+  device, num_sizes, num_ratios = data.device, len(sizes), len(ratios)
+  boxes_per_pixel = (num_sizes + num_ratios - 1)
+  size_tensor = torch.tensor(sizes, device=device)
+  ratio_tensor = torch.tensor(ratios, device=device)
+
+  # 为了将锚点移动到像素的中心，需要设置偏移量。
+  # 因为一个像素的高为1且宽为1，我们选择偏移我们的中心0.5
+  offset_h, offset_w = 0.5, 0.5
+  steps_h = 1.0 / in_height  # 在y轴上缩放步长
+  steps_w = 1.0 / in_width  # 在x轴上缩放步长
+
+  # 生成锚框的所有中心点
+  center_h = (torch.arange(in_height, device=device) + offset_h) * steps_h
+  center_w = (torch.arange(in_width, device=device) + offset_w) * steps_w
+  shift_y, shift_x = torch.meshgrid(center_h, center_w, indexing='ij')
+  shift_y, shift_x = shift_y.reshape(-1), shift_x.reshape(-1)
+
+  # 生成“boxes_per_pixel”个高和宽，
+  # 之后用于创建锚框的四角坐标(xmin,xmax,ymin,ymax)
+  w = torch.cat((size_tensor * torch.sqrt(ratio_tensor[0]),
+                  sizes[0] * torch.sqrt(ratio_tensor[1:])))\
+                  * in_height / in_width  # 处理矩形输入
+  h = torch.cat((size_tensor / torch.sqrt(ratio_tensor[0]),
+                  sizes[0] / torch.sqrt(ratio_tensor[1:])))
+  # 除以2来获得半高和半宽
+  anchor_manipulations = torch.stack((-w, -h, w, h)).T.repeat(in_height * in_width, 1) / 2
+
+  # 每个中心点都将有“boxes_per_pixel”个锚框，
+  # 所以生成含所有锚框中心的网格，重复了“boxes_per_pixel”次
+  out_grid = torch.stack([shift_x, shift_y, shift_x, shift_y],
+              dim=1).repeat_interleave(boxes_per_pixel, dim=0)
+  output = out_grid + anchor_manipulations
+  return output.unsqueeze(0)
+```
+
 那么如何衡量锚框**准确性**呢？换言之，若已知目标真实边界框，如何衡量锚框和**真实边界框**之间**相似性**？杰卡德系数<sup>Jaccard</sup>可以衡量两者之间相似性。
 
-**IOU**: Intersection Over Union **交并比**，两个边界框**交集除以并集**，也被称为杰卡德系数。
+### 交并比
+
+**IoU**：Intersection Over Union **交并比**，两个边界框**交集除以并集**，也被称为杰卡德系数。
 
 $$
 J(A, B) = \frac{|A \cap B|}{|A \cup B|}
@@ -87,6 +130,34 @@ $$
 
 交并比的取值范围在 0 和 1 之间：0 表示两个边界框无重合像素，1 表示两个边界框完全重合。
 ![An Image](./img/iou.svg)
+
+```py
+# 计算两个锚框或边界框列表中成对的交并比
+def box_iou(boxes1, boxes2):
+  box_area = lambda boxes: ((boxes[:, 2] - boxes[:, 0]) * (boxes[:, 3] - boxes[:, 1]))
+  # boxes1,boxes2,areas1,areas2的形状:
+  # boxes1：(boxes1的数量,4),
+  # boxes2：(boxes2的数量,4),
+  # areas1：(boxes1的数量,),
+  # areas2：(boxes2的数量,)
+  areas1 = box_area(boxes1)
+  areas2 = box_area(boxes2)
+  # inter_upperlefts,inter_lowerrights,inters的形状:
+  # (boxes1的数量,boxes2的数量,2)
+  inter_upperlefts = torch.max(boxes1[:, None, :2], boxes2[:, :2])
+  inter_lowerrights = torch.min(boxes1[:, None, 2:], boxes2[:, 2:])
+  inters = (inter_lowerrights - inter_upperlefts).clamp(min=0)
+  # inter_areasandunion_areas的形状:(boxes1的数量,boxes2的数量)
+  inter_areas = inters[:, :, 0] * inters[:, :, 1]
+  union_areas = areas1[:, None] + areas2 - inter_areas
+  return inter_areas / union_areas
+```
+
+### 小结
+
+**训练时**：我们需要给每个锚框两种类型的标签。一个是与锚框中目标检测的类别，另一个是锚框真实相对于边界框的偏移量。
+
+**预测时**：可以使用**非极大值抑制**<sup>non-maximum suppression，NMS</sup>来**移除类似**预测边界框，从而简化输出。
 
 ## 语义分割
 
