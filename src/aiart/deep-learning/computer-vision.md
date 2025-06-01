@@ -159,6 +159,93 @@ def box_iou(boxes1, boxes2):
 
 **预测时**：可以使用**非极大值抑制**<sup>non-maximum suppression，NMS</sup>来**移除类似**预测边界框，从而简化输出。
 
+## 单发多框检测(SSD)
+
+**SSD**：Single Shot MultiBox Detector，是一种高效的目标检测算法，由`Wei Liu`等人在 2016 年[论文](https://arxiv.org/abs/1512.02325)中提出。它通过**单次前向传播**即可完成目标检测，具有**速度快、精度高**的特点，广泛应用于**实时检测**场景。
+
+“单发”（`Single Shot`）是指算法仅需一次前向传播（即“单次通过神经网络”）即可直接输出检测结果，无需像传统两阶段方法（如 Faster R-CNN）那样先生成候选区域（Region Proposals），再对候选区域进行分类和回归。
+
+在多个尺度下，生成**不同尺寸锚框来检测不同尺寸目标**。通过定义特征图的形状，决定任何图像上均匀采样的锚框中心。使用输入图像在某个**感受野**区域内信息，来预测输入图像上与该区域位置相近的锚框类别和偏移量。通过**深度学习**，用**多层次图像分层**表示进行**多尺度目标检测**。
+
+### 模型
+
+单发多框检测模型主要由**一个基础网络**块和若干**多尺度特征**块**串联**而成。
+![An Image](./img/ssd.svg)
+
+### 类别预测层
+
+设目标类别数量为 $q$。这样一来，锚框有 $q+1$ 个类别，其中 0 类是背景。
+
+```py
+import torch
+import torchvision
+from torch import nn
+from torch.nn import functional as F
+from d2l import torch as d2l
+
+def cls_predictor(num_inputs, num_anchors, num_classes):
+  return nn.Conv2d(num_inputs, num_anchors * (num_classes + 1), kernel_size=3, padding=1)
+```
+
+使用填充为 1 的 3x3 的卷积层，此卷积层的**输入和输出**宽度和高度**保持不变**。这样一来，输出和输入在特征图宽和高上的空间坐标一一对应。
+
+### 边界框预测层
+
+```py
+def bbox_predictor(num_inputs, num_anchors):
+  return nn.Conv2d(num_inputs, num_anchors * 4, kernel_size=3, padding=1)
+```
+
+不同的是，这里需要为每个锚框预测 4 个偏移量，而不是 num_classes + 1 个类别。
+
+### 连结多尺度的预测
+
+```py
+def forward(x, block):
+  return block(x)
+
+Y1 = forward(torch.zeros((2, 8, 20, 20)), cls_predictor(8, 5, 10))
+Y2 = forward(torch.zeros((2, 16, 10, 10)), cls_predictor(16, 3, 10))
+Y1.shape, Y2.shape
+# (torch.Size([2, 55, 20, 20]), torch.Size([2, 33, 10, 10]))
+```
+
+除批量大小外，其他三个维度都不同尺寸。将预测结果转成二维(`批量大小，高 x 宽 x 通道数`)格式，后在维度 1 上连结。
+
+```py
+def flatten_pred(pred):
+  return torch.flatten(pred.permute(0, 2, 3, 1), start_dim=1)
+
+def concat_preds(preds):
+  return torch.cat([flatten_pred(p) for p in preds], dim=1)
+
+concat_preds([Y1, Y2]).shape
+# torch.Size([2, 25300])
+```
+
+### 高和宽减半块
+
+```py
+def down_sample_blk(in_channels, out_channels):
+  blk = []
+  for _ in range(2):
+    blk.append(nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1))
+    blk.append(nn.BatchNorm2d(out_channels))
+    blk.append(nn.ReLU())
+    in_channels = out_channels
+  blk.append(nn.MaxPool2d(2))
+  return nn.Sequential(*blk)
+```
+
+由两个填充为 1 的 3x3 卷积层(不变)、以及步幅为 2 的 2x2 最大汇聚层(减半)组成。
+
+对于此高和宽减半块的输入和输出特征图，1x2+(3-1)+(3-1)=6，所以输出中每个单元在输入上都有一个 6x6 感受野。因此，**高和宽减半**块会**扩大**每个单元在其输出特征图中的**感受野**。
+
+```py
+forward(torch.zeros((2, 3, 20, 20)), down_sample_blk(3, 10)).shape
+# torch.Size([2, 10, 10, 10])
+```
+
 ## 语义分割
 
 语义分割<sup>semantic segmentation</sup>重点关注于如何将图像分割成属于不同语义类别的区域。与目标检测不同，语义分割标注的**像素级**边框显然更加**精细**。
