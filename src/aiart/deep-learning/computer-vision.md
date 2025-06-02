@@ -258,9 +258,9 @@ forward(torch.zeros((2, 3, 20, 20)), down_sample_blk(3, 10)).shape
 
 ### 关键技术
 
-- **全卷积网络(FCN)**：将传统 CNN 中的全连接层替换为卷积层，使网络可以接受任意尺寸的输入并输出相应尺寸的分割图
-- **编码器-解码器结构**：编码器通过卷积和下采样提取高级特征，解码器通过上采样恢复空间分辨率
-- **跳跃连接(Skip Connection)**：将浅层特征与深层特征融合，保留更多空间细节信息
+- **全卷积网络(FCN)**：将传统 CNN 中的全连接层替换为卷积层，使网络可以接受任意尺寸的输入并输出相应尺寸的分割图。
+- **编码器-解码器结构**：编码器通过卷积和下采样提取高级特征，解码器通过上采样恢复空间分辨率。
+- **跳跃连接(Skip Connection)**：将浅层特征与深层特征融合，保留更多空间细节信息。
 
 传统 CNN 全连接展平、全局池化会丢失`位置信息、相邻像素的梯度、区域一致性`等**空间信息**，而语义分割需要保留空间分辨率，因此必须使用**全卷积结构**。
 
@@ -284,22 +284,6 @@ forward(torch.zeros((2, 3, 20, 20)), down_sample_blk(3, 10)).shape
 - 引入 ASPP(Atrous Spatial Pyramid Pooling)模块捕捉多尺度信息
 - 使用 CRF(Conditional Random Field)后处理细化边界
 
-## 转置卷积(反卷积/上采样)
-
-卷积神经网络<sup>CNN</sup>的卷积层和汇聚层，通常会减少**下采样**输入图像空间维度（高和宽）。
-
-![An Image](./img/trans_conv.svg)
-**转置卷积**<sup>transposed convolution</sup>通过卷积核**广播**输入元素，增加**上采样**中间层特征图空间维度，实现**输出大于输入**，用于逆转下采样导致的空间尺寸减小。
-
-**填充**：转置卷积中，填充被应**用于输出**（常规卷积将填充应用于输入）。例如，当将高和宽两侧填充数指定为 1 时，转置卷积输出中将**删除第一和最后的行与列**。
-
-![An Image](./img/trans_conv_stride2.svg)
-**步幅**：被指定为中间结果（输出），而不是输入。
-
-**多输入和输出通道**：转置卷积与常规卷积以**相同**方式运作。
-
-**矩阵变换**：转置卷积层能够**交换**卷积层的**正向传播**函数和**反向传播**函数。
-
 ## 全卷积网络(FCN)
 
 **FCN**：Fully Convolutional Network，即网络**完全由卷积层构成**，没有任何全连接层。
@@ -307,16 +291,6 @@ forward(torch.zeros((2, 3, 20, 20)), down_sample_blk(3, 10)).shape
 这一设计使得网络能够处理任意尺寸的输入图像，并输出相应尺寸的密集预测（如图像分割中的逐像素分类）。
 
 通过**转置卷积**，将中间层特征图的高和宽变换回输入图像的尺寸，输出类别预测与输入图像在像素级别上具有一一对应关系：**通道维输出**即该位置对应像素的**类别预测**。
-
-### 构造模型
-
-![An Image](./img/fcn.svg)
-
-1. 先使用**卷积神经网络**抽取图像特征。
-2. 然后通过 $1 \times 1$ 卷积层**将通道数变换为类别个数**。
-3. 最后通过**转置卷积层**将特征图高和宽**变换为输入图像尺寸**。
-
-因此，模型输出与输入图像的高和宽相同，且最终输出通道包含了该空间位置像素的类别预测。
 
 ### 初始化转置卷积层
 
@@ -343,6 +317,57 @@ def bilinear_kernel(in_channels, out_channels, kernel_size):
   weight[range(in_channels), range(out_channels), :, :] = filt
   return weight
 ```
+
+### 构造模型
+
+![An Image](./img/fcn.svg)
+
+1. 先使用**卷积神经网络**抽取图像特征——**编码器**提取特征(下采样)。
+2. 然后 1x1 卷积层**将通道数变换为类别个数**——调整通道数。
+3. 最后**转置卷积层**将特征图高和宽**变换为输入图像尺寸**——**解码器**恢复分辨率(上采样)。
+
+因此，模型输出与输入图像的高和宽相同，且最终输出通道包含了该空间位置像素的类别预测。
+
+```py
+import torch
+import torchvision
+from torch import nn
+from torch.nn import functional as F
+from d2l import torch as d2l
+
+# 1.使用ImageNet数据集上预训练的ResNet-18来提取图像特征(编码器)
+pretrained_net = torchvision.models.resnet18(pretrained=True)
+net = nn.Sequential(*list(pretrained_net.children())[:-2])
+
+# 使用Pascal VOC2012训练集
+num_classes = 21
+# 2.添加1x1卷积层(调整通道数)
+net.add_module('final_conv', nn.Conv2d(512, num_classes, kernel_size=1))
+# 3.添加转置卷积层(解码器)
+# 步幅为s，填充为s/2(整数)且卷积核高和宽为2s，转置卷积核会将输入高和宽分别放大s倍
+net.add_module('transpose_conv', nn.ConvTranspose2d(num_classes, 
+                num_classes, kernel_size=64, padding=16, stride=32))
+
+# 用双线性插值的上采样初始化转置卷积层
+W = bilinear_kernel(num_classes, num_classes, 64)
+net.transpose_conv.weight.data.copy_(W)
+```
+
+## 转置卷积(反卷积/上采样)
+
+卷积神经网络<sup>CNN</sup>的卷积层和汇聚层，通常会减少**下采样**输入图像空间维度（高和宽）。
+
+![An Image](./img/trans_conv.svg)
+**转置卷积**<sup>transposed convolution</sup>通过卷积核**广播**输入元素，增加**上采样**中间层特征图空间维度，实现**输出大于输入**，用于逆转下采样导致的空间尺寸减小。
+
+**填充**：转置卷积中，填充被应**用于输出**（常规卷积将填充应用于输入）。例如，当将高和宽两侧填充数指定为 1 时，转置卷积输出中将**删除第一和最后的行与列**。
+
+![An Image](./img/trans_conv_stride2.svg)
+**步幅**：被指定为中间结果（输出），而不是输入。
+
+**多输入和输出通道**：转置卷积与常规卷积以**相同**方式运作。
+
+**矩阵变换**：转置卷积层能够**交换**卷积层的**正向传播**函数和**反向传播**函数。
 
 ## 风格迁移(style transfer)
 
