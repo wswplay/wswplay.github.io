@@ -275,7 +275,7 @@ forward(torch.zeros((2, 3, 20, 20)), down_sample_blk(3, 10)).shape
 **2. [U-Net](https://arxiv.org/abs/1505.04597)**
 
 - 医学图像分割的经典网络
-- **对称**的编码器-解码器结构
+- **结构对称**的编码器-解码器
 - 大量跳跃连接保留细节信息
 
 **3. DeepLab 系列**
@@ -326,7 +326,7 @@ def bilinear_kernel(in_channels, out_channels, kernel_size):
 2. 然后 1x1 卷积层**将通道数变换为类别个数**——调整通道数。
 3. 最后**转置卷积层**将特征图高和宽**变换为输入图像尺寸**——**解码器**恢复分辨率(上采样)。
 
-因此，模型输出与输入图像的高和宽相同，且最终输出通道包含了该空间位置像素的类别预测。
+因此，模型输出与输入图像的高和宽相同，且最终输出通道包含了该空间位置像素类别预测。
 
 ```py
 import torch
@@ -345,12 +345,48 @@ num_classes = 21
 net.add_module('final_conv', nn.Conv2d(512, num_classes, kernel_size=1))
 # 3.添加转置卷积层(解码器)
 # 步幅为s，填充为s/2(整数)且卷积核高和宽为2s，转置卷积核会将输入高和宽分别放大s倍
-net.add_module('transpose_conv', nn.ConvTranspose2d(num_classes, 
+net.add_module('transpose_conv', nn.ConvTranspose2d(num_classes,
                 num_classes, kernel_size=64, padding=16, stride=32))
 
 # 用双线性插值的上采样初始化转置卷积层
 W = bilinear_kernel(num_classes, num_classes, 64)
 net.transpose_conv.weight.data.copy_(W)
+
+# 损失函数
+# 因为使用通道预测像素类别，所以需要指定通道维。用每个像素预测类别是否正确来计算准确率。
+def loss(inputs, targets):
+  return F.cross_entropy(inputs, targets, reduction='none').mean(1).mean(1)
+
+# 训练
+num_epochs, lr, wd, devices = 5, 0.001, 1e-3, d2l.try_all_gpus()
+trainer = torch.optim.SGD(net.parameters(), lr=lr, weight_decay=wd)
+d2l.train_ch13(net, train_iter, test_iter, loss, trainer, num_epochs, devices)
+
+# 预测
+# 需要将输入图像在各个通道做标准化，并转成卷积神经网络所需要四维输入格式
+def predict(img):
+  X = test_iter.dataset.normalize_image(img).unsqueeze(0)
+  pred = net(X.to(devices[0])).argmax(dim=1)
+  return pred.reshape(pred.shape[1], pred.shape[2])
+
+# 为可视化预测类别给每个像素，将预测类别映射回它们在数据集中的标注颜色
+def label2image(pred):
+  colormap = torch.tensor(d2l.VOC_COLORMAP, device=devices[0])
+  X = pred.long()
+  return colormap[X, :]
+
+# 预测启动
+voc_dir = d2l.download_extract('voc2012', 'VOCdevkit/VOC2012')
+test_images, test_labels = d2l.read_voc_images(voc_dir, False)
+n, imgs = 4, []
+for i in range(n):
+    crop_rect = (0, 0, 320, 480)
+    X = torchvision.transforms.functional.crop(test_images[i], *crop_rect)
+    pred = label2image(predict(X))
+    imgs += [X.permute(1,2,0), pred.cpu(),
+             torchvision.transforms.functional.crop(
+                 test_labels[i], *crop_rect).permute(1,2,0)]
+d2l.show_images(imgs[::3] + imgs[1::3] + imgs[2::3], 3, n, scale=2)
 ```
 
 ## 转置卷积(反卷积/上采样)
