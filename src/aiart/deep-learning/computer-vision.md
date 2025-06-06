@@ -63,7 +63,7 @@ def train_fine_tuning(net, learning_rate, batch_size=128, num_epochs=5, param_gr
 train_fine_tuning(finetune_net, 5e-5)
 ```
 
-## 目标检测和边界框
+## 目标检测与边界框🔥🔥🔥
 
 **目标检测/识别**：不仅可以检测<sup>object detection</sup>识别<sup>object recognition</sup>图像中所有感兴趣的物体，还能识别它们的位置，该位置通常由矩形边界框表示。
 
@@ -246,7 +246,7 @@ forward(torch.zeros((2, 3, 20, 20)), down_sample_blk(3, 10)).shape
 # torch.Size([2, 10, 10, 10])
 ```
 
-## 语义分割
+## 语义分割🔥🔥🔥
 
 目标检测中，我们一直使用**方形边界框**来标注和预测图像中的目标。
 
@@ -405,7 +405,7 @@ d2l.show_images(imgs[::3] + imgs[1::3] + imgs[2::3], 3, n, scale=2)
 
 **矩阵变换**：转置卷积层能够**交换**卷积层的**正向传播**函数和**反向传播**函数。
 
-## 风格迁移(style transfer)
+## 风格迁移(style transfer)🔥🔥🔥
 
 把一张图的“内容”和另一张图的“风格”结合，生成一张“内容不变但风格变化”的图。
 

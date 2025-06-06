@@ -36,7 +36,7 @@ function geneNav(): ThemeConfig["nav"] {
       link: "/",
     },
     {
-      text: "AI·文艺",
+      text: "꧁ AI·文艺 ꧂",
       activeMatch: "^/aiart",
       link: "/aiart/machine-learning/overview",
     },
