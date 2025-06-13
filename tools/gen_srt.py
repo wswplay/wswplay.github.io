@@ -20,20 +20,20 @@ def transcribe_to_srt(
 ):
   # 加载模型
   model = whisper.load_model(model_size)
-  print(f"Begain: '{input_path}' (Model size: {model_size})...")
+  print(f"Path: '{input_path}' (Model size: {model_size})...")
 
   # 初始化所有变量
-  result_original = None
-  result_translated = model.transcribe(input_path, task="translate")
+  result_original = model.transcribe(input_path, language=audio_code, task="transcribe")
+  result_translated = None
 
-  # 只有当非英语时才需要原始转录
-  if audio_code != 'en':
-    result_original = model.transcribe(input_path, language=audio_code, task="transcribe")
+  # 只有当非英语时才翻译
+  if audio_code != default_code:
+    result_translated = model.transcribe(input_path, task="translate")
 
   # 智能选择原始文本来源
-  segments_original = result_original["segments"] if result_original else result_translated[
+  segments_original = result_original["segments"]
+  segments_translated = result_translated["segments"] if result_translated else result_original[
     "segments"]
-  segments_translated = result_translated["segments"]
 
   # 生成输出路径
   output_path = output_path or os.path.splitext(input_path)[0] + ".srt"
@@ -46,16 +46,19 @@ def transcribe_to_srt(
       text_original = seg_orig["text"].strip()
       text_translated = seg_trans["text"].strip()
 
-      f.write(f"{i}\n{start} --> {end}\n{text_original}\n{text_translated}\n\n")
+      f.write(f"{i}\n{start} --> {end}\n{text_original}" +
+              (f"\n{text_translated}" if text_original != text_translated else "") + "\n\n")
 
   print(f"✅ 字幕文件已保存: {output_path}")
 
 
 if __name__ == "__main__":
+  default_code = "en"
+
   parser = argparse.ArgumentParser(description="Generate srt file")
   parser.add_argument("input_path", help="Path to the input video/audio file")
   parser.add_argument("--audio_code",
-                      default="en",
+                      default=default_code,
                       help="ja,ko,zh,en,fr,es,pt,de,it,ru,ar,hi,th,id,vi,tr")
   parser.add_argument("--output_path", default=None, help="Output file path")
   parser.add_argument("--model_size", default="large", help="medium, small, tiny, base, large")
