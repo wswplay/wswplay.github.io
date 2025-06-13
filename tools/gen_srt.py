@@ -1,5 +1,5 @@
-import sys
 import os
+import argparse
 import whisper
 import datetime
 
@@ -12,35 +12,58 @@ def format_timestamp(seconds: float) -> str:
 
 
 # Whisper 转录 + 生成 SRT
-def transcribe_to_srt(input_path: str,
-                      output_path: str = None,
-                      model_size: str = "large"):
-
-  # 模型规格：medium, small, tiny, base, large
+def transcribe_to_srt(
+  input_path: str,
+  audio_code: str = "en",
+  output_path: str = None,
+  model_size: str = "large",
+):
+  # 加载模型
   model = whisper.load_model(model_size)
-  print(f"Transcribing '{input_path}' using model '{model_size}'...")
+  print(f"Begain: '{input_path}' (Model size: {model_size})...")
 
-  result = model.transcribe(input_path, task="translate", language="ja")
-  segments = result["segments"]
+  # 初始化所有变量
+  result_original = None
+  result_translated = model.transcribe(input_path, task="translate")
 
-  if not output_path:
-    base, _ = os.path.splitext(input_path)
-    output_path = base + ".srt"
+  # 只有当非英语时才需要原始转录
+  if audio_code != 'en':
+    result_original = model.transcribe(input_path, language=audio_code, task="transcribe")
 
+  # 智能选择原始文本来源
+  segments_original = result_original["segments"] if result_original else result_translated[
+    "segments"]
+  segments_translated = result_translated["segments"]
+
+  # 生成输出路径
+  output_path = output_path or os.path.splitext(input_path)[0] + ".srt"
+
+  # 写入SRT文件
   with open(output_path, "w", encoding="utf-8") as f:
-    for i, seg in enumerate(segments, start=1):
-      start = format_timestamp(seg["start"])
-      end = format_timestamp(seg["end"])
-      text = seg["text"].strip()
-      f.write(f"{i}\n{start} --> {end}\n{text}\n\n")
+    for i, (seg_orig, seg_trans) in enumerate(zip(segments_original, segments_translated), start=1):
+      start = format_timestamp(seg_orig["start"])
+      end = format_timestamp(seg_orig["end"])
+      text_original = seg_orig["text"].strip()
+      text_translated = seg_trans["text"].strip()
+
+      f.write(f"{i}\n{start} --> {end}\n{text_original}\n{text_translated}\n\n")
 
   print(f"✅ 字幕文件已保存: {output_path}")
 
 
 if __name__ == "__main__":
-  if len(sys.argv) < 2:
-    print("❌ 用法: python gen_srt.py your_video.mp4")
-    sys.exit(1)
+  parser = argparse.ArgumentParser(description="Generate srt file")
+  parser.add_argument("input_path", help="Path to the input video/audio file")
+  parser.add_argument("--audio_code",
+                      default="en",
+                      help="ja,ko,zh,en,fr,es,pt,de,it,ru,ar,hi,th,id,vi,tr")
+  parser.add_argument("--output_path", default=None, help="Output file path")
+  parser.add_argument("--model_size", default="large", help="medium, small, tiny, base, large")
 
-  video_path = sys.argv[1]
-  transcribe_to_srt(video_path)
+  args = parser.parse_args()
+  transcribe_to_srt(
+    input_path=args.input_path,
+    audio_code=args.audio_code,
+    output_path=args.output_path,
+    model_size=args.model_size,
+  )

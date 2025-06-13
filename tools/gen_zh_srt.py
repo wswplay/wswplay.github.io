@@ -31,18 +31,17 @@ def ensure_argos_model_installed(from_code="en", to_code="zh"):
   else:
     print("✅ 找到可用 Argos 翻译包。")
     package_to_install = next(
-        filter(lambda x: x.from_code == from_code and x.to_code == to_code,
-               available_packages))
+      filter(lambda x: x.from_code == from_code and x.to_code == to_code, available_packages))
     print(f"🚀 启用/下载 Argos 翻译模型...")
     argostranslate.package.install_from_path(package_to_install.download())
 
 
 # Whisper 转录 + Argos 翻译 + 生成 SRT
 def transcribe_and_translate(
-    input_path: str,
-    audio_code='ja',
-    output_path: str = None,
-    model_size="large",
+  input_path: str,
+  audio_code='ja',
+  output_path: str = None,
+  model_size="large",
 ):
   model = whisper.load_model(model_size)
 
@@ -78,8 +77,8 @@ if __name__ == "__main__":
 
   ensure_argos_model_installed(from_code, to_code)
   transcribe_and_translate(
-      input_path=args.input_path,
-      audio_code=args.audio_code,
-      output_path=args.output_path,
-      model_size=args.model_size,
+    input_path=args.input_path,
+    audio_code=args.audio_code,
+    output_path=args.output_path,
+    model_size=args.model_size,
   )
