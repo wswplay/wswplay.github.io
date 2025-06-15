@@ -433,3 +433,52 @@ $$
 
 **示例**：  
 预测明天天气时，只需知道今天天气的概率分布，无需考虑更早的历史。
+
+## 格拉姆矩阵(Gram Matrix)
+
+**格拉姆矩阵**<sup>Gram Matrix</sup>是线性代数和机器学习中一个重要的概念，它通过**内积运算**描述向量集合中**两两之间相似性或相关性**。
+
+**定义**：
+
+给定一组向量 $\{\mathbf{v}_1, \mathbf{v}_2, \dots, \mathbf{v}_n\}$（属于向量空间 $V$），格拉姆矩阵 $G$ 是一个 $n \times n$ 的对称矩阵，其元素 $G_{ij}$ 是向量 $\mathbf{v}_i$ 和 $\mathbf{v}_j$ 的内积：
+
+$$
+G_{ij} = \langle \mathbf{v}_i, \mathbf{v}_j \rangle
+$$
+
+其中 $\langle \cdot, \cdot \rangle$ 表示内积运算（如点积）。
+
+**应用场景**：
+
+- 核方法(Kernel Methods)：在支持向量机（SVM）等算法中，格拉姆矩阵推广为核矩阵<sup>Kernel Matrix</sup>，通过核函数计算高维空间的内积。
+- 主成分分析(PCA)：用于协方差矩阵的计算，本质是中心化后的格拉姆矩阵。
+- 几何分析：判断向量组的线性相关性或计算夹角（如 $G_{ij} = \|\mathbf{v}_i\| \|\mathbf{v}_j\| \cos\theta$）。
+- 深度学习：自注意力机制<sup>Self-Attention</sup>中的相似度矩阵可视为格拉姆矩阵的变体。
+
+**举个例子**：
+
+假设两个向量 $\mathbf{v}_1 = [1, 2]$, $\mathbf{v}_2 = [3, 4]$，其格拉姆矩阵为：
+
+$$
+G = \begin{bmatrix}
+\langle \mathbf{v}_1, \mathbf{v}_1 \rangle & \langle \mathbf{v}_1, \mathbf{v}_2 \rangle \\
+\langle \mathbf{v}_2, \mathbf{v}_1 \rangle & \langle \mathbf{v}_2, \mathbf{v}_2 \rangle
+\end{bmatrix}
+= \begin{bmatrix}
+1 \cdot 1 + 2 \cdot 2 & 1 \cdot 3 + 2 \cdot 4 \\
+3 \cdot 1 + 4 \cdot 2 & 3 \cdot 3 + 4 \cdot 4
+\end{bmatrix}
+= \begin{bmatrix}
+5 & 11 \\
+11 & 25
+\end{bmatrix}
+$$
+
+**直观理解**：
+
+格拉姆矩阵压缩了向量组的几何信息：
+
+- 对角线元素是各向量的模长平方。
+- 非对角线元素反映向量间的夹角（正交时 $G_{ij}=0$）。
+
+若格拉姆矩阵可逆，则向量线性无关；若奇异，则存在线性相关。

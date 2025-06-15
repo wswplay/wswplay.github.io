@@ -412,7 +412,7 @@ d2l.show_images(imgs[::3] + imgs[1::3] + imgs[2::3], 3, n, scale=2)
 **典型例子：**
 你拍了一张猫，用梵高《星夜》风格迁移它，就能得到一张“星夜风格猫”。
 
-**底层原理（简化）：**
+**底层原理(简化)：**
 
 - 内容图像保留结构和形状信息（比如人脸、物体轮廓）。
 - 风格图像提供纹理、颜色、笔触风格等。
@@ -422,6 +422,8 @@ d2l.show_images(imgs[::3] + imgs[1::3] + imgs[2::3], 3, n, scale=2)
 
 - Gatys 等人提出的经典神经风格迁移（基于 VGG 网络）。
 - 更快的实时风格迁移（Fast Style Transfer）用于移动端 App（如 Prisma）。
+
+**编码实现：**
 
 ```py
 import torch
@@ -557,3 +559,11 @@ content_X, contents_Y = get_contents(image_shape, device)
 _, styles_Y = get_styles(image_shape, device)
 output = train(content_X, contents_Y, styles_Y, device, 0.3, 500, 50)
 ```
+
+**上面编码中技术术语**：
+
+- [格拉姆矩阵(Gram Matrix)](/aiart/deep-learning/basic-concept.html#格拉姆矩阵-gram-matrix)
+- **全变分损失**公式为：
+  $$
+  \sum_{i,j} |x_{i,j} - x_{i+1,j}| + |x_{i,j} - x_{i,j+1}|
+  $$
