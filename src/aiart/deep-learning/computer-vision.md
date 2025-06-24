@@ -272,7 +272,7 @@ forward(torch.zeros((2, 3, 20, 20)), down_sample_blk(3, 10)).shape
 - 使用**转置卷积**进行上采样
 - 引入跳跃连接融合多层特征
 
-**2. [U-Net](https://arxiv.org/abs/1505.04597)**
+**2. U-Net**([论文地址](https://arxiv.org/abs/1505.04597))
 
 - 医学图像分割的经典网络
 - **结构对称**的编码器-解码器
