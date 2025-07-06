@@ -26,7 +26,7 @@ outline: deep
 
 通过**注意力汇聚**将**查询**（自主性提示）和**键**（非自主性提示）结合在一起，实现对**值**（感官输入）的**选择**倾向（智能选择）。
 
-### 注意力汇聚公式
+### 注意力汇聚(attention pooling)
 
 查询（自主提示）和键（非自主提示）之间交互形成**注意力汇聚**，注意力汇聚有选择地**聚合值**（感官输入）以生成最终输出。
 
@@ -158,7 +158,7 @@ $$
 
 在实践中，当给定相同的查询、键和值的集合时，我们希望模型可以基于相同的注意力机制学习到不同的行为，然后将不同的行为作为知识组合起来，捕获序列内各种范围的依赖关系（例如，短距离依赖和长距离依赖关系）。
 
-因此，允许注意力机制**组合查询**、键和值的不同**子空间**表示（`representation subspaces`）可能是有益的。
+因此，允许注意力机制**组合查询**、键和值的**不同子空间**表示<sup>representation subspaces</sup>可能是有益的。
 
 与其只使用单独一个注意力汇聚， 我们可以用独立学习得到的 $h$ 组不同的**线性投影**（`linear projections`）来变换**查询、键和值**。然后，这 $h$ 组变换后的查询、键和值将并行地送到注意力汇聚中。最后，将这 $h$ 个注意力汇聚的输出**拼接**在一起，并且通过另一个可以学习的线性投影进行变换，以产生最终输出。这种设计被称为**多头注意力（multihead attention）**。
 
@@ -166,7 +166,7 @@ $$
 
 ### 代码实现
 
-在实现过程中通常选择缩放点积注意力作为每一个注意力头。
+在实现过程中通常选择**缩放点积注意力**，作为每一个注意力头。
 
 ```py
 import math
@@ -207,7 +207,7 @@ class MultiHeadAttention(nn.Module):
     return self.W_o(output_concat)
 
 
-# 为了多注意力头的并行计算而变换形状
+# 先降维拆分：为了多注意力头的并行计算而变换形状
 def transpose_qkv(X, num_heads):
   # 输入X的形状:(batch_size，查询或者“键－值”对的个数，num_hiddens)
   # 输出X的形状:(batch_size，查询或者“键－值”对的个数，num_heads，num_hiddens/num_heads)
@@ -219,7 +219,7 @@ def transpose_qkv(X, num_heads):
   # 最终输出的形状:(batch_size*num_heads，查询或者“键－值”对的个数，num_hiddens/num_heads)
   return X.reshape(-1, X.shape[2], X.shape[3])
 
-# 逆转transpose_qkv函数的操作
+# 再升维融合：逆转transpose_qkv函数的操作
 def transpose_output(X, num_heads):
   X = X.reshape(-1, num_heads, X.shape[1], X.shape[2])
   X = X.permute(0, 2, 1, 3)
