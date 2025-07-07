@@ -224,6 +224,19 @@ def transpose_output(X, num_heads):
   X = X.reshape(-1, num_heads, X.shape[1], X.shape[2])
   X = X.permute(0, 2, 1, 3)
   return X.reshape(X.shape[0], X.shape[1], -1)
+
+# 实例实用
+num_hiddens, num_heads = 100, 5
+attention = MultiHeadAttention(num_hiddens, num_hiddens, num_hiddens,
+                               num_hiddens, num_heads, 0.5)
+attention.eval()
+
+batch_size, num_queries = 2, 4
+num_kvpairs, valid_lens =  6, torch.tensor([3, 2])
+X = torch.ones((batch_size, num_queries, num_hiddens))
+Y = torch.ones((batch_size, num_kvpairs, num_hiddens))
+attention(X, Y, Y, valid_lens).shape
+# torch.Size([2, 4, 100])
 ```
 
 ## 自注意力和位置编码
@@ -233,6 +246,18 @@ def transpose_output(X, num_heads):
 将词元序列输入**注意力池化**中，以便**同一组词元同时充当**查询、键和值。
 
 即每个查询都会关注所有键－值对并生成一个注意力输出。由于**查询、键和值来自同一组输入**，被称为**自注意力**（`self-attention`），或**内部注意力**（`intra-attention`）。
+
+```py {8}
+num_hiddens, num_heads = 100, 5
+attention = d2l.MultiHeadAttention(num_hiddens, num_hiddens, num_hiddens,
+                                   num_hiddens, num_heads, 0.5)
+attention.eval()
+
+batch_size, num_queries, valid_lens = 2, 4, torch.tensor([3, 2])
+X = torch.ones((batch_size, num_queries, num_hiddens))
+attention(X, X, X, valid_lens).shape
+# torch.Size([2, 4, 100])
+```
 
 ### 与 CNN、RNN 比较
 
