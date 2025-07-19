@@ -78,6 +78,11 @@ function geneNav(): ThemeConfig["nav"] {
       activeMatch: "^/mathstat",
       link: "/mathstat/math/number-theory",
     },
+    {
+      text: "投资·金融",
+      activeMatch: "^/investment",
+      link: "/investment/stock-prediction",
+    },
   ];
 }
 function geneSidebar(): ThemeConfig["sidebar"] {
@@ -287,6 +292,18 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         items: [],
       },
     ],
+    "/investment": [
+      {
+        text: "投资与股票",
+        items: [
+          { text: "预测 or 投机", link: "/investment/stock-prediction" },
+        ],
+      },
+      {
+        text: "金融与人性",
+        items: [],
+      },
+    ]
   };
 }
 function geneI18n(): ThemeConfig["i18n"] {
