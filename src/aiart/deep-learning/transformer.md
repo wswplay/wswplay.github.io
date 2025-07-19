@@ -16,7 +16,7 @@ outline: deep
 ![An Image](./img/transformer.svg)
 Transformer 是**编码器－解码器**架构实例，基于**自注意力模块叠加**而成。
 
-**源序列**(输入)嵌入<sup>embedding</sup>，和**目标序列**(输出)嵌入加上**位置编码**<sup>positional encoding</sup>，分别输入到编码器和解码器中。
+**源序列**(输入)嵌入<sup>embedding</sup>和**目标序列**(输出)嵌入，都加上**位置编码**<sup>positional encoding</sup>，分别输入到编码器和解码器中。
 
 **编码器**：由多个相同层叠加而成的，**每个层都有两个子层**。
 
@@ -101,7 +101,7 @@ $$
 **残差连接**要求**两个输入形状相同**，以便**加法**操作后输出张量形状相同。
 
 ```py
-# 残差连接后进行层规
+# 残差连接后进行层规范化
 class AddNorm(nn.Module):
   def __init__(self, normalized_shape, dropout, **kwargs):
     super(AddNorm, self).__init__(**kwargs)

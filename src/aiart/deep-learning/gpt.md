@@ -15,11 +15,11 @@ GPT 系列（GPT-1/2/3/4）采用 `Transformer` **解码器-only**<sup>Decoder-o
 
 没有**编码器-解码器交叉注意力**层（因无编码器）。
 
-## 模型：MoE
+## 设计：MoE
 
 **MoE**：Mixture of Experts，**多专家混合**。
 
-多个子模型（专家网络），每次推理**只激活一部分**，大幅提升模型规模同时控制计算成本。
+推理时**只激活部分子模型**(专家)，而非整个模型。在提高模型容量(参数规模)的同时，保持推理成本可控。不同专家可擅长不同任务，适应性、灵活性强。
 
 ## 分词算法：BPE
 
@@ -77,7 +77,7 @@ for i in range(num_merges):
 
 ## 位置编码：RoPE
 
-**RoPE**：Rotary Position Embedding，**旋转位置编码**，是一种用于 `Transformer` 架的位置编码方法，由苏剑林[论文](https://arxiv.org/abs/2104.09864)提出。
+**RoPE**：Rotary Position Embedding，**旋转位置编码**，是一种用于 `Transformer` 架构的位置编码方法，由苏剑林[论文](https://arxiv.org/abs/2104.09864)提出。
 
 已广泛应用于现代大型语言模型（LLMs），包括 LLaMA、ChatGLM、Baichuan 等。
 
@@ -272,7 +272,7 @@ $$
 
 即：把位置频率**慢下来**，使位置编码**对远距离 token 更稳定**，从而**泛化到更长**上下文。
 
-## PyTorch 实现简化版 GPT
+## 代码实现：PyTorch 简化版 GPT
 
 ```sh
 # 安装torch和transformers（用于分词）
