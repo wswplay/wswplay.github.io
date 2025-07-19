@@ -294,14 +294,14 @@ function geneSidebar(): ThemeConfig["sidebar"] {
     ],
     "/investment": [
       {
+        text: "金融与人性",
+        items: [],
+      },
+      {
         text: "投资与股票",
         items: [
           { text: "预测 or 投机", link: "/investment/stock-prediction" },
         ],
-      },
-      {
-        text: "金融与人性",
-        items: [],
       },
     ]
   };
