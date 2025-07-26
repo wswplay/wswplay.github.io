@@ -233,11 +233,17 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "卷积神经网络(CNN)", link: "/aiart/deep-learning/cnn" },
           { text: "循环神经网络(RNN)", link: "/aiart/deep-learning/rnn" },
           { text: "现代RNN", link: "/aiart/deep-learning/rnn-modern" },
-          { text: "注意力机制(attention)", link: "/aiart/deep-learning/attention-mechanisms" },
+          {
+            text: "注意力机制(attention)",
+            link: "/aiart/deep-learning/attention-mechanisms",
+          },
           { text: "Transformer架构", link: "/aiart/deep-learning/transformer" },
           { text: "自然语言处理(NLP)", link: "/aiart/deep-learning/nlp" },
           { text: "GPT", link: "/aiart/deep-learning/gpt" },
-          { text: "计算机视觉(CV)", link: "/aiart/deep-learning/computer-vision" },
+          {
+            text: "计算机视觉(CV)",
+            link: "/aiart/deep-learning/computer-vision",
+          },
         ],
       },
       {
@@ -295,15 +301,13 @@ function geneSidebar(): ThemeConfig["sidebar"] {
     "/investment": [
       {
         text: "金融与人性",
-        items: [],
+        items: [{ text: "只应对不预测", link: "/investment/jabber" }],
       },
       {
         text: "投资与股票",
-        items: [
-          { text: "预测 or 投机", link: "/investment/stock-prediction" },
-        ],
+        items: [{ text: "预测 or 投机", link: "/investment/stock-prediction" }],
       },
-    ]
+    ],
   };
 }
 function geneI18n(): ThemeConfig["i18n"] {
