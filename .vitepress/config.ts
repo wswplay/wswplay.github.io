@@ -301,7 +301,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
     "/investment": [
       {
         text: "金融与人性",
-        items: [{ text: "只应对不预测", link: "/investment/jabber" }],
+        items: [{ text: "不预测只应对", link: "/investment/jabber" }],
       },
       {
         text: "投资与股票",
