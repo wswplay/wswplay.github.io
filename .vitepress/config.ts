@@ -228,6 +228,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
         items: [
           { text: "概览", link: "/aiart/deep-learning/overview" },
           { text: "数学基础", link: "/aiart/deep-learning/mathematics" },
+          { text: "Pytorch", link: "/aiart/deep-learning/pytorch" },
           { text: "基本概念", link: "/aiart/deep-learning/basic-concept" },
           { text: "线性回归", link: "/aiart/deep-learning/linear-regression" },
           { text: "卷积神经网络(CNN)", link: "/aiart/deep-learning/cnn" },
@@ -252,7 +253,6 @@ function geneSidebar(): ThemeConfig["sidebar"] {
           { text: "基础配置", link: "/aiart/huggingface/config" },
           { text: "Diffusers", link: "/aiart/huggingface/diffusers" },
           { text: "Accelerate", link: "/aiart/huggingface/accelerate" },
-          { text: "Pytorch", link: "/aiart/huggingface/pytorch" },
         ],
       },
       {
