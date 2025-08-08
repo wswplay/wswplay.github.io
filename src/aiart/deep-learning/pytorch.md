@@ -17,6 +17,19 @@ Summary: Tensors and Dynamic neural networks in Python with strong GPU accelerat
 - **边**：表示数据流向。
 
 ![An image](./img/compt-graph.png)
+如图：w=1，x=2 时，y 对 w 的导数为 5。
+
+**叶子节点**
+
+w、x 称为**叶子节点**。叶子结点是最基础结点，其数据不是由运算生成的，因此是整个计算图的基石，是不可轻易”修改“的。而最终计算得到的 y 就是根节点，就像一棵树一样，叶子在上面，根在下面。
+
+**梯度保留**
+
+只有**叶子节点的梯度**得到**保留**，中间变量的梯度默认不保留；在 Pytorch 中，非叶子结点的梯度在反向传播结束之后就会被释放掉，如果需要保留的话可以对该结点设置 `retain_grad()`。
+
+**静态图和动态图**
+
+计算图根据计算图的搭建方式可以划分为**静态图和动态图**。Pytorch 是典型的动态图机制，TensorFlow 是静态图机制（TF 2.x 也支持动态图模式）。
 
 ## VSCode Debugger 调试源码
 
