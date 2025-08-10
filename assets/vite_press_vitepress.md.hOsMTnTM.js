@@ -1,0 +1,34 @@
+import{_ as n,c as a,o as p,b as l}from"./chunks/framework.DUr976bL.js";const y=JSON.parse('{"title":"用Vitepress重写你的博客","description":"","frontmatter":{"title":"用Vitepress重写你的博客"},"headers":[{"level":2,"title":"集成自动化部署","slug":"集成自动化部署","link":"#集成自动化部署","children":[]}],"relativePath":"vite/press/vitepress.md","filePath":"vite/press/vitepress.md"}'),e={name:"vite/press/vitepress.md"};function o(r,s,c,t,i,E){return p(),a("div",null,s[0]||(s[0]=[l(`<h1 id="基于-vite-和-vue-的静态网页生成器" tabindex="-1">基于 Vite 和 Vue 的静态网页生成器 <a class="header-anchor" href="#基于-vite-和-vue-的静态网页生成器" aria-label="Permalink to &quot;基于 Vite 和 Vue 的静态网页生成器&quot;">​</a></h1><h2 id="集成自动化部署" tabindex="-1">集成自动化部署 <a class="header-anchor" href="#集成自动化部署" aria-label="Permalink to &quot;集成自动化部署&quot;">​</a></h2><div class="language-yaml line-numbers-mode"><button title="Copy Code" class="copy"></button><span class="lang">yaml</span><pre class="shiki github-dark vp-code" tabindex="0"><code><span class="line"><span style="color:#85E89D;">name</span><span style="color:#E1E4E8;">: </span><span style="color:#9ECBFF;">xiao-github-actions-deploy</span></span>
+<span class="line"><span style="color:#79B8FF;">on</span><span style="color:#E1E4E8;">:</span></span>
+<span class="line"><span style="color:#85E89D;">  push</span><span style="color:#E1E4E8;">:</span></span>
+<span class="line"><span style="color:#85E89D;">    branches</span><span style="color:#E1E4E8;">:</span></span>
+<span class="line"><span style="color:#E1E4E8;">      - </span><span style="color:#9ECBFF;">main</span></span>
+<span class="line"><span style="color:#85E89D;">jobs</span><span style="color:#E1E4E8;">:</span></span>
+<span class="line"><span style="color:#85E89D;">  deploy</span><span style="color:#E1E4E8;">:</span></span>
+<span class="line"><span style="color:#85E89D;">    runs-on</span><span style="color:#E1E4E8;">: </span><span style="color:#9ECBFF;">ubuntu-latest</span></span>
+<span class="line"><span style="color:#85E89D;">    steps</span><span style="color:#E1E4E8;">:</span></span>
+<span class="line"><span style="color:#E1E4E8;">      - </span><span style="color:#85E89D;">uses</span><span style="color:#E1E4E8;">: </span><span style="color:#9ECBFF;">actions/checkout@v4</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;">      # 1. 安装 Node.js（官方推荐用 setup-node 管理 Node 版本）</span></span>
+<span class="line"><span style="color:#E1E4E8;">      - </span><span style="color:#85E89D;">uses</span><span style="color:#E1E4E8;">: </span><span style="color:#9ECBFF;">actions/setup-node@v4</span></span>
+<span class="line"><span style="color:#85E89D;">        with</span><span style="color:#E1E4E8;">:</span></span>
+<span class="line"><span style="color:#85E89D;">          node-version</span><span style="color:#E1E4E8;">: </span><span style="color:#79B8FF;">22</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;">      # 2. 用 pnpm 官方 Action 安装 pnpm（最稳的方式，自动处理 PATH 和缓存）</span></span>
+<span class="line"><span style="color:#E1E4E8;">      - </span><span style="color:#85E89D;">uses</span><span style="color:#E1E4E8;">: </span><span style="color:#9ECBFF;">pnpm/action-setup@v2</span></span>
+<span class="line"><span style="color:#85E89D;">        with</span><span style="color:#E1E4E8;">:</span></span>
+<span class="line"><span style="color:#85E89D;">          version</span><span style="color:#E1E4E8;">: </span><span style="color:#9ECBFF;">latest</span><span style="color:#6A737D;"> # 默认安装最新版，也可以指定如 &quot;8.15.0&quot;</span></span>
+<span class="line"><span style="color:#85E89D;">          run_install</span><span style="color:#E1E4E8;">: </span><span style="color:#79B8FF;">false</span><span style="color:#6A737D;"> # 不自动执行 pnpm install，我们自己控制</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;">      # 3. 安装依赖（自动走 pnpm 缓存，速度更快）</span></span>
+<span class="line"><span style="color:#E1E4E8;">      - </span><span style="color:#85E89D;">run</span><span style="color:#E1E4E8;">: </span><span style="color:#9ECBFF;">pnpm install</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;">      # 4. 构建项目</span></span>
+<span class="line"><span style="color:#E1E4E8;">      - </span><span style="color:#85E89D;">run</span><span style="color:#E1E4E8;">: </span><span style="color:#9ECBFF;">pnpm run build</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;">      # 5. 部署到 GitHub Pages</span></span>
+<span class="line"><span style="color:#E1E4E8;">      - </span><span style="color:#85E89D;">name</span><span style="color:#E1E4E8;">: </span><span style="color:#9ECBFF;">部署</span></span>
+<span class="line"><span style="color:#85E89D;">        uses</span><span style="color:#E1E4E8;">: </span><span style="color:#9ECBFF;">peaceiris/actions-gh-pages@v4</span></span>
+<span class="line"><span style="color:#85E89D;">        with</span><span style="color:#E1E4E8;">:</span></span>
+<span class="line"><span style="color:#85E89D;">          github_token</span><span style="color:#E1E4E8;">: </span><span style="color:#9ECBFF;">\${{ secrets.GITHUB_TOKEN }}</span></span>
+<span class="line"><span style="color:#85E89D;">          publish_dir</span><span style="color:#E1E4E8;">: </span><span style="color:#9ECBFF;">.vitepress/dist</span></span></code></pre><div class="line-numbers-wrapper" aria-hidden="true"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br></div></div>`,3)]))}const u=n(e,[["render",o]]);export{y as __pageData,u as default};
