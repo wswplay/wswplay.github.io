@@ -9,9 +9,9 @@ Pytorch is an optimized tensor library for **deep learning** using GPUs and CPUs
 
 Summary: Tensors and Dynamic neural networks in Python with strong GPU acceleration.
 
-## 常用流程
+## ML 常用流程
 
-### 操作数据
+### 数据预处理
 
 ```py
 import torch
@@ -49,7 +49,7 @@ for X, y in test_dataloader:
 
 ```
 
-### 创建模型
+### 模型创建
 
 ```py
 device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
@@ -77,7 +77,7 @@ model = NeuralNetwork().to(device)
 print(model)
 ```
 
-### 优化参数
+### 参数优化
 
 ```py
 loss_fn = nn.CrossEntropyLoss()
@@ -162,6 +162,59 @@ with torch.no_grad():
   print(f'Predicted: "{predicted}", Actual: "{actual}"')
 
 # Predicted: "Ankle boot", Actual: "Ankle boot"
+```
+
+## 自定义数据集类(Class)
+
+必须实现这 3 个函数：`__init__`, `__len__`, 和 `__getitem__`。
+
+```py
+import os
+import pandas as pd
+from torch.utils.data import Dataset
+from torchvision.io import decode_image
+
+class CustomImageDataset(Dataset):
+  # 实例化、初始化
+  def __init__(self, annotations_file, img_dir, transform=None, target_transform=None):
+    self.img_labels = pd.read_csv(annotations_file)
+    self.img_dir = img_dir
+    self.transform = transform
+    self.target_transform = target_transform
+
+  # 获取长度方法
+  def __len__(self):
+    return len(self.img_labels)
+
+  # 获取单个数据方法
+  def __getitem__(self, idx):
+    img_path = os.path.join(self.img_dir, self.img_labels.iloc[idx, 0])
+    image = decode_image(img_path)
+    label = self.img_labels.iloc[idx, 1]
+    if self.transform:
+        image = self.transform(image)
+    if self.target_transform:
+        label = self.target_transform(label)
+    return image, label
+```
+
+## 数据迭代器(DataLoader)
+
+```py
+from torch.utils.data import DataLoader
+
+train_dataloader = DataLoader(training_data, batch_size=64, shuffle=True)
+test_dataloader = DataLoader(test_data, batch_size=64, shuffle=True)
+
+# Display image and label.
+train_features, train_labels = next(iter(train_dataloader))
+print(f"Feature batch shape: {train_features.size()}")
+print(f"Labels batch shape: {train_labels.size()}")
+img = train_features[0].squeeze()
+label = train_labels[0]
+plt.imshow(img, cmap="gray")
+plt.show()
+print(f"Label: {label}")
 ```
 
 ## 计算图与自动求导
