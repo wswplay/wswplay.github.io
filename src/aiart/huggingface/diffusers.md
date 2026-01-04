@@ -75,24 +75,24 @@ make_grid(images)
 ```py
 from diffusers import UNet2DModel
 
-# Create a model
+# 创建模型
 model = UNet2DModel(
-   sample_size=image_size,  # the target image resolution
-   in_channels=3,  # the number of input channels, 3 for RGB images
-   out_channels=3,  # the number of output channels
-   layers_per_block=2,  # how many ResNet layers to use per UNet block
-   block_out_channels=(64, 128, 128, 256),  # More channels -> more parameters
+   sample_size=image_size,
+   in_channels=3,
+   out_channels=3,
+   layers_per_block=2,
+   block_out_channels=(64, 128, 128, 256),  # 多通道 -> 多参数
    down_block_types=(
-      "DownBlock2D",  # a regular ResNet downsampling block
+      "DownBlock2D", # 下采样块
       "DownBlock2D",
-      "AttnDownBlock2D",  # a ResNet downsampling block with spatial self-attention
+      "AttnDownBlock2D",  # 下采样自注意力块
       "AttnDownBlock2D",
    ),
    up_block_types=(
       "AttnUpBlock2D",
-      "AttnUpBlock2D",  # a ResNet upsampling block with spatial self-attention
+      "AttnUpBlock2D",  # 上采样自注意力块
       "UpBlock2D",
-      "UpBlock2D",  # a regular ResNet upsampling block
+      "UpBlock2D",  # 上采样块
    ),
 )
 model.to(device)
@@ -145,23 +145,23 @@ class BasicUNet(nn.Module):
             nn.Conv2d(32, out_channels, kernel_size=5, padding=2),
          ]
       )
-      self.act = nn.SiLU()  # The activation function
+      self.act = nn.SiLU()  # 激活函数
       self.downscale = nn.MaxPool2d(2)
       self.upscale = nn.Upsample(scale_factor=2)
 
    def forward(self, x):
       h = []
       for i, l in enumerate(self.down_layers):
-         x = self.act(l(x))  # Through the layer and the activation function
-         if i < 2:  # For all but the third (final) down layer:
-            h.append(x)  # Storing output for skip connection
-            x = self.downscale(x)  # Downscale ready for the next layer
+         x = self.act(l(x))  # 执行该层及激活函数
+         if i < 2:
+            h.append(x)  # 存储跳跃连接
+            x = self.downscale(x)  # 下采样(为下一层做准备)
 
       for i, l in enumerate(self.up_layers):
-         if i > 0:  # For all except the first up layer
-            x = self.upscale(x)  # Upscale
-            x += h.pop()  # Fetching stored output (skip connection)
-         x = self.act(l(x))  # Through the layer and the activation function
+         if i > 0:
+            x = self.upscale(x)  # 上采样
+            x += h.pop()  # 使用跳跃连接
+         x = self.act(l(x))  # 执行该层及激活函数
 
       return x
 ```
