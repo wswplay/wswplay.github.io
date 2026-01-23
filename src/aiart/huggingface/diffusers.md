@@ -67,7 +67,7 @@ make_grid(images)
 
 ### Model(模型)
 
-大多数扩散模型使用的**模型架构**是 [U-net](https://arxiv.org/abs/1505.04597) 或其变体。左边下采样(尺寸压缩为1/2)，右边是上采样(尺寸扩展为2倍)。
+大多数扩散模型使用的**模型架构**是 [U-net](https://arxiv.org/abs/1505.04597) 或其变体。左边下采样(尺寸压缩为 1/2)，右边是上采样(尺寸扩展为 2 倍)。
 ![An Image](./img/unet-model.png)
 
 `Diffusers` 提供了开箱即用的 `UNet2DModel` 类，用来创建模型。
@@ -114,6 +114,7 @@ plt.legend(fontsize='x-large')
 **第 1 步**时显示纯输入(原始图片)，**中间步**显示两者融合，**第 1000 步**时显示纯噪音。
 
 ## 从零实现扩散模型
+
 ```py
 # 引入包
 import torch
