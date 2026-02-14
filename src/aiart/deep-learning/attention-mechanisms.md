@@ -261,11 +261,11 @@ attention(X, X, X, valid_lens).shape
 
 ### 计算细节
 
-先看**向量**怎么计算，再看**矩阵**怎么计算。
+A：先看**向量**怎么计算，再看**矩阵**怎么计算。
 
 **第一步**：创建各向量
 ![An Image](./img/transformer_self_attention_vectors.png)
-如上，$W$ 矩阵是要学习的参数，与`Thinking`词向量 $X_1$操作：
+如上，$W$ 是已训练好的权重矩阵，与`Thinking`词向量 $X_1$操作：
 
 - 乘以 $W^Q$ 得到 $q_1$ 就是`Query`向量
 - 乘以 $W^K$ 得到 $k_1$ 就是`Key`向量
@@ -279,7 +279,15 @@ attention(X, X, X, valid_lens).shape
 
 第一个位置单词`Thinking`的`Attention Score`第一个分数就是 $q_1 \cdot k_1$，第二个分数就是 $q_1 \cdot k_2$。以此类推。
 
-**第三步**：缩放
+::: tip 缩放点积注意力(Scaled Dot-Product Attention)公式：
+
+$$
+\text{score}(q, k) = \frac{q \cdot k}{\sqrt{d_k}}
+$$
+
+:::
+
+**第三步**：**缩放**
 
 把每个分数除以 `8`(8 是指 Key 向量的长度的平方根，这里 Key 向量的长度是 64)。也可除以其他数，除以一个数是为了在反向传播时，求取梯度更加稳定。
 
@@ -296,6 +304,14 @@ attention(X, X, X, valid_lens).shape
 ![An Image](./img/self-attention-output.png)
 
 **第六步**：结果向量**相加**。把上一步得到的向量相加，就得到了`self-attention`层在这个位置（这里的例子是第一个位置）的输出。
+
+B：**矩阵计算 Self-Attention**
+
+![An Image](./img/self-attention-matrix-calculation.png)
+**第一步**：计算Query, Key, and Value 矩阵，把所有输入向量放到 $X$ 矩阵中，将其乘以我们已训练好的权重矩阵($W^Q、W^K、W^V$)。
+
+![An Image](./img/self-attention-matrix-calculation-2.png)
+**搞定**，因为使用矩阵处理，所以把第2步到第6步压缩为一个计算公式，直接得到输出。
 
 ### 与 CNN、RNN 比较
 
