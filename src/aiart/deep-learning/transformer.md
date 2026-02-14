@@ -277,3 +277,11 @@ d2l.train_seq2seq(net, train_iter, lr, num_epochs, tgt_vocab, device)
 ```
 
 `d2l.EncoderDecoder` 的 [EncoderDecoder](/aiart/deep-learning/rnn-modern.html#合并)
+
+## ViT：Vision Transformer
+
+**ViT** 全称 **Vision Transformer**(视觉变换器)，是2020年谷歌团队提出的一种纯Transformer架构，用于**图像分类**任务的模型。([论文标题：《An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale》](https://arxiv.org/abs/2010.11929))
+
+一句话总结它的核心思想：**把一张图片当成一段“话”，把图片切成很多小方块（patch），每个小方块当成一个“词”，然后直接扔给Transformer去处理。**
+
+它几乎是把NLP里经典的Transformer（就是BERT、GPT那一套Encoder结构）几乎原封不动地搬到图像领域来了。
