@@ -285,3 +285,150 @@ d2l.train_seq2seq(net, train_iter, lr, num_epochs, tgt_vocab, device)
 一句话总结它的核心思想：**把一张图片当成一段“话”，把图片切成很多小方块（patch），每个小方块当成一个“词”，然后直接扔给Transformer去处理。**
 
 它几乎是把NLP里经典的Transformer（就是BERT、GPT那一套Encoder结构）几乎原封不动地搬到图像领域来了。
+
+如下是 `ViT-Base/16`（patch 16×16，12层，768维，12头）的简化版核心实现，常用于教学和快速实验。
+
+```py
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class PatchEmbedding(nn.Module):
+  # 把图像切成patch并做线性投影
+  def __init__(self, img_size=224, patch_size=16, in_channels=3, embed_dim=768):
+    super().__init__()
+    self.num_patches = (img_size // patch_size) ** 2
+    self.proj = nn.Conv2d(in_channels, embed_dim, kernel_size=patch_size, stride=patch_size)
+
+  def forward(self, x):
+    # x: (B, C, H, W) → (B, embed_dim, num_patches_h, num_patches_w)
+    x = self.proj(x)              # (B, embed_dim, n_h, n_w)
+    x = x.flatten(2)              # (B, embed_dim, n_patches)
+    x = x.transpose(1, 2)         # (B, n_patches, embed_dim)
+    return x
+
+
+class MultiHeadAttention(nn.Module):
+  def __init__(self, embed_dim=768, num_heads=12, dropout=0.1):
+    super().__init__()
+    self.num_heads = num_heads
+    self.head_dim = embed_dim // num_heads
+    self.scale = self.head_dim ** -0.5
+
+    self.qkv = nn.Linear(embed_dim, embed_dim * 3, bias=True)
+    self.proj = nn.Linear(embed_dim, embed_dim)
+    self.dropout = nn.Dropout(dropout)
+
+  def forward(self, x):
+    B, N, C = x.shape
+    qkv = self.qkv(x).reshape(B, N, 3, self.num_heads, self.head_dim)
+    qkv = qkv.permute(2, 0, 3, 1, 4)          # [q,k,v] -> (3, B, heads, N, head_dim)
+    q, k, v = qkv[0], qkv[1], qkv[2]
+
+    attn = (q @ k.transpose(-2, -1)) * self.scale
+    attn = attn.softmax(dim=-1)
+    attn = self.dropout(attn)
+
+    x = (attn @ v).transpose(1, 2).reshape(B, N, C)
+    x = self.proj(x)
+    return x
+
+
+class TransformerEncoderLayer(nn.Module):
+  def __init__(self, embed_dim=768, num_heads=12, mlp_ratio=4.0, dropout=0.1):
+    super().__init__()
+    self.norm1 = nn.LayerNorm(embed_dim)
+    self.attn = MultiHeadAttention(embed_dim, num_heads, dropout)
+
+    self.norm2 = nn.LayerNorm(embed_dim)
+    self.mlp = nn.Sequential(
+      nn.Linear(embed_dim, int(embed_dim * mlp_ratio)),
+      nn.GELU(),
+      nn.Dropout(dropout),
+      nn.Linear(int(embed_dim * mlp_ratio), embed_dim),
+      nn.Dropout(dropout)
+    )
+
+  def forward(self, x):
+    x = x + self.attn(self.norm1(x))      # residual + attention
+    x = x + self.mlp(self.norm2(x))       # residual + MLP
+    return x
+
+
+class VisionTransformer(nn.Module):
+  """完整的ViT模型"""
+  def __init__(
+    self,
+    img_size=224,
+    patch_size=16,
+    in_channels=3,
+    num_classes=1000,
+    embed_dim=768,
+    depth=12,
+    num_heads=12,
+    mlp_ratio=4.0,
+    dropout=0.1,
+    emb_dropout=0.1
+  ):
+    super().__init__()
+
+    self.patch_embed = PatchEmbedding(img_size, patch_size, in_channels, embed_dim)
+    num_patches = self.patch_embed.num_patches
+
+    # [CLS] token + 位置编码
+    self.cls_token = nn.Parameter(torch.randn(1, 1, embed_dim))
+    self.pos_embed = nn.Parameter(torch.randn(1, num_patches + 1, embed_dim))
+    self.dropout = nn.Dropout(emb_dropout)
+
+    # Transformer Encoder堆叠
+    self.encoder = nn.Sequential(*[
+      TransformerEncoderLayer(embed_dim, num_heads, mlp_ratio, dropout)
+      for _ in range(depth)
+    ])
+
+    # 分类头
+    self.norm = nn.LayerNorm(embed_dim)
+    self.head = nn.Linear(embed_dim, num_classes)
+
+  def forward(self, x):
+    B = x.shape[0]
+
+    # patch embedding
+    x = self.patch_embed(x)                     # (B, n_patches, embed_dim)
+
+    # 加 [CLS] token
+    cls_tokens = self.cls_token.expand(B, -1, -1)
+    x = torch.cat((cls_tokens, x), dim=1)       # (B, 1 + n_patches, embed_dim)
+
+    # 加位置编码 + dropout
+    x = x + self.pos_embed
+    x = self.dropout(x)
+
+    # 通过Transformer encoder
+    x = self.encoder(x)
+
+    # 取 [CLS] token 输出，做分类
+    x = self.norm(x)
+    cls_out = x[:, 0]                           # 只取第一个token
+    logits = self.head(cls_out)
+
+    return logits
+
+
+# 示例：实例化一个ViT-Base/16模型（跟原论文ViT-B/16一致）
+if __name__ == "__main__":
+  model = VisionTransformer(
+    img_size=224,
+    patch_size=16,
+    num_classes=1000,
+    embed_dim=768,
+    depth=12,
+    num_heads=12,
+    mlp_ratio=4.0,
+    dropout=0.1
+  )
+
+  x = torch.randn(2, 3, 224, 224)  # batch=2的随机输入
+  out = model(x)
+  print(out.shape)          # torch.Size([2, 1000])
+```
