@@ -245,6 +245,7 @@ function geneSidebar(): ThemeConfig["sidebar"] {
             text: "计算机视觉(CV)",
             link: "/aiart/deep-learning/computer-vision",
           },
+          { text: "OpenCV", link: "/aiart/deep-learning/opencv" },
         ],
       },
       {

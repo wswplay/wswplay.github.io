@@ -6,6 +6,7 @@ outline: deep
 # CV：Computer Vision
 
 计算机视觉、机器视觉。无论是医疗诊断、**自动驾驶**，还是智能滤波器、摄像头监控，许多计算机视觉领域的应用都与我们当前和未来的生活密切相关。
+![An Image](./img/CV_in_defintiion.png)
 
 ## 微调(fine-tuning)
 
