@@ -91,9 +91,11 @@ brew -v
 ### zsh 设置与主题
 
 ```bash
-# 查看
+# 查看 zsh 配置文件
+cat ~/.zshrc
+# 查看主题文件
 cat ~/.oh-my-zsh/themes/skaro.zsh-theme
-# 编辑
+# 编辑主题文件
 vim ~/.oh-my-zsh/themes/skaro.zsh-theme
 # 编辑完成后，保存并退出
 :wq
