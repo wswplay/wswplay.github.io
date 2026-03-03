@@ -5,7 +5,11 @@ outline: deep
 
 # OpenCV
 
-Open Source Computer Vision(开源机器视觉)。
+OpenCV(Open Source Computer Vision) is the world's biggest computer vision library.
+
+OpenCV is open source, contains over 2500 algorithms, and is operated by the non-profit Open Source Vision Foundation. Since June 2000.
+
+## 概览
 
 - **PyTorch ≈ 大脑**（思考、学习、决策的核心）  
   它负责“理解”图像内容：这是猫？这是车？目标物体在哪？姿态是什么？深度是多少？它能从数据中学习复杂的模式、泛化到没见过的情况、做端到端的预测。这是智能的“认知”部分。
