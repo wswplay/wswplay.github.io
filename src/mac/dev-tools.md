@@ -87,3 +87,16 @@ brew -v
 ## iTerm2：Mac 命令行终端绝命替身
 
 [iTerm2](https://iterm2.com/) is a terminal emulator for macOS that dose amazing things。
+
+### zsh 设置与主题
+
+```bash
+# 查看
+cat ~/.oh-my-zsh/themes/skaro.zsh-theme
+# 编辑
+vim ~/.oh-my-zsh/themes/skaro.zsh-theme
+# 编辑完成后，保存并退出
+:wq
+# 清空（不删文件本身）
+: > ~/.zsh_history    # 或 cat /dev/null > ~/.zsh_history
+```
