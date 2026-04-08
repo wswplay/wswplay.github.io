@@ -91,6 +91,8 @@ brew -v
 ### zsh 设置与主题
 
 ```bash
+# 更新zsh
+omz update
 # 查看 zsh 配置文件
 cat ~/.zshrc
 # 查看主题文件
