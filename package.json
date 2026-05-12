@@ -28,9 +28,5 @@
     "markdown-it-mathjax3": "^4.3.2",
     "typescript": "^5.8.3",
     "vue-tsc": "^2.2.8"
-  },
-  "allowBuilds": {
-    "esbuild": true,
-    "vue-demi": true
   }
 }
