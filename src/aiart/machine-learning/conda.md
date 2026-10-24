@@ -21,7 +21,7 @@ conda list | wc -l
 conda list xxx
 ```
 
-### 包安装
+### 版本与安装
 
 有些工具包名字，在 `anaconda` 导航搜索不到。例如 `eli5`。那就如下安装：
 
@@ -29,6 +29,9 @@ conda list xxx
 conda install -c conda-forge eli5
 # 或pip安装
 pip install eli5
+# 版本搜索
+conda search packageName
+pip index versions packageName
 ```
 
 ### 本地训练模型相关操作
